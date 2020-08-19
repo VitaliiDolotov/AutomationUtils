@@ -1,0 +1,2076 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Interactions;
+using OpenQA.Selenium.Remote;
+using OpenQA.Selenium.Support.UI;
+
+namespace AutomationUtils.Extensions
+{
+    public static class WebDriverExtensions
+    {
+        private static List<int> _refreshAttemptList = new List<int>();
+
+        public enum WaitTime
+        {
+            [System.ComponentModel.Description("1")]
+            Second,
+            [System.ComponentModel.Description("6")]
+            Short,
+            [System.ComponentModel.Description("15")]
+            Medium,
+            [System.ComponentModel.Description("30")]
+            Long,
+            [System.ComponentModel.Description("55")]
+            ExtraLong
+        }
+
+        #region Availability of element
+
+        public static bool IsElementDisplayed(this RemoteWebDriver driver, IWebElement element)
+        {
+            try
+            {
+                return element.Displayed;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public static bool IsElementDisplayed(this RemoteWebDriver driver, IWebElement element, WaitTime waitTime)
+        {
+            try
+            {
+                driver.WaitForElementToBeDisplayed(element, waitTime);
+                return element.Displayed;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public static bool IsElementDisplayed(this RemoteWebDriver driver, By selector)
+        {
+            try
+            {
+                return driver.FindElement(selector).Displayed;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public static bool IsElementDisplayed(this RemoteWebDriver driver, By selector, WaitTime waitTime)
+        {
+            try
+            {
+                driver.WaitForElementToBeDisplayed(selector, waitTime);
+                return driver.FindElement(selector).Displayed;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public static bool IsElementInElementDisplayed(this RemoteWebDriver driver, IWebElement element, By selector, WaitTime waitTime)
+        {
+            try
+            {
+                driver.WaitForElementInElementToBeDisplayed(element, selector, waitTime);
+                return element.FindElement(selector).Displayed;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public static bool IsElementExists(this IWebDriver driver, By @by)
+        {
+            try
+            {
+                driver.FindElement(@by);
+                return true;
+            }
+            catch (NoSuchElementException)
+            {
+                return false;
+            }
+        }
+
+        public static bool IsElementExists(this IWebDriver driver, IWebElement element)
+        {
+            try
+            {
+                if (element == null)
+                    return false;
+
+                if (element.TagName.Contains("Exception"))
+                    return false;
+            }
+            catch (NoSuchElementException)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public static bool IsElementExists(this RemoteWebDriver driver, By @by, WaitTime waitTime)
+        {
+            try
+            {
+                var time = int.Parse(waitTime.GetValue());
+                WhatForElementToBeInExistsCondition(driver, @by, true, time);
+                return driver.IsElementExists(@by);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public static bool IsElementInElementExists(this RemoteWebDriver driver, IWebElement element, By selector, WaitTime waitTime)
+        {
+            try
+            {
+                driver.WaitForElementInElementToBeExists(element, selector, waitTime);
+                var elementInElement = element.FindElement(selector);
+                return IsElementExists(driver, elementInElement);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        #endregion
+
+        #region Actions
+
+        public static void MouseHover(this RemoteWebDriver driver, IWebElement element)
+        {
+            Actions action = new Actions(driver);
+            action.MoveToElement(element).Perform();
+        }
+
+        public static void MouseHover(this RemoteWebDriver driver, By by)
+        {
+            var element = driver.FindElement(by);
+            Actions action = new Actions(driver);
+            action.MoveToElement(element).Perform();
+        }
+
+        public static void ClickByActions(this RemoteWebDriver driver, IWebElement element)
+        {
+            Actions action = new Actions(driver);
+            action.Click(element).Perform();
+        }
+
+        public static void ClickElementLeftCenter(this RemoteWebDriver driver, IWebElement element)
+        {
+            var width = element.Size.Width;
+            var height = element.Size.Height;
+            Actions action = new Actions(driver);
+            action.MoveToElement(element, width / 4, height / 2).Click().Build().Perform();
+        }
+
+        public static void DoubleClick(this RemoteWebDriver driver, IWebElement element)
+        {
+            Actions action = new Actions(driver);
+            action.DoubleClick(element).Build().Perform();
+        }
+
+        public static void ContextClick(this RemoteWebDriver driver, IWebElement element)
+        {
+            Actions action = new Actions(driver);
+            action.ContextClick(element).Build().Perform();
+        }
+
+        public static void HoverAndClick(this RemoteWebDriver driver, IWebElement element)
+        {
+            Actions action = new Actions(driver);
+            action.MoveToElement(element).Click(element).Perform();
+        }
+
+        public static void MoveToElement(this RemoteWebDriver driver, IWebElement element)
+        {
+            Actions action = new Actions(driver);
+            action.MoveToElement(element).Perform();
+        }
+
+        public static void DragAndDrop(this RemoteWebDriver driver, IWebElement elementToBeMoved,
+            IWebElement moveToElement)
+        {
+            Actions action = new Actions(driver);
+            action.DragAndDrop(elementToBeMoved, moveToElement).Perform();
+        }
+
+        public static void InsertFromClipboard(this RemoteWebDriver driver, IWebElement textbox)
+        {
+            Actions action = new Actions(driver);
+            //TODO: below code stopped work on Aug 13 2019; splitted into 2 rows
+            //action.Click(textbox).SendKeys(Keys.Shift + Keys.Insert).Build()
+            //.Perform();
+            action.Click(textbox);
+            textbox.SendKeys(Keys.Shift + Keys.Insert);
+
+            action.KeyUp(Keys.Shift).Build().Perform();
+        }
+
+        public static void SearchOnPage(this RemoteWebDriver driver)
+        {
+            Actions action = new Actions(driver);
+            action.KeyDown(Keys.Control).SendKeys("F").Build().Perform();
+            action.KeyUp(Keys.Control).Build().Perform();
+        }
+
+        #endregion Actions
+
+        #region Actions with Javascript
+
+        public static void ClickByJavascript(this RemoteWebDriver driver, IWebElement element)
+        {
+            IJavaScriptExecutor ex = (IJavaScriptExecutor)driver;
+            ex.ExecuteScript("arguments[0].click();", element);
+        }
+
+        public static void ClearByJavascript(this RemoteWebDriver driver, IWebElement element)
+        {
+            IJavaScriptExecutor ex = (IJavaScriptExecutor)driver;
+            ex.ExecuteScript("arguments[0].value = '';", element);
+        }
+
+        public static void SendKeyByJavascript(this RemoteWebDriver driver, IWebElement element, string str)
+        {
+            IJavaScriptExecutor ex = (IJavaScriptExecutor)driver;
+            ex.ExecuteScript($"arguments[0].value = '{str}';", element);
+        }
+
+        public static void MouseHoverByJavascript(this RemoteWebDriver driver, IWebElement element)
+        {
+            IJavaScriptExecutor ex = driver;
+            ex.ExecuteScript("arguments[0].scrollIntoView(true);", element);
+        }
+
+        public static void SetAttributeByJavascript(this RemoteWebDriver driver, IWebElement element, string attribute,
+            string text)
+        {
+            IJavaScriptExecutor ex = driver;
+            ex.ExecuteScript($"arguments[0].setAttribute('{attribute}', '{text}')", element);
+        }
+
+        public static String GetNetworkLogByJavascript(this RemoteWebDriver driver)
+        {
+            String scriptToExecute = "var performance = window.performance  || window.mozPerformance  || window.msPerformance  || window.webkitPerformance || {}; var network = performance.getEntries() || {}; return JSON.stringify(network);";
+            IJavaScriptExecutor ex = driver;
+            var netData = ex.ExecuteScript(scriptToExecute);
+            return netData.ToString();
+        }
+
+        public static bool IsElementHaveVerticalScrollbar(this RemoteWebDriver driver, IWebElement element)
+        {
+            IJavaScriptExecutor ex = driver;
+            bool result = (bool)ex.ExecuteScript("return arguments[0].scrollHeight > arguments[0].clientHeight", element);
+            return result;
+        }
+
+        public static bool IsElementHaveHorizontalScrollbar(this RemoteWebDriver driver, IWebElement element)
+        {
+            IJavaScriptExecutor ex = driver;
+            bool result = (bool)ex.ExecuteScript("return arguments[0].scrollHeight > arguments[0].clientHeight", element);
+            return result;
+        }
+
+        public static void ScrollGridToTheTop(this RemoteWebDriver driver, IWebElement gridElement)
+        {
+            IJavaScriptExecutor ex = driver;
+            ex.ExecuteScript($"arguments[0].scrollTop = 0;", gridElement);
+        }
+
+        public static void ScrollGridToTheEnd(this RemoteWebDriver driver, IWebElement gridElement)
+        {
+            IJavaScriptExecutor ex = driver;
+
+            var clientHeight = int.Parse(ex.ExecuteScript("return arguments[0].clientHeight", gridElement).ToString());
+            if (clientHeight <= 0)
+                throw new Exception("Unable to get client Height");
+            var scrollHeight = int.Parse(ex.ExecuteScript("return arguments[0].scrollHeight", gridElement).ToString());
+
+            for (int i = 0; i < scrollHeight / clientHeight; i++)
+            {
+                ex.ExecuteScript($"arguments[0].scrollTo(0,{clientHeight * i});", gridElement);
+            }
+            //Final scroll to get to the grid bottom
+            ex.ExecuteScript($"arguments[0].scrollTo(0,{scrollHeight});", gridElement);
+        }
+
+        public enum Direction
+        {
+            Right,
+            Left
+        }
+
+        public static void ScrollHorizontalyTo(this RemoteWebDriver driver, Direction direction, IWebElement element)
+        {
+            IJavaScriptExecutor ex = driver;
+            var clientWidth = int.Parse(ex.ExecuteScript("return arguments[0].clientWidth", element).ToString());
+            if (direction == Direction.Right)
+            {
+                ex.ExecuteScript($"arguments[0].scrollBy({clientWidth}, 0)", element);
+            }
+            else if (direction == Direction.Left)
+            {
+                ex.ExecuteScript($"arguments[0].scrollBy(-{clientWidth}, 0)", element);
+            }
+            else
+            {
+                throw new Exception("There is no such 'Direction'. Use Direction.Right or Direction.Left");
+            }
+        }
+
+        public static List<string> GetElementAttributes(this RemoteWebDriver driver, IWebElement element)
+        {
+            IJavaScriptExecutor ex = driver;
+            var attributesAndValues = (Dictionary<string, object>)ex.ExecuteScript("var items = { }; for (index = 0; index < arguments[0].attributes.length; ++index) { items[arguments[0].attributes[index].name] = arguments[0].attributes[index].value }; return items;", element);
+            var attributes = attributesAndValues.Keys.ToList();
+            return attributes;
+        }
+
+        public static string GetSelectedText(this RemoteWebDriver driver)
+        {
+            return ((IJavaScriptExecutor)driver).ExecuteScript("return window.getSelection().toString()").ToString();
+        }
+
+        public static string GetPseudoElementValue(this RemoteWebDriver driver, IWebElement element, Pseudo pseudo, string value)
+        {
+            string script = $"return window.getComputedStyle(arguments[0], ':{pseudo.GetValue()}').getPropertyValue('{value}');";
+            return driver.ExecuteScript(script, element).ToString().Trim('"');
+        }
+
+        public enum Pseudo
+        {
+            [Description("before")]
+            Before,
+            [Description("after")]
+            After
+        }
+
+        #endregion Actions with Javascript
+
+        #region JavaSctipt Alert
+
+        public static void AcceptAlert(this RemoteWebDriver driver, WaitTime waitTime = WaitTime.Short)
+        {
+            WaitForAlert(driver, waitTime);
+            driver.SwitchTo().Alert().Accept();
+        }
+
+        public static void DismissAlert(this RemoteWebDriver driver, WaitTime waitTime = WaitTime.Short)
+        {
+            WaitForAlert(driver, waitTime);
+            driver.SwitchTo().Alert().Dismiss();
+        }
+
+        public static bool IsAlertPresent(this RemoteWebDriver driver, WaitTime waitTime = WaitTime.Short)
+        {
+            try
+            {
+                WaitForAlert(driver, waitTime);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public static void WaitForAlert(this RemoteWebDriver driver, WaitTime waitTime = WaitTime.Short)
+        {
+            try
+            {
+                var waitSec = int.Parse(waitTime.GetValue());
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(waitSec));
+                wait.Until(AlertToBeExists());
+            }
+            catch (Exception)
+            {
+                throw new Exception($"Alert wat not appears in {waitTime.GetValue()} seconds");
+            }
+        }
+
+        private static Func<IWebDriver, bool> AlertToBeExists()
+        {
+            return (driver) =>
+            {
+                try
+                {
+                    driver.SwitchTo().Alert();
+                    return true;
+                }
+                catch (NoAlertPresentException)
+                {
+                    return false;
+                }
+            };
+        }
+
+        #endregion
+
+        #region Wait for Element to be (not) Displayed
+
+        public static void WaitForElementToBeNotDisplayed(this RemoteWebDriver driver, IWebElement element, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitForElementDisplayCondition(driver, element, false, waitSec);
+        }
+
+        public static void WaitForElementToBeDisplayed(this RemoteWebDriver driver, IWebElement element, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitForElementDisplayCondition(driver, element, true, waitSec);
+        }
+
+        public static void WaitForElementToBeDisplayed(this RemoteWebDriver driver, By locator, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitForElementDisplayCondition(driver, locator, true, waitSec);
+        }
+
+        public static void WaitForElementToBeNotDisplayed(this RemoteWebDriver driver, By locator, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitForElementDisplayCondition(driver, locator, false, waitSec);
+        }
+
+        private static void WaitForElementDisplayCondition(this RemoteWebDriver driver, By by, bool condition, int waitSeconds)
+        {
+            try
+            {
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(waitSeconds));
+                wait.Until(ElementIsInDisplayedCondition(by, condition));
+            }
+            catch (WebDriverTimeoutException e)
+            {
+                throw new Exception($"Element with '{by}' selector was not changed Display condition to '{condition}' after {waitSeconds} seconds", e);
+            }
+        }
+
+        private static void WaitForElementDisplayCondition(this RemoteWebDriver driver, IWebElement element, bool condition, int waitSeconds)
+        {
+            try
+            {
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(waitSeconds));
+                wait.Until(ElementIsInDisplayedCondition(element, condition));
+            }
+            catch (WebDriverTimeoutException e)
+            {
+                throw new Exception($"Element was not changed Display condition to '{condition}' after {waitSeconds} seconds", e);
+            }
+        }
+
+        //Return true if find at least one element by provided selector with Displayed condition true
+        private static Func<IWebDriver, bool> ElementIsInDisplayedCondition(By locator, bool displayedCondition)
+        {
+            return (driver) =>
+            {
+                try
+                {
+                    var elements = driver.FindElements(locator);
+                    //If no elements found
+                    if (!elements.Any())
+                        return false.Equals(displayedCondition);
+                    return elements.Any(x => x.Displayed().Equals(displayedCondition));
+                }
+                catch (NoSuchElementException)
+                {
+                    // Returns false because the element is not present in DOM.
+                    return false.Equals(displayedCondition);
+                }
+                catch (StaleElementReferenceException)
+                {
+                    // Returns false because stale element reference implies that element
+                    // is no longer visible.
+                    return false.Equals(displayedCondition);
+                }
+                catch (InvalidOperationException)
+                {
+                    // Return false as no elements was located
+                    return false.Equals(displayedCondition);
+                }
+                catch (TargetInvocationException)
+                {
+                    // Return false as no elements was located
+                    return false.Equals(displayedCondition);
+                }
+            };
+        }
+
+        private static Func<IWebDriver, bool> ElementIsInDisplayedCondition(IWebElement element, bool displayedCondition)
+        {
+            return (driver) =>
+            {
+                try
+                {
+                    return element.Displayed().Equals(displayedCondition);
+                }
+                catch (NoSuchElementException)
+                {
+                    // Returns false because the element is not present in DOM.
+                    return false.Equals(displayedCondition);
+                }
+                catch (StaleElementReferenceException)
+                {
+                    // Returns false because stale element reference implies that element
+                    // is no longer visible.
+                    return false.Equals(displayedCondition);
+                }
+                catch (InvalidOperationException)
+                {
+                    // Return false as no elements was located
+                    return false.Equals(displayedCondition);
+                }
+                catch (TargetInvocationException)
+                {
+                    // Return false as no elements was located
+                    return false.Equals(displayedCondition);
+                }
+                catch (NullReferenceException)
+                {
+                    // Return false as element not exists
+                    return false.Equals(displayedCondition);
+                }
+            };
+        }
+
+        #endregion
+
+        #region Wait for Element to be (not) Displayed in Element
+
+        public static void WaitForElementInElementToBeNotDisplayed(this RemoteWebDriver driver, IWebElement element, By selector, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitForElementInElementDisplayCondition(driver, element, selector, false, waitSec);
+        }
+
+        public static void WaitForElementInElementToBeDisplayed(this RemoteWebDriver driver, IWebElement element, By selector, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitForElementInElementDisplayCondition(driver, element, selector, true, waitSec);
+        }
+
+        public static void WaitForElementInElementDisplayCondition(this RemoteWebDriver driver, IWebElement element, By selector, bool condition, int waitSeconds)
+        {
+            try
+            {
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(waitSeconds));
+                wait.Until(ElementInElementIsInDisplayedCondition(element, selector, condition));
+            }
+            catch (WebDriverTimeoutException e)
+            {
+                throw new Exception($"Element in element was not changed Display condition to '{condition}' after {waitSeconds} seconds", e);
+            }
+        }
+
+        private static Func<IWebDriver, bool> ElementInElementIsInDisplayedCondition(IWebElement element, By selector, bool displayedCondition)
+        {
+            return (driver) =>
+            {
+                try
+                {
+                    return element.FindElement(selector).Displayed().Equals(displayedCondition);
+                }
+                catch (NoSuchElementException)
+                {
+                    // Returns false because the element is not present in DOM
+                    return false.Equals(displayedCondition);
+                }
+                catch (StaleElementReferenceException)
+                {
+                    // Returns false because stale element reference implies that element
+                    // is no longer visible.
+                    return false.Equals(displayedCondition);
+                }
+                catch (InvalidOperationException)
+                {
+                    // Return false as no elements was located
+                    return false.Equals(displayedCondition);
+                }
+                catch (TargetInvocationException)
+                {
+                    // Returns false because the element is not present in DOM
+                    return false.Equals(displayedCondition);
+                }
+                catch (NullReferenceException)
+                {
+                    // Returns false because the element not exists
+                    return false.Equals(displayedCondition);
+                }
+            };
+        }
+
+        #endregion
+
+        #region Wait for Element to be (not) Displayed After Refresh
+
+        public static void WaitForElementToBeNotDisplayedAfterRefresh(this RemoteWebDriver driver, IWebElement element, Action<RemoteWebDriver> waitForDataLoadingMethod, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitForElementDisplayConditionAfterRefresh(driver, element, false, waitSec, waitForDataLoadingMethod);
+        }
+
+        //Only elements from PageObject are allowed!!!
+        public static void WaitForElementToBeDisplayedAfterRefresh(this RemoteWebDriver driver, IWebElement element, Action<RemoteWebDriver> waitForDataLoadingMethod, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitForElementDisplayConditionAfterRefresh(driver, element, true, waitSec, waitForDataLoadingMethod);
+        }
+
+        public static void WaitForElementToBeDisplayedAfterRefresh(this RemoteWebDriver driver, IWebElement element, By by, Action<RemoteWebDriver> waitForDataLoadingMethod, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitForElementDisplayConditionAfterRefresh(driver, element, by, true, waitSec, waitForDataLoadingMethod);
+        }
+
+        public static void WaitForElementToBeDisplayedAfterRefresh(this RemoteWebDriver driver, By locator, Action<RemoteWebDriver> waitForDataLoadingMethod, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitForElementDisplayConditionAfterRefresh(driver, locator, true, waitSec, waitForDataLoadingMethod);
+        }
+
+        public static void WaitForElementToBeNotDisplayedAfterRefresh(this RemoteWebDriver driver, By locator, Action<RemoteWebDriver> waitForDataLoadingMethod, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitForElementDisplayConditionAfterRefresh(driver, locator, false, waitSec, waitForDataLoadingMethod);
+        }
+
+        private static void WaitForElementDisplayConditionAfterRefresh(this RemoteWebDriver driver, By by, bool condition, int waitSeconds, Action<RemoteWebDriver> waitForDataLoadingMethod)
+        {
+            try
+            {
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(waitSeconds));
+                wait.Until(ElementIsInDisplayedConditionAfterRefresh(by, condition, waitForDataLoadingMethod, refreshAction => { }));
+            }
+            catch (WebDriverTimeoutException e)
+            {
+                throw new Exception($"Element with '{by}' selector was not changed Display condition to '{condition}' after {waitSeconds} seconds", e);
+            }
+        }
+
+        private static void WaitForElementDisplayConditionAfterRefresh(this RemoteWebDriver driver, IWebElement element, bool condition, int waitSeconds, Action<RemoteWebDriver> waitForDataLoadingMethod)
+        {
+            try
+            {
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(waitSeconds));
+                wait.Until(ElementIsInDisplayedConditionAfterRefresh(element, condition, waitForDataLoadingMethod, refreshAction => { }));
+            }
+            catch (WebDriverTimeoutException e)
+            {
+                throw new Exception($"Element was not changed Display condition to '{condition}' after {waitSeconds} seconds", e);
+            }
+        }
+
+        private static void WaitForElementDisplayConditionAfterRefresh(this RemoteWebDriver driver, IWebElement element, By by, bool condition, int waitSeconds, Action<RemoteWebDriver> waitForDataLoadingMethod)
+        {
+            try
+            {
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(waitSeconds));
+                wait.Until(ElementIsInDisplayedConditionAfterRefresh(element, by, condition, waitForDataLoadingMethod, refreshAction => { }));
+            }
+            catch (WebDriverTimeoutException e)
+            {
+                throw new Exception($"Element was not changed Display condition to '{condition}' after {waitSeconds} seconds", e);
+            }
+        }
+
+        //Return true if find at least one element by provided selector with Displayed condition true
+        private static Func<IWebDriver, bool> ElementIsInDisplayedConditionAfterRefresh(By locator, bool displayedCondition, Action<RemoteWebDriver> waitForDataLoadingMethod, Action<RemoteWebDriver> refresh)
+        {
+            return (driver) =>
+            {
+                try
+                {
+                    refresh((RemoteWebDriver)driver);
+                    refresh = RefreshPage;
+
+                    waitForDataLoadingMethod((RemoteWebDriver)driver);
+
+                    return IsElementDisplayed((RemoteWebDriver)driver, locator, WebDriverExtensions.WaitTime.Short).Equals(displayedCondition);
+                }
+                catch (NoSuchElementException)
+                {
+                    // Returns false because the element is not present in DOM.
+                    return false.Equals(displayedCondition);
+                }
+                catch (StaleElementReferenceException)
+                {
+                    // Returns false because stale element reference implies that element
+                    // is no longer visible.
+                    return false.Equals(displayedCondition);
+                }
+                catch (InvalidOperationException)
+                {
+                    // Return false as no elements was located
+                    return false.Equals(displayedCondition);
+                }
+                catch (TargetInvocationException)
+                {
+                    // Return false as no elements was located
+                    return false.Equals(displayedCondition);
+                }
+            };
+        }
+
+        private static Func<IWebDriver, bool> ElementIsInDisplayedConditionAfterRefresh(IWebElement element, bool displayedCondition, Action<RemoteWebDriver> waitForDataLoadingMethod, Action<RemoteWebDriver> refresh)
+        {
+            return (driver) =>
+            {
+                try
+                {
+                    refresh((RemoteWebDriver)driver);
+                    refresh = RefreshPage;
+
+                    waitForDataLoadingMethod((RemoteWebDriver)driver);
+
+                    return IsElementDisplayed((RemoteWebDriver)driver, element, WebDriverExtensions.WaitTime.Short).Equals(displayedCondition);
+                }
+                catch (NoSuchElementException)
+                {
+                    // Returns false because the element is not present in DOM.
+                    return false.Equals(displayedCondition);
+                }
+                catch (StaleElementReferenceException)
+                {
+                    // Returns false because stale element reference implies that element
+                    // is no longer visible.
+                    return false.Equals(displayedCondition);
+                }
+                catch (InvalidOperationException)
+                {
+                    // Return false as no elements was located
+                    return false.Equals(displayedCondition);
+                }
+                catch (TargetInvocationException)
+                {
+                    // Return false as no elements was located
+                    return false.Equals(displayedCondition);
+                }
+            };
+        }
+
+        private static Func<IWebDriver, bool> ElementIsInDisplayedConditionAfterRefresh(IWebElement element, By by, bool displayedCondition, Action<RemoteWebDriver> waitForDataLoadingMethod, Action<RemoteWebDriver> refresh)
+        {
+            return (driver) =>
+            {
+                try
+                {
+                    refresh((RemoteWebDriver)driver);
+                    refresh = RefreshPage;
+
+                    waitForDataLoadingMethod((RemoteWebDriver)driver);
+
+                    return IsElementInElementDisplayed((RemoteWebDriver)driver, element, by,
+                        WebDriverExtensions.WaitTime.Short).Equals(displayedCondition);
+                }
+                catch (NoSuchElementException)
+                {
+                    // Returns false because the element is not present in DOM.
+                    return false.Equals(displayedCondition);
+                }
+                catch (StaleElementReferenceException)
+                {
+                    // Returns false because stale element reference implies that element
+                    // is no longer visible.
+                    return false.Equals(displayedCondition);
+                }
+                catch (InvalidOperationException)
+                {
+                    // Return false as no elements was located
+                    return false.Equals(displayedCondition);
+                }
+                catch (TargetInvocationException)
+                {
+                    // Return false as no elements was located
+                    return false.Equals(displayedCondition);
+                }
+            };
+        }
+
+        #endregion
+
+        #region Wait for ElementS to be (not) Displayed
+
+        public static void WaitForElementsToBeNotDisplayed(this RemoteWebDriver driver, By by, WaitTime waitTime = WaitTime.Medium, bool allElements = true)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            if (allElements)
+                WaitForElementsDisplayCondition(driver, by, false, waitSec);
+            else
+                WaitForAtLeastOneElementDisplayCondition(driver, by, false, waitSec);
+        }
+
+        public static void WaitForElementsToBeNotDisplayed(this RemoteWebDriver driver, List<By> bys, WaitTime waitTime = WaitTime.Medium, bool allElements = true)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            if (allElements)
+                WaitForElementsDisplayCondition(driver, bys, false, waitSec);
+            else
+                WaitForAtLeastOneElementDisplayCondition(driver, bys, false, waitSec);
+        }
+
+        public static void WaitForElementsToBeNotDisplayed(this RemoteWebDriver driver, IList<IWebElement> elements, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitForElementsDisplayCondition(driver, elements, false, waitSec);
+        }
+
+        public static void WaitForElementsToBeDisplayed(this RemoteWebDriver driver, By by, WaitTime waitTime = WaitTime.Medium, bool allElements = true)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            if (allElements)
+                WaitForElementsDisplayCondition(driver, by, true, waitSec);
+            else
+                WaitForAtLeastOneElementDisplayCondition(driver, by, true, waitSec);
+        }
+
+        public static void WaitForElementsToBeDisplayed(this RemoteWebDriver driver, List<By> bys, WaitTime waitTime = WaitTime.Medium, bool allElements = true)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            if (allElements)
+                WaitForElementsDisplayCondition(driver, bys, true, waitSec);
+            else
+                WaitForAtLeastOneElementDisplayCondition(driver, bys, true, waitSec);
+        }
+
+        public static void WaitForElementsToBeDisplayed(this RemoteWebDriver driver, IList<IWebElement> elements, WaitTime waitTime = WaitTime.Medium, bool allElements = true)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            if (allElements)
+                WaitForElementsDisplayCondition(driver, elements, true, waitSec);
+            else
+                WaitForAtLeastOneElementDisplayCondition(driver, elements, true, waitSec);
+        }
+
+        private static void WaitForElementsDisplayCondition(this RemoteWebDriver driver, By by, bool condition, int waitSeconds)
+        {
+            try
+            {
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(waitSeconds));
+                wait.Until(VisibleConditionOfAllElementsLocatedBy(by, condition));
+            }
+            catch (WebDriverTimeoutException e)
+            {
+                throw new Exception($"Elements with '{by}' selector were not changed Display condition to '{condition}' after {waitSeconds} seconds", e);
+            }
+        }
+
+        private static void WaitForElementsDisplayCondition(this RemoteWebDriver driver, List<By> bys, bool condition, int waitSeconds)
+        {
+            try
+            {
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(waitSeconds));
+                wait.Until(VisibleConditionOfAllElementsLocatedBy(bys, condition));
+            }
+            catch (WebDriverTimeoutException e)
+            {
+                throw new Exception($"Elements with '{bys}' selectors were not changed Display condition to '{condition}' after {waitSeconds} seconds", e);
+            }
+        }
+
+        private static void WaitForElementsDisplayCondition(this RemoteWebDriver driver, IList<IWebElement> elements, bool condition, int waitSeconds)
+        {
+            try
+            {
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(waitSeconds));
+                wait.Until(VisibleConditionOfAllElementsLocatedBy(elements, condition));
+            }
+            catch (WebDriverTimeoutException e)
+            {
+                throw new Exception($"Not all from {elements.Count} elements were not changed Display condition to '{condition}' after {waitSeconds} seconds", e);
+            }
+        }
+
+        private static void WaitForAtLeastOneElementDisplayCondition(this RemoteWebDriver driver, List<By> bys, bool condition, int waitSeconds)
+        {
+            try
+            {
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(waitSeconds));
+                wait.Until(VisibleConditionOfAtLeastOneElementLocatedBy(bys, condition));
+            }
+            catch (WebDriverTimeoutException e)
+            {
+                throw new Exception($"Elements with '{bys}' selectors were not changed Display condition to '{condition}' after {waitSeconds} seconds", e);
+            }
+        }
+
+        private static void WaitForAtLeastOneElementDisplayCondition(this RemoteWebDriver driver, By by, bool condition, int waitSeconds)
+        {
+            try
+            {
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(waitSeconds));
+                wait.Until(VisibleConditionOfAtLeastOneElementLocatedBy(by, condition));
+            }
+            catch (WebDriverTimeoutException e)
+            {
+                throw new Exception($"Elements with '{by}' selector were not changed Display condition to '{condition}' after {waitSeconds} seconds", e);
+            }
+        }
+
+        private static void WaitForAtLeastOneElementDisplayCondition(this RemoteWebDriver driver, IList<IWebElement> elements, bool condition, int waitSeconds)
+        {
+            try
+            {
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(waitSeconds));
+                wait.Until(VisibleConditionOfAtLeastOneElementLocatedBy(elements, condition));
+            }
+            catch (WebDriverTimeoutException e)
+            {
+                throw new Exception($"Not all from {elements.Count} elements were not changed Display condition to '{condition}' after {waitSeconds} seconds", e);
+            }
+        }
+
+        private static Func<IWebDriver, bool> VisibleConditionOfAllElementsLocatedBy(By locator, bool expectedCondition)
+        {
+            return (driver) =>
+            {
+                try
+                {
+                    var elements = driver.FindElements(locator);
+                    //If we expect some elements to be displayed
+                    //The some elements should be found
+                    if (expectedCondition && elements.Count <= 0)
+                    {
+                        return false;
+                    }
+                    return elements.All(element => element.Displayed().Equals(expectedCondition));
+                }
+                catch (NoSuchElementException)
+                {
+                    // Returns false because the element is not present in DOM.
+                    return false;
+                }
+                catch (StaleElementReferenceException)
+                {
+                    // Returns false because stale element reference implies that element
+                    // is no longer visible.
+                    return false;
+                }
+                catch (TargetInvocationException)
+                {
+                    // Returns false because stale element reference implies that element
+                    // is no longer visible.
+                    return false;
+                }
+                catch (NullReferenceException)
+                {
+                    // Element not exists
+                    return false;
+                }
+            };
+        }
+
+        private static Func<IWebDriver, bool> VisibleConditionOfAllElementsLocatedBy(List<By> locators, bool expectedCondition)
+        {
+            return (driver) =>
+            {
+                try
+                {
+                    List<IWebElement> elements = new List<IWebElement>();
+                    foreach (By locator in locators)
+                    {
+                        elements.AddRange(driver.FindElements(locator));
+                    }
+
+                    //If we expect some elements to be displayed
+                    //The some elements should be found
+                    if (expectedCondition && elements.Count <= 0)
+                    {
+                        return false;
+                    }
+
+                    return elements.All(element => element.Displayed().Equals(expectedCondition));
+                }
+                catch (NoSuchElementException)
+                {
+                    // Returns false because the element is not present in DOM.
+                    return false;
+                }
+                catch (StaleElementReferenceException)
+                {
+                    // Returns false because stale element reference implies that element
+                    // is no longer visible.
+                    return false;
+                }
+                catch (TargetInvocationException)
+                {
+                    // Returns false because stale element reference implies that element
+                    // is no longer visible.
+                    return false;
+                }
+            };
+        }
+
+        private static Func<IWebDriver, bool> VisibleConditionOfAllElementsLocatedBy(IList<IWebElement> elements, bool expectedCondition)
+        {
+            return (driver) =>
+            {
+                try
+                {
+                    //If we expect some elements to be displayed
+                    //The some elements should be found
+                    if (expectedCondition && elements.Count <= 0)
+                    {
+                        return false;
+                    }
+
+                    return elements.All(element => element.Displayed().Equals(expectedCondition));
+                }
+                catch (NoSuchElementException)
+                {
+                    // Returns false because the element is not present in DOM.
+                    return false;
+                }
+                catch (StaleElementReferenceException)
+                {
+                    // Returns false because stale element reference implies that element
+                    // is no longer visible.
+                    return false;
+                }
+                catch (TargetInvocationException)
+                {
+                    // Returns false because stale element reference implies that element
+                    // is no longer visible.
+                    return false;
+                }
+                catch (NullReferenceException)
+                {
+                    // Element not exists
+                    return false;
+                }
+            };
+        }
+
+        private static Func<IWebDriver, bool> VisibleConditionOfAtLeastOneElementLocatedBy(By locator, bool expectedCondition)
+        {
+            return (driver) =>
+            {
+                try
+                {
+                    var elements = driver.FindElements(locator);
+                    return elements.Any(element => element.Displayed().Equals(expectedCondition));
+                }
+                catch (NoSuchElementException)
+                {
+                    // Returns false because the element is not present in DOM.
+                    return false;
+                }
+                catch (StaleElementReferenceException)
+                {
+                    // Returns false because stale element reference implies that element
+                    // is no longer visible.
+                    return false;
+                }
+                catch (TargetInvocationException)
+                {
+                    // Returns false because stale element reference implies that element
+                    // is no longer visible.
+                    return false;
+                }
+                catch (NullReferenceException)
+                {
+                    // Element not exists
+                    return false;
+                }
+            };
+        }
+
+        private static Func<IWebDriver, bool> VisibleConditionOfAtLeastOneElementLocatedBy(List<By> locators, bool expectedCondition)
+        {
+            return (driver) =>
+            {
+                try
+                {
+                    List<IWebElement> elements = new List<IWebElement>();
+                    foreach (By locator in locators)
+                    {
+                        elements.AddRange(driver.FindElements(locator));
+                    }
+                    return elements.Any(element => element.Displayed().Equals(expectedCondition));
+                }
+                catch (NoSuchElementException)
+                {
+                    // Returns false because the element is not present in DOM.
+                    return false;
+                }
+                catch (StaleElementReferenceException)
+                {
+                    // Returns false because stale element reference implies that element
+                    // is no longer visible.
+                    return false;
+                }
+                catch (TargetInvocationException)
+                {
+                    // Returns false because stale element reference implies that element
+                    // is no longer visible.
+                    return false;
+                }
+                catch (NullReferenceException)
+                {
+                    // Element not exists
+                    return false;
+                }
+            };
+        }
+
+        private static Func<IWebDriver, bool> VisibleConditionOfAtLeastOneElementLocatedBy(IList<IWebElement> elements, bool expectedCondition)
+        {
+            return (driver) =>
+            {
+                try
+                {
+                    return elements.Any(element => element.Displayed().Equals(expectedCondition));
+                }
+                catch (NoSuchElementException)
+                {
+                    // Returns false because the element is not present in DOM.
+                    return false;
+                }
+                catch (StaleElementReferenceException)
+                {
+                    // Returns false because stale element reference implies that element
+                    // is no longer visible.
+                    return false;
+                }
+                catch (TargetInvocationException)
+                {
+                    // Returns false because stale element reference implies that element
+                    // is no longer visible.
+                    return false;
+                }
+                catch (NullReferenceException)
+                {
+                    // Element not exists
+                    return false;
+                }
+            };
+        }
+
+        #endregion
+
+        #region Wait for Element to be (not) Exists
+
+        public static void WhatForElementToBeNotExists(this RemoteWebDriver driver, By by, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WhatForElementToBeInExistsCondition(driver, by, false, waitSec);
+        }
+
+        public static void WhatForElementToBeNotExists(this RemoteWebDriver driver, IWebElement element, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WhatForElementToBeInExistsCondition(driver, element, false, waitSec);
+        }
+
+        public static void WhatForElementToBeExists(this RemoteWebDriver driver, By by, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WhatForElementToBeInExistsCondition(driver, by, true, waitSec);
+        }
+
+        public static void WhatForElementToBeExists(this RemoteWebDriver driver, IWebElement element, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WhatForElementToBeInExistsCondition(driver, element, true, waitSec);
+        }
+
+        private static void WhatForElementToBeInExistsCondition(this RemoteWebDriver driver, By by, bool expectedCondition, int waitTimeout)
+        {
+            try
+            {
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(waitTimeout));
+                wait.Until(ElementExists(by, expectedCondition));
+            }
+            catch (WebDriverTimeoutException e)
+            {
+                throw new Exception(
+                    $"Element located by '{by}' selector was not in '{expectedCondition}' Exists condition after {waitTimeout} seconds", e);
+            }
+        }
+
+        private static void WhatForElementToBeInExistsCondition(this RemoteWebDriver driver, IWebElement element, bool expectedCondition, int waitTimeout)
+        {
+            try
+            {
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(waitTimeout));
+                wait.Until(ElementExists(element, expectedCondition));
+            }
+            catch (WebDriverTimeoutException e)
+            {
+                throw new Exception(
+                    $"Element was not in '{expectedCondition}' Exists condition after {waitTimeout} seconds", e);
+            }
+        }
+
+        private static Func<IWebDriver, bool> ElementExists(IWebElement element, bool condition)
+        {
+            return (driver) =>
+            {
+                try
+                {
+                    var existsState = IsElementExists(driver, element);
+                    return existsState.Equals(condition);
+                }
+                catch (NoSuchElementException)
+                {
+                    return false.Equals(condition);
+                }
+                catch (StaleElementReferenceException)
+                {
+                    return false.Equals(condition);
+                }
+                catch (TargetInvocationException)
+                {
+                    return false.Equals(condition);
+                }
+            };
+        }
+
+        private static Func<IWebDriver, bool> ElementExists(By selector, bool condition)
+        {
+            return (driver) =>
+            {
+                try
+                {
+                    var existsState = IsElementExists(driver, driver.FindElement(selector));
+                    return existsState.Equals(condition);
+                }
+                catch (NoSuchElementException)
+                {
+                    return false.Equals(condition);
+                }
+                catch (StaleElementReferenceException)
+                {
+                    return false.Equals(condition);
+                }
+                catch (TargetInvocationException)
+                {
+                    return false.Equals(condition);
+                }
+            };
+        }
+
+        #endregion
+
+        #region Wait for Element to be (not) Exists in Element
+
+        public static void WaitForElementInElementToBeNotExists(this RemoteWebDriver driver, IWebElement element, By selector, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitForElementInElementExistsCondition(driver, element, selector, false, waitSec);
+        }
+
+        public static void WaitForElementInElementToBeNotExists(this RemoteWebDriver driver, By parent, By child, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitForElementInElementExistsCondition(driver, parent, child, false, waitSec);
+        }
+
+        public static void WaitForElementInElementToBeExists(this RemoteWebDriver driver, IWebElement element, By selector, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitForElementInElementExistsCondition(driver, element, selector, true, waitSec);
+        }
+
+        public static void WaitForElementInElementToBeExists(this RemoteWebDriver driver, By parent, By child, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitForElementInElementExistsCondition(driver, parent, child, true, waitSec);
+        }
+
+        private static void WaitForElementInElementExistsCondition(this RemoteWebDriver driver, IWebElement element, By selector, bool condition, int waitSeconds)
+        {
+            try
+            {
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(waitSeconds));
+                wait.Until(ElementInElementIsInExistsCondition(element, selector, condition));
+            }
+            catch (WebDriverTimeoutException e)
+            {
+                throw new Exception($"Element in element was not changed Exists condition to '{condition}' after {waitSeconds} seconds", e);
+            }
+        }
+
+        private static void WaitForElementInElementExistsCondition(this RemoteWebDriver driver, By parent, By child, bool condition, int waitSeconds)
+        {
+            try
+            {
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(waitSeconds));
+                wait.Until(ElementInElementIsInExistsCondition(parent, child, condition));
+            }
+            catch (WebDriverTimeoutException e)
+            {
+                throw new Exception($"Element in element was not changed Exists condition to '{condition}' after {waitSeconds} seconds", e);
+            }
+        }
+
+        private static Func<IWebDriver, bool> ElementInElementIsInExistsCondition(IWebElement element, By selector, bool displayedCondition)
+        {
+            return (driver) =>
+            {
+                try
+                {
+                    return element.IsElementExists(selector).Equals(displayedCondition);
+                }
+                catch (NoSuchElementException)
+                {
+                    // Returns false because the element is not present in DOM.
+                    return false.Equals(displayedCondition);
+                }
+                catch (StaleElementReferenceException)
+                {
+                    // Returns false because stale element reference implies that element
+                    // is no longer visible.
+                    return false.Equals(displayedCondition);
+                }
+                catch (InvalidOperationException)
+                {
+                    // Return false as no elements was located
+                    return false.Equals(displayedCondition);
+                }
+                catch (TargetInvocationException)
+                {
+                    // Return false as element was staled
+                    return false.Equals(displayedCondition);
+                }
+                catch (NullReferenceException)
+                {
+                    // Return false as element was not exists
+                    return false.Equals(displayedCondition);
+                }
+            };
+        }
+
+        private static Func<IWebDriver, bool> ElementInElementIsInExistsCondition(By parentElement, By childElement, bool displayedCondition)
+        {
+            return (driver) =>
+            {
+                try
+                {
+                    var parent = driver.FindElement(parentElement);
+                    return parent.IsElementExists(childElement).Equals(displayedCondition);
+                }
+                catch (NoSuchElementException)
+                {
+                    // Returns false because the element is not present in DOM.
+                    return false.Equals(displayedCondition);
+                }
+                catch (StaleElementReferenceException)
+                {
+                    // Returns false because stale element reference implies that element
+                    // is no longer visible.
+                    return false.Equals(displayedCondition);
+                }
+                catch (InvalidOperationException)
+                {
+                    // Return false as no elements was located
+                    return false.Equals(displayedCondition);
+                }
+                catch (TargetInvocationException)
+                {
+                    // Return false as element was staled
+                    return false.Equals(displayedCondition);
+                }
+            };
+        }
+
+        #endregion
+
+        #region Wait for ElementS to be (not) Exists
+
+        public static void WaitForElementsToBeExists(this RemoteWebDriver driver, By by, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitForElementsExistsCondition(driver, by, true, waitSec);
+        }
+
+        public static void WaitForElementsToBeExists(this RemoteWebDriver driver, IList<IWebElement> elements, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitForElementsExistsCondition(driver, elements, true, waitSec);
+        }
+
+        public static void WaitForElementsToBeNotExists(this RemoteWebDriver driver, By by, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitForElementsExistsCondition(driver, by, false, waitSec);
+        }
+
+        public static void WaitForElementsToBeNotExists(this RemoteWebDriver driver, IList<IWebElement> elements, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitForElementsExistsCondition(driver, elements, false, waitSec);
+        }
+
+        private static void WaitForElementsExistsCondition(this RemoteWebDriver driver, By by, bool condition, int waitSeconds)
+        {
+            try
+            {
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(waitSeconds));
+                wait.Until(ExistsConditionOfElementsLocatedBy(by, condition));
+            }
+            catch (WebDriverTimeoutException e)
+            {
+                throw new Exception($"Elements with '{by}' selector were not changed Exists condition to '{condition}' after {waitSeconds} seconds", e);
+            }
+        }
+
+        private static void WaitForElementsExistsCondition(this RemoteWebDriver driver, IList<IWebElement> elements, bool condition, int waitSeconds)
+        {
+            try
+            {
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(waitSeconds));
+                wait.Until(ExistsConditionOfElementsLocatedBy(elements, condition));
+            }
+            catch (WebDriverTimeoutException e)
+            {
+                throw new Exception($"Not all from {elements.Count} elements were not changed Exists condition to '{condition}' after {waitSeconds} seconds", e);
+            }
+        }
+
+        private static Func<IWebDriver, bool> ExistsConditionOfElementsLocatedBy(By locator, bool expectedCondition)
+        {
+            return (driver) =>
+            {
+                try
+                {
+                    var elements = driver.FindElements(locator);
+                    return elements.All(element => IsElementExists(driver, element).Equals(expectedCondition));
+                }
+                catch (NoSuchElementException)
+                {
+                    // Returns false because the element is not present in DOM.
+                    return false;
+                }
+                catch (StaleElementReferenceException)
+                {
+                    // Returns false because stale element reference implies that element
+                    // is no longer visible.
+                    return false;
+                }
+                catch (TargetInvocationException)
+                {
+                    // Returns false because stale element reference implies that element
+                    // is no longer visible.
+                    return false;
+                }
+                catch (NullReferenceException)
+                {
+                    // Element not exists
+                    return false;
+                }
+            };
+        }
+
+        private static Func<IWebDriver, bool> ExistsConditionOfElementsLocatedBy(IList<IWebElement> elements, bool expectedCondition)
+        {
+            return (driver) =>
+            {
+                try
+                {
+                    return elements.All(element => IsElementExists(driver, element).Equals(expectedCondition));
+                }
+                catch (NoSuchElementException)
+                {
+                    // Returns false because the element is not present in DOM.
+                    return false;
+                }
+                catch (StaleElementReferenceException)
+                {
+                    // Returns false because stale element reference implies that element
+                    // is no longer visible.
+                    return false;
+                }
+                catch (TargetInvocationException)
+                {
+                    // Returns false because stale element reference implies that element
+                    // is no longer visible.
+                    return false;
+                }
+                catch (NullReferenceException)
+                {
+                    // Element not exists
+                    return false;
+                }
+            };
+        }
+
+        #endregion
+
+        #region Wait for text in Element after refresh
+
+        public static void WaitForElementToNotContainsTextAfterRefresh(this RemoteWebDriver driver, IWebElement element, string expectedText, Action<RemoteWebDriver> waitForDataLoadingMethod, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitElementContainsTextAfterRefresh(driver, element, expectedText, false, waitSec, waitForDataLoadingMethod);
+        }
+
+        public static void WaitForElementToNotContainsTextAfterRefresh(this RemoteWebDriver driver, By selector, string expectedText, Action<RemoteWebDriver> waitForDataLoadingMethod, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitElementContainsTextAfterRefresh(driver, selector, expectedText, false, waitSec, waitForDataLoadingMethod);
+        }
+
+        public static void WaitForElementToContainsTextAfterRefresh(this RemoteWebDriver driver, IWebElement element, string expectedText, Action<RemoteWebDriver> waitForDataLoadingMethod, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitElementContainsTextAfterRefresh(driver, element, expectedText, true, waitSec, waitForDataLoadingMethod);
+        }
+
+        public static void WaitForElementToContainsTextAfterRefresh(this RemoteWebDriver driver, By selector, string expectedText, Action<RemoteWebDriver> waitForDataLoadingMethod, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitElementContainsTextAfterRefresh(driver, selector, expectedText, true, waitSec, waitForDataLoadingMethod);
+        }
+
+        private static void WaitElementContainsTextAfterRefresh(this RemoteWebDriver driver, IWebElement element, string expectedText, bool condition, int waitSec, Action<RemoteWebDriver> waitForDataLoadingMethod)
+        {
+            try
+            {
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(waitSec));
+                wait.Until(TextToBeContainsInElementAfterRefresh(element, expectedText, condition, waitForDataLoadingMethod));
+            }
+            catch (Exception)
+            {
+                throw new Exception($"Text '{expectedText}' is not appears/disappears in the element after {waitSec} seconds");
+            }
+        }
+
+        private static void WaitElementContainsTextAfterRefresh(this RemoteWebDriver driver, By by, string expectedText, bool condition, int waitSec, Action<RemoteWebDriver> waitForDataLoadingMethod)
+        {
+            try
+            {
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(waitSec));
+                wait.Until(TextToBeContainsInElementAfterRefresh(by, expectedText, condition, waitForDataLoadingMethod));
+            }
+            catch (Exception)
+            {
+                throw new Exception($"Text '{expectedText}' is not appears/disappears in the element located by '{by}' selector after {waitSec} seconds");
+            }
+        }
+
+        private static Func<IWebDriver, bool> TextToBeContainsInElementAfterRefresh(IWebElement element, string text, bool condition, Action<RemoteWebDriver> waitForDataLoadingMethod)
+        {
+            return (driver) =>
+            {
+                try
+                {
+                    WaitForElementToBeDisplayedAfterRefresh((RemoteWebDriver)driver, element, waitForDataLoadingMethod);
+
+                    return element.GetText().Contains(text).Equals(condition);
+                }
+                catch (TimeoutException)
+                {
+                    // Returns false because the element is not present in DOM.
+                    return false.Equals(condition);
+                }
+                catch (NoSuchElementException)
+                {
+                    // Returns false because the element is not present in DOM.
+                    return false.Equals(condition);
+                }
+                catch (StaleElementReferenceException)
+                {
+                    // Returns false because stale element reference implies that element
+                    // is no longer visible.
+                    return false.Equals(condition);
+                }
+                catch (InvalidOperationException)
+                {
+                    // Return false as no elements was located
+                    return false.Equals(condition);
+                }
+                catch (TargetInvocationException)
+                {
+                    // Return false as no elements was located
+                    return false.Equals(condition);
+                }
+            };
+        }
+
+        private static Func<IWebDriver, bool> TextToBeContainsInElementAfterRefresh(By by, string text, bool condition, Action<RemoteWebDriver> waitForDataLoadingMethod)
+        {
+            return (driver) =>
+            {
+                try
+                {
+                    WaitForElementToBeDisplayedAfterRefresh((RemoteWebDriver)driver, by, waitForDataLoadingMethod);
+
+                    var element = driver.FindElement(by);
+                    return element.GetText().Contains(text).Equals(condition);
+                }
+                catch (TimeoutException)
+                {
+                    // Returns false because the element is not present in DOM.
+                    return false.Equals(condition);
+                }
+                catch (NoSuchElementException)
+                {
+                    // Returns false because the element is not present in DOM.
+                    return false.Equals(condition);
+                }
+                catch (StaleElementReferenceException)
+                {
+                    // Returns false because stale element reference implies that element
+                    // is no longer visible.
+                    return false.Equals(condition);
+                }
+                catch (InvalidOperationException)
+                {
+                    // Return false as no elements was located
+                    return false.Equals(condition);
+                }
+                catch (TargetInvocationException)
+                {
+                    // Return false as no elements was located
+                    return false.Equals(condition);
+                }
+            };
+        }
+
+        #endregion
+
+        #region Wait for text in Element attribute
+
+        public static void WaitForElementToNotContainsTextInAttribute(this RemoteWebDriver driver, IWebElement element, string expectedText, string attribute, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitElementContainsTextInAttribute(driver, element, expectedText, attribute, false, waitSec);
+        }
+
+        public static void WaitForElementToNotContainsTextInAttribute(this RemoteWebDriver driver, By selector, string expectedText, string attribute, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitElementContainsTextInAttribute(driver, selector, expectedText, attribute, false, waitSec);
+        }
+
+        public static void WaitForElementToContainsTextInAttribute(this RemoteWebDriver driver, IWebElement element, string expectedText, string attribute, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitElementContainsTextInAttribute(driver, element, expectedText, attribute, true, waitSec);
+        }
+
+        public static void WaitForElementToContainsTextInAttribute(this RemoteWebDriver driver, By selector, string expectedText, string attribute, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitElementContainsTextInAttribute(driver, selector, expectedText, attribute, true, waitSec);
+        }
+
+        public static void WaitForAnyElementToContainsTextInAttribute(this RemoteWebDriver driver, IEnumerable<IWebElement> elements, string expectedText, string attribute, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitElementContainsTextInAttribute(driver, elements, expectedText, attribute, true, waitSec);
+        }
+
+        private static void WaitElementContainsTextInAttribute(this RemoteWebDriver driver, IWebElement element, string expectedText, string attribute, bool condition, int waitSec)
+        {
+            try
+            {
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(waitSec));
+                wait.Until(TextToBeContainsInElementAttribute(element, expectedText, attribute, condition));
+            }
+            catch (Exception)
+            {
+                throw new Exception($"Text '{expectedText}' is not appears/disappears in the '{attribute}' element attribute after {waitSec} seconds");
+            }
+        }
+
+        private static void WaitElementContainsTextInAttribute(this RemoteWebDriver driver, By by, string expectedText, string attribute, bool condition, int waitSec)
+        {
+            try
+            {
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(waitSec));
+                wait.Until(TextToBeContainsInElementAttribute(by, expectedText, attribute, condition));
+            }
+            catch (Exception)
+            {
+                throw new Exception($"Text '{expectedText}' is not appears/disappears in the '{attribute}' element attribute located by '{by}' selector after {waitSec} seconds");
+            }
+        }
+
+        private static void WaitElementContainsTextInAttribute(this RemoteWebDriver driver, IEnumerable<IWebElement> elements, string expectedText, string attribute, bool condition, int waitSec)
+        {
+            try
+            {
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(waitSec));
+                wait.Until(TextToBeContainsInElementAttribute(elements, expectedText, attribute, condition));
+            }
+            catch (Exception)
+            {
+                throw new Exception($"Text '{expectedText}' is not appears/disappears in the '{attribute}' elements attribute after {waitSec} seconds");
+            }
+        }
+
+        private static Func<IWebDriver, bool> TextToBeContainsInElementAttribute(IWebElement element, string text, string attribute, bool condition)
+        {
+            return (driver) =>
+            {
+                try
+                {
+                    return element.GetAttribute(attribute).Contains(text).Equals(condition);
+                }
+                catch (NoSuchElementException)
+                {
+                    // Returns false because the element is not present in DOM.
+                    return false.Equals(condition);
+                }
+                catch (StaleElementReferenceException)
+                {
+                    // Returns false because stale element reference implies that element
+                    // is no longer visible.
+                    return false.Equals(condition);
+                }
+                catch (InvalidOperationException)
+                {
+                    // Return false as no elements was located
+                    return false.Equals(condition);
+                }
+                catch (TargetInvocationException)
+                {
+                    // Return false as no elements was located
+                    return false.Equals(condition);
+                }
+                catch (NullReferenceException)
+                {
+                    //Element not exists
+                    return false.Equals(condition);
+                }
+            };
+        }
+
+        private static Func<IWebDriver, bool> TextToBeContainsInElementAttribute(By by, string text, string attribute, bool condition)
+        {
+            return (driver) =>
+            {
+                try
+                {
+                    var element = driver.FindElement(by);
+                    return element.GetAttribute(attribute).Contains(text).Equals(condition);
+                }
+                catch (NoSuchElementException)
+                {
+                    // Returns false because the element is not present in DOM.
+                    return false.Equals(condition);
+                }
+                catch (StaleElementReferenceException)
+                {
+                    // Returns false because stale element reference implies that element
+                    // is no longer visible.
+                    return false.Equals(condition);
+                }
+                catch (InvalidOperationException)
+                {
+                    // Return false as no elements was located
+                    return false.Equals(condition);
+                }
+                catch (TargetInvocationException)
+                {
+                    // Return false as no elements was located
+                    return false.Equals(condition);
+                }
+                catch (NullReferenceException)
+                {
+                    //Element not exists
+                    return false.Equals(condition);
+                }
+            };
+        }
+
+        private static Func<IWebDriver, bool> TextToBeContainsInElementAttribute(IEnumerable<IWebElement> elements, string text, string attribute, bool condition)
+        {
+            return (driver) =>
+            {
+                try
+                {
+                    return elements.Any(x => x.GetAttribute(attribute).Contains(text).Equals(condition));
+                }
+                catch (NoSuchElementException)
+                {
+                    // Returns false because the element is not present in DOM.
+                    return false.Equals(condition);
+                }
+                catch (StaleElementReferenceException)
+                {
+                    // Returns false because stale element reference implies that element
+                    // is no longer visible.
+                    return false.Equals(condition);
+                }
+                catch (InvalidOperationException)
+                {
+                    // Return false as no elements was located
+                    return false.Equals(condition);
+                }
+                catch (TargetInvocationException)
+                {
+                    // Return false as no elements was located
+                    return false.Equals(condition);
+                }
+                catch (NullReferenceException)
+                {
+                    //Element not exists
+                    return false.Equals(condition);
+                }
+            };
+        }
+
+        #endregion
+
+        #region Wait for Element to be (not) Enabled
+
+        public static void WaitForElementToBeNotEnabled(this RemoteWebDriver driver, IWebElement element, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitForElementEnabledCondition(driver, element, false, waitSec);
+        }
+
+        public static void WaitForElementToBeEnabled(this RemoteWebDriver driver, IWebElement element, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitForElementEnabledCondition(driver, element, true, waitSec);
+        }
+
+        public static void WaitForElementToBeEnabled(this RemoteWebDriver driver, By locator, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitForElementEnabledCondition(driver, locator, true, waitSec);
+        }
+
+        public static void WaitForElementToBeNotEnabled(this RemoteWebDriver driver, By locator, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitForElementEnabledCondition(driver, locator, false, waitSec);
+        }
+
+        private static void WaitForElementEnabledCondition(this RemoteWebDriver driver, By by, bool condition, int waitSeconds)
+        {
+            try
+            {
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(waitSeconds));
+                wait.Until(ElementIsInEnabledCondition(by, condition));
+            }
+            catch (WebDriverTimeoutException e)
+            {
+                throw new Exception($"Element with '{by}' selector was not changed Enabled condition to '{condition}' after {waitSeconds} seconds", e);
+            }
+        }
+
+        private static void WaitForElementEnabledCondition(this RemoteWebDriver driver, IWebElement element, bool condition, int waitSeconds)
+        {
+            try
+            {
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(waitSeconds));
+                wait.Until(ElementIsInEnabledCondition(element, condition));
+            }
+            catch (WebDriverTimeoutException e)
+            {
+                throw new Exception($"Element was not changed Enabled condition to '{condition}' after {waitSeconds} seconds", e);
+            }
+        }
+
+        //Return true if find at least one element by provided selector with Displayed condition true
+        private static Func<IWebDriver, bool> ElementIsInEnabledCondition(By locator, bool condition)
+        {
+            return (driver) =>
+            {
+                try
+                {
+                    var elements = driver.FindElements(locator);
+                    //If no elements found
+                    if (!elements.Any())
+                        return false.Equals(condition);
+                    return elements.Any(x => x.Enabled.Equals(condition));
+                }
+                catch (NoSuchElementException)
+                {
+                    // Returns false because the element is not present in DOM.
+                    return false.Equals(condition);
+                }
+                catch (StaleElementReferenceException)
+                {
+                    // Returns false because stale element reference implies that element
+                    // is no longer visible.
+                    return false.Equals(condition);
+                }
+                catch (InvalidOperationException)
+                {
+                    // Return false as no elements was located
+                    return false.Equals(condition);
+                }
+                catch (TargetInvocationException)
+                {
+                    // Return false as no elements was located
+                    return false.Equals(condition);
+                }
+            };
+        }
+
+        private static Func<IWebDriver, bool> ElementIsInEnabledCondition(IWebElement element, bool condition)
+        {
+            return (driver) =>
+            {
+                try
+                {
+                    return element.Enabled.Equals(condition);
+                }
+                catch (NoSuchElementException)
+                {
+                    // Returns false because the element is not present in DOM.
+                    return false.Equals(condition);
+                }
+                catch (StaleElementReferenceException)
+                {
+                    // Returns false because stale element reference implies that element
+                    // is no longer visible.
+                    return false.Equals(condition);
+                }
+                catch (InvalidOperationException)
+                {
+                    // Return false as no elements was located
+                    return false.Equals(condition);
+                }
+                catch (TargetInvocationException)
+                {
+                    // Return false as no elements was located
+                    return false.Equals(condition);
+                }
+                catch (NullReferenceException)
+                {
+                    // Element not exists
+                    return false.Equals(condition);
+                }
+            };
+        }
+
+        #endregion
+
+        #region Element has child
+
+        /// <summary>
+        /// Wait while element do not have specified number of child elements
+        /// </summary>
+        /// <param name="driver"></param>
+        /// <param name="element"></param>
+        /// <param name="childSelector"></param>
+        /// <param name="expectedCount"></param>
+        public static void WaitForElementChildElements(this RemoteWebDriver driver, IWebElement element,
+            By childSelector, int expectedCount, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            try
+            {
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(waitSec));
+                wait.Until(ElementContainsChild(element, childSelector, expectedCount));
+            }
+            catch (Exception)
+            {
+                throw new Exception($"Required number of child elements are not appears in the element after {waitSec} seconds");
+            }
+        }
+
+        private static Func<IWebDriver, bool> ElementContainsChild(IWebElement element, By selector, int childCount)
+        {
+            return (driver) =>
+            {
+                try
+                {
+                    return element.FindElements(selector).Count >= childCount;
+                }
+                catch (NoSuchElementException)
+                {
+                    // Returns false because the element is not present in DOM.
+                    return false;
+                }
+                catch (StaleElementReferenceException)
+                {
+                    // Returns false because stale element reference implies that element
+                    // is no longer visible.
+                    return false;
+                }
+                catch (InvalidOperationException)
+                {
+                    // Return false as no elements was located
+                    return false;
+                }
+                catch (TargetInvocationException)
+                {
+                    // Return false as no elements was located
+                    return false;
+                }
+                catch (NullReferenceException)
+                {
+                    //Element not exists
+                    return false;
+                }
+            };
+        }
+
+        #endregion
+
+        #region Frames
+
+        public static void SwitchToFrame(this RemoteWebDriver driver, int frameNumber, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(waitSec));
+            driver.SwitchTo().DefaultContent();
+            wait.Until(x => x.FindElements(By.TagName("iframe")).Count > frameNumber);
+            var frames = driver.FindElements(By.TagName("iframe"));
+            driver.SwitchTo().Frame(frames[frameNumber]);
+        }
+
+        public static void SwitchToFrame(this RemoteWebDriver driver, string frameIdName, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(waitSec));
+            driver.SwitchTo().DefaultContent();
+            wait.Until(x => x.FindElements(By.Id(frameIdName)));
+            driver.SwitchTo().Frame(frameIdName);
+        }
+
+        public static void SwitchToFrame(this RemoteWebDriver driver, By selector, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(waitSec));
+            driver.SwitchTo().DefaultContent();
+            wait.Until(x => x.FindElements(selector));
+            driver.SwitchTo().Frame(driver.FindElement(selector));
+        }
+
+        #endregion
+
+        #region Checkbox
+
+        public static void SetCheckboxStateByAction(this RemoteWebDriver driver, IWebElement checkbox, bool desiredState)
+        {
+            if (!checkbox.Selected.Equals(desiredState))
+            {
+                driver.ClickByActions(checkbox);
+            }
+        }
+
+        #endregion
+
+        private static void RefreshPage(RemoteWebDriver driver)
+        {
+            driver.Navigate().Refresh();
+        }
+    }
+}

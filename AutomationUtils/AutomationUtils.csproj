@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>AutomationUtils</PackageId>
+    <Version>1.0.36</Version>
+    <Authors>VitaliiD</Authors>
+    <Company>VitaliiD</Company>
+    <Description>Extensions and Helpers for WebDriver based automation framework</Description>
+    <Copyright>Copyright 2020 (c)</Copyright>
+    <PackageTags>Automation WebDrier Selenium</PackageTags>
+	  <PackageLicenseExpression>MIT</PackageLicenseExpression>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>C:\Users\Vitalii\source\repos\AutomationUtils\AutomationUtils\AutomationUtils.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DotNetSeleniumExtras.PageObjects" Version="3.11.0" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.22" />
+    <PackageReference Include="NUnit" Version="3.12.0" />
+    <PackageReference Include="RestSharp" Version="106.10.1" />
+    <PackageReference Include="Selenium.Support" Version="3.141.0" />
+  </ItemGroup>
+
+</Project>

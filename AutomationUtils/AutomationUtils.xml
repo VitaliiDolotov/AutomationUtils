@@ -1,0 +1,142 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>AutomationUtils</name>
+    </assembly>
+    <members>
+        <member name="M:AutomationUtils.Extensions.EnumExtensions.GetRandomValue``1(System.Int32[])">
+            <summary>
+            Get random value from appropriate Enum
+            Example: EnumExtensions.GetRandomValue&gt;ServiceLevelLiteralEnum&gt;(1,2,3)
+            </summary>
+            <typeparam name="T">Enum Type</typeparam>
+            <param name="fieldNumbers">Starts from 0</param>
+            <returns></returns>
+        </member>
+        <member name="M:AutomationUtils.Extensions.WebDriverExtensions.WaitForElementChildElements(OpenQA.Selenium.Remote.RemoteWebDriver,OpenQA.Selenium.IWebElement,OpenQA.Selenium.By,System.Int32,AutomationUtils.Extensions.WebDriverExtensions.WaitTime)">
+            <summary>
+            Wait while element do not have specified number of child elements
+            </summary>
+            <param name="driver"></param>
+            <param name="element"></param>
+            <param name="childSelector"></param>
+            <param name="expectedCount"></param>
+        </member>
+        <member name="F:AutomationUtils.Utils.MsgUtils.ELLIPSIS">
+            <summary>
+            Static string used when strings are clipped
+            </summary>
+        </member>
+        <member name="F:AutomationUtils.Utils.MsgUtils.Fmt_Null">
+            <summary>
+            Formatting strings used for expected and actual values
+            </summary>
+        </member>
+        <member name="P:AutomationUtils.Utils.MsgUtils.DefaultValueFormatter">
+            <summary>
+            Current head of chain of value formatters. Public for testing.
+            </summary>
+        </member>
+        <member name="M:AutomationUtils.Utils.MsgUtils.AddFormatter(NUnit.Framework.Constraints.ValueFormatterFactory)">
+            <summary>
+            Add a formatter to the chain of responsibility.
+            </summary>
+            <param name="formatterFactory"></param>
+        </member>
+        <member name="M:AutomationUtils.Utils.MsgUtils.FormatValue(System.Object)">
+            <summary>
+            Formats text to represent a generalized value.
+            </summary>
+            <param name="val">The value</param>
+            <returns>The formatted text</returns>
+        </member>
+        <member name="M:AutomationUtils.Utils.MsgUtils.FormatCollection(System.Collections.IEnumerable,System.Int64,System.Int32)">
+            <summary>
+            Formats text for a collection value,
+            starting at a particular point, to a max length
+            </summary>
+            <param name="collection">The collection containing elements to write.</param>
+            <param name="start">The starting point of the elements to write</param>
+            <param name="max">The maximum number of elements to write</param>
+        </member>
+        <member name="M:AutomationUtils.Utils.MsgUtils.GetTypeRepresentation(System.Object)">
+            <summary>
+            Returns the representation of a type as used in NUnitLite.
+            This is the same as Type.ToString() except for arrays,
+            which are displayed with their declared sizes.
+            </summary>
+            <param name="obj"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AutomationUtils.Utils.MsgUtils.EscapeControlChars(System.String)">
+            <summary>
+            Converts any control characters in a string 
+            to their escaped representation.
+            </summary>
+            <param name="s">The string to be converted</param>
+            <returns>The converted string</returns>
+        </member>
+        <member name="M:AutomationUtils.Utils.MsgUtils.EscapeNullCharacters(System.String)">
+            <summary>
+            Converts any null characters in a string 
+            to their escaped representation.
+            </summary>
+            <param name="s">The string to be converted</param>
+            <returns>The converted string</returns>
+        </member>
+        <member name="M:AutomationUtils.Utils.MsgUtils.GetArrayIndicesAsString(System.Int32[])">
+            <summary>
+            Return the a string representation for a set of indices into an array
+            </summary>
+            <param name="indices">Array of indices for which a string is needed</param>
+        </member>
+        <member name="M:AutomationUtils.Utils.MsgUtils.GetArrayIndicesFromCollectionIndex(System.Collections.IEnumerable,System.Int64)">
+            <summary>
+            Get an array of indices representing the point in a collection or
+            array corresponding to a single int index into the collection.
+            </summary>
+            <param name="collection">The collection to which the indices apply</param>
+            <param name="index">Index in the collection</param>
+            <returns>Array of indices</returns>
+        </member>
+        <member name="M:AutomationUtils.Utils.MsgUtils.ClipString(System.String,System.Int32,System.Int32)">
+            <summary>
+            Clip a string to a given length, starting at a particular offset, returning the clipped
+            string with ellipses representing the removed parts
+            </summary>
+            <param name="s">The string to be clipped</param>
+            <param name="maxStringLength">The maximum permitted length of the result string</param>
+            <param name="clipStart">The point at which to start clipping</param>
+            <returns>The clipped string</returns>
+        </member>
+        <member name="M:AutomationUtils.Utils.MsgUtils.ClipExpectedAndActual(System.String@,System.String@,System.Int32,System.Int32)">
+            <summary>
+            Clip the expected and actual strings in a coordinated fashion, 
+            so that they may be displayed together.
+            </summary>
+            <param name="expected"></param>
+            <param name="actual"></param>
+            <param name="maxDisplayLength"></param>
+            <param name="mismatch"></param>
+        </member>
+        <member name="M:AutomationUtils.Utils.MsgUtils.FindMismatchPosition(System.String,System.String,System.Int32,System.Boolean)">
+            <summary>
+            Shows the position two strings start to differ.  Comparison 
+            starts at the start index.
+            </summary>
+            <param name="expected">The expected string</param>
+            <param name="actual">The actual string</param>
+            <param name="istart">The index in the strings at which comparison should start</param>
+            <param name="ignoreCase">Boolean indicating whether case should be ignored</param>
+            <returns>-1 if no mismatch found, or the index where mismatch found</returns>
+        </member>
+        <member name="M:AutomationUtils.Utils.TestDataGenerator.RandomNum(System.Int32,System.Int32)">
+            <summary>
+            This method handle situation when same random numbers are generated instantly
+            </summary>
+            <param name="maxValue"></param>
+            <param name="minValue"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
