@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Remote;
@@ -2017,6 +2016,127 @@ namespace AutomationUtils.Extensions
                 catch (NullReferenceException)
                 {
                     //Element not exists
+                    return false;
+                }
+            };
+        }
+
+        #endregion
+
+        #region Element to be (not) Selected
+
+        public static void WaitForElementToBeSelected(this RemoteWebDriver driver, By by, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitForElementsSelectedCondition(driver, by, true, waitSec);
+        }
+
+        public static void WaitForElementToBeSelected(this RemoteWebDriver driver, IWebElement element, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitForElementsSelectedCondition(driver, element, true, waitSec);
+        }
+
+        public static void WaitForElementToBeNotSelected(this RemoteWebDriver driver, By by, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitForElementsSelectedCondition(driver, by, false, waitSec);
+        }
+
+        public static void WaitForElementToBeNotSelected(this RemoteWebDriver driver, IWebElement element, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitForElementsSelectedCondition(driver, element, false, waitSec);
+        }
+
+        private static void WaitForElementsSelectedCondition(this RemoteWebDriver driver, By by, bool condition, int waitSeconds)
+        {
+            try
+            {
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(waitSeconds));
+                wait.Until(SelectedConditionOfElementLocatedBy(by, condition));
+            }
+            catch (WebDriverTimeoutException e)
+            {
+                throw new Exception($"Element with '{by}' selector was not changed Selected condition to '{condition}' after {waitSeconds} seconds", e);
+            }
+        }
+
+        private static void WaitForElementsSelectedCondition(this RemoteWebDriver driver, IWebElement element, bool condition, int waitSeconds)
+        {
+            try
+            {
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(waitSeconds));
+                wait.Until(SelectedConditionOfElement(element, condition));
+            }
+            catch (WebDriverTimeoutException e)
+            {
+                throw new Exception($"Element was not changed Selected condition to '{condition}' after {waitSeconds} seconds", e);
+            }
+        }
+
+        private static Func<IWebDriver, bool> SelectedConditionOfElementLocatedBy(By locator, bool expectedCondition)
+        {
+            return (driver) =>
+            {
+                try
+                {
+                    var element = driver.FindElement(locator);
+                    return element.Selected.Equals(expectedCondition);
+                }
+                catch (NoSuchElementException)
+                {
+                    // Returns false because the element is not present in DOM.
+                    return false;
+                }
+                catch (StaleElementReferenceException)
+                {
+                    // Returns false because stale element reference implies that element
+                    // is no longer visible.
+                    return false;
+                }
+                catch (TargetInvocationException)
+                {
+                    // Returns false because stale element reference implies that element
+                    // is no longer visible.
+                    return false;
+                }
+                catch (NullReferenceException)
+                {
+                    // Element not exists
+                    return false;
+                }
+            };
+        }
+
+        private static Func<IWebDriver, bool> SelectedConditionOfElement(IWebElement element, bool expectedCondition)
+        {
+            return (driver) =>
+            {
+                try
+                {
+                    return element.Selected.Equals(expectedCondition);
+                }
+                catch (NoSuchElementException)
+                {
+                    // Returns false because the element is not present in DOM.
+                    return false;
+                }
+                catch (StaleElementReferenceException)
+                {
+                    // Returns false because stale element reference implies that element
+                    // is no longer visible.
+                    return false;
+                }
+                catch (TargetInvocationException)
+                {
+                    // Returns false because stale element reference implies that element
+                    // is no longer visible.
+                    return false;
+                }
+                catch (NullReferenceException)
+                {
+                    // Element not exists
                     return false;
                 }
             };
