@@ -1960,6 +1960,144 @@ namespace AutomationUtils.Extensions
 
         #endregion
 
+        #region Wait for Element to be (not) Clickable
+
+        public static void WaitForElementToBeNotClickable(this RemoteWebDriver driver, IWebElement element, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitForElementClickableCondition(driver, element, false, waitSec);
+        }
+
+        public static void WaitForElementToBeClickable(this RemoteWebDriver driver, IWebElement element, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitForElementClickableCondition(driver, element, true, waitSec);
+        }
+
+        public static void WaitForElementToBeClickable(this RemoteWebDriver driver, By locator, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitForElementClickableCondition(driver, locator, true, waitSec);
+        }
+
+        public static void WaitForElementToBeNotClickable(this RemoteWebDriver driver, By locator, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitForElementClickableCondition(driver, locator, false, waitSec);
+        }
+
+        private static void WaitForElementClickableCondition(this RemoteWebDriver driver, By by, bool condition, int waitSeconds)
+        {
+            try
+            {
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(waitSeconds));
+                wait.Until(ElementIsInClickableCondition(by, condition));
+            }
+            catch (WebDriverTimeoutException e)
+            {
+                throw new Exception($"Element with '{by}' selector was not changed Clickable condition to '{condition}' after {waitSeconds} seconds", e);
+            }
+        }
+
+        private static void WaitForElementClickableCondition(this RemoteWebDriver driver, IWebElement element, bool condition, int waitSeconds)
+        {
+            try
+            {
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(waitSeconds));
+                wait.Until(ElementIsInClickableCondition(element, condition));
+            }
+            catch (WebDriverTimeoutException e)
+            {
+                throw new Exception($"Element was not changed Clickable condition to '{condition}' after {waitSeconds} seconds", e);
+            }
+        }
+
+        //Return true if find at least one element by provided selector with Displayed condition true
+        private static Func<IWebDriver, bool> ElementIsInClickableCondition(By locator, bool condition)
+        {
+            return (driver) =>
+            {
+                try
+                {
+                    var element = driver.FindElement(locator);
+                    element.Click();
+                    //If no elements found
+                    return true.Equals(condition);
+                }
+                catch (NoSuchElementException)
+                {
+                    // Returns false because the element is not present in DOM.
+                    return false.Equals(condition);
+                }
+                catch (StaleElementReferenceException)
+                {
+                    // Returns false because stale element reference implies that element
+                    // is no longer visible.
+                    return false.Equals(condition);
+                }
+                catch (InvalidOperationException)
+                {
+                    // Return false as no elements was located
+                    return false.Equals(condition);
+                }
+                catch (TargetInvocationException)
+                {
+                    // Return false as no elements was located
+                    return false.Equals(condition);
+                }
+                catch (ElementClickInterceptedException)
+                {
+                    // Element not clickable
+                    return false.Equals(condition);
+                }
+            };
+        }
+
+        private static Func<IWebDriver, bool> ElementIsInClickableCondition(IWebElement element, bool condition)
+        {
+            return (driver) =>
+            {
+                try
+                {
+                    element.Click();
+                    return true.Equals(condition);
+                }
+                catch (NoSuchElementException)
+                {
+                    // Returns false because the element is not present in DOM.
+                    return false.Equals(condition);
+                }
+                catch (StaleElementReferenceException)
+                {
+                    // Returns false because stale element reference implies that element
+                    // is no longer visible.
+                    return false.Equals(condition);
+                }
+                catch (InvalidOperationException)
+                {
+                    // Return false as no elements was located
+                    return false.Equals(condition);
+                }
+                catch (TargetInvocationException)
+                {
+                    // Return false as no elements was located
+                    return false.Equals(condition);
+                }
+                catch (NullReferenceException)
+                {
+                    // Element not exists
+                    return false.Equals(condition);
+                }
+                catch (ElementClickInterceptedException)
+                {
+                    // Element not clickable
+                    return false.Equals(condition);
+                }
+            };
+        }
+
+        #endregion
+
         #region Element has child
 
         /// <summary>
