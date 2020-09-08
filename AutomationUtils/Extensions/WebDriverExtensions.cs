@@ -1832,6 +1832,296 @@ namespace AutomationUtils.Extensions
 
         #endregion
 
+        #region Wait for text in Element
+
+        public static void WaitForElementToNotContainsText(this RemoteWebDriver driver, IWebElement element,
+            string expectedText, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitElementContainsText(driver, element, expectedText, false, waitSec);
+        }
+
+        public static void WaitForElementToNotContainsText(this RemoteWebDriver driver, By selector,
+            string expectedText, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitElementContainsText(driver, selector, expectedText, false, waitSec);
+        }
+
+        public static void WaitForElementToContainsText(this RemoteWebDriver driver, IWebElement element,
+            string expectedText, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitElementContainsText(driver, element, expectedText, true, waitSec);
+        }
+
+        public static void WaitForElementToContainsText(this RemoteWebDriver driver, By selector, string expectedText,
+            WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitElementContainsText(driver, selector, expectedText, true, waitSec);
+        }
+
+        private static void WaitElementContainsText(this RemoteWebDriver driver, IWebElement element,
+            string expectedText, bool condition, int waitSec)
+        {
+            try
+            {
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(waitSec));
+                wait.Until(TextToBeContainsInElement(element, expectedText, condition));
+            }
+            catch (Exception)
+            {
+                throw new Exception(
+                    $"Text '{expectedText}' is not appears/disappears in the element after {waitSec} seconds");
+            }
+        }
+
+        private static void WaitElementContainsText(this RemoteWebDriver driver, By by, string expectedText,
+            bool condition, int waitSec)
+        {
+            try
+            {
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(waitSec));
+                wait.Until(TextToBeContainsInElement(by, expectedText, condition));
+            }
+            catch (Exception)
+            {
+                throw new Exception(
+                    $"Text '{expectedText}' is not appears/disappears in the element located by '{by}' selector after {waitSec} seconds");
+            }
+        }
+
+        private static Func<IWebDriver, bool> TextToBeContainsInElement(IWebElement element, string text,
+            bool condition)
+        {
+            return (driver) =>
+            {
+                try
+                {
+                    return element.Text.Contains(text).Equals(condition);
+                }
+                catch (NoSuchElementException)
+                {
+                    // Returns false because the element is not present in DOM.
+                    return false.Equals(condition);
+                }
+                catch (StaleElementReferenceException)
+                {
+                    // Returns false because stale element reference implies that element
+                    // is no longer visible.
+                    return false.Equals(condition);
+                }
+                catch (InvalidOperationException)
+                {
+                    // Return false as no elements was located
+                    return false.Equals(condition);
+                }
+            };
+        }
+
+        private static Func<IWebDriver, bool> TextToBeContainsInElement(By by, string text, bool condition)
+        {
+            return (driver) =>
+            {
+                try
+                {
+                    var element = driver.FindElement(by);
+                    return element.Text.Contains(text).Equals(condition);
+                }
+                catch (NoSuchElementException)
+                {
+                    // Returns false because the element is not present in DOM.
+                    return false.Equals(condition);
+                }
+                catch (StaleElementReferenceException)
+                {
+                    // Returns false because stale element reference implies that element
+                    // is no longer visible.
+                    return false.Equals(condition);
+                }
+                catch (InvalidOperationException)
+                {
+                    // Return false as no elements was located
+                    return false.Equals(condition);
+                }
+            };
+        }
+
+        #endregion
+
+        #region Wait for text in Elements
+
+        public static void WaitForElementsToNotHaveText(this RemoteWebDriver driver, IList<IWebElement> elements, bool allElements = true, WaitTime waitTime = WaitTime.Medium, bool throwException = true)
+        {
+            try
+            {
+                var waitSec = int.Parse(waitTime.GetValue());
+                WaitElementsHaveText(driver, elements, string.Empty, false, waitSec, allElements);
+            }
+            catch (Exception e)
+            {
+                if (throwException)
+                {
+                    throw e;
+                }
+            }
+        }
+
+        public static void WaitForElementsToNotHaveText(this RemoteWebDriver driver, IList<IWebElement> elements, string expectedText, bool allElements = true, WaitTime waitTime = WaitTime.Medium, bool throwException = true)
+        {
+            try
+            {
+                var waitSec = int.Parse(waitTime.GetValue());
+                WaitElementsHaveText(driver, elements, expectedText, false, waitSec, allElements);
+            }
+            catch (Exception e)
+            {
+                if (throwException)
+                {
+                    throw e;
+                }
+            }
+        }
+
+        public static void WaitForElementsToHaveText(this RemoteWebDriver driver, IList<IWebElement> elements, string expectedText, bool allElements = true, WaitTime waitTime = WaitTime.Medium, bool throwException = true)
+        {
+            try
+            {
+                var waitSec = int.Parse(waitTime.GetValue());
+                WaitElementsHaveText(driver, elements, expectedText, true, waitSec, allElements);
+            }
+            catch (Exception e)
+            {
+                if (throwException)
+                {
+                    throw e;
+                }
+            }
+        }
+
+        public static void WaitForElementsToHaveText(this RemoteWebDriver driver, IList<IWebElement> elements, bool allElements = true, WaitTime waitTime = WaitTime.Medium, bool throwException = true)
+        {
+            try
+            {
+                var waitSec = int.Parse(waitTime.GetValue());
+                WaitElementsHaveText(driver, elements, true, waitSec, allElements);
+            }
+            catch (Exception e)
+            {
+                if (throwException)
+                {
+                    throw e;
+                }
+            }
+        }
+
+        private static void WaitElementsHaveText(this RemoteWebDriver driver, IList<IWebElement> elements, string expectedText, bool condition, int waitSec, bool allElements)
+        {
+            try
+            {
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(waitSec));
+                wait.Until(TextToBePresentInElements(elements, expectedText, condition, allElements));
+            }
+            catch (Exception)
+            {
+                throw new Exception($"Text '{expectedText}' is not appears/disappears in the elements after {waitSec} seconds");
+            }
+        }
+
+        private static void WaitElementsHaveText(this RemoteWebDriver driver, IList<IWebElement> elements, bool condition, int waitSec, bool allElements)
+        {
+            try
+            {
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(waitSec));
+                wait.Until(TextToBePresentInElements(elements, condition, allElements));
+            }
+            catch (Exception)
+            {
+                throw new Exception($"Text is not appears/disappears in the elements after {waitSec} seconds");
+            }
+        }
+
+        private static Func<IWebDriver, bool> TextToBePresentInElements(IList<IWebElement> elements, string text, bool condition, bool allElements)
+        {
+            return (driver) =>
+            {
+                try
+                {
+                    if (allElements)
+                    {
+                        return elements.All(x => x.GetText().Equals(text).Equals(condition));
+                    }
+                    else
+                    {
+                        return elements.Any(x => x.GetText().Equals(text).Equals(condition));
+                    }
+                }
+                catch (NoSuchElementException)
+                {
+                    // Returns false because the element is not present in DOM.
+                    return false.Equals(condition);
+                }
+                catch (StaleElementReferenceException)
+                {
+                    // Returns false because stale element reference implies that element
+                    // is no longer visible.
+                    return false.Equals(condition);
+                }
+                catch (InvalidOperationException)
+                {
+                    // Return false as no elements was located
+                    return false.Equals(condition);
+                }
+                catch (TargetInvocationException)
+                {
+                    // Return false as no elements was located
+                    return false.Equals(condition);
+                }
+            };
+        }
+
+        private static Func<IWebDriver, bool> TextToBePresentInElements(IList<IWebElement> elements, bool condition, bool allElements)
+        {
+            return (driver) =>
+            {
+                try
+                {
+                    if (allElements)
+                    {
+                        return elements.All(x => !string.IsNullOrEmpty(x.GetText()).Equals(condition));
+                    }
+                    else
+                    {
+                        return elements.Any(x => !string.IsNullOrEmpty(x.GetText()).Equals(condition));
+                    }
+                }
+                catch (NoSuchElementException)
+                {
+                    // Returns false because the element is not present in DOM.
+                    return false.Equals(condition);
+                }
+                catch (StaleElementReferenceException)
+                {
+                    // Returns false because stale element reference implies that element
+                    // is no longer visible.
+                    return false.Equals(condition);
+                }
+                catch (InvalidOperationException)
+                {
+                    // Return false as no elements was located
+                    return false.Equals(condition);
+                }
+                catch (TargetInvocationException)
+                {
+                    // Return false as no elements was located
+                    return false.Equals(condition);
+                }
+            };
+        }
+
+        #endregion
+
         #region Wait for Element to be (not) Enabled
 
         public static void WaitForElementToBeNotEnabled(this RemoteWebDriver driver, IWebElement element, WaitTime waitTime = WaitTime.Medium)
