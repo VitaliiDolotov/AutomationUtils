@@ -2246,6 +2246,30 @@ namespace AutomationUtils.Extensions
             WaitElementHaveText(driver, selector, false, waitSec);
         }
 
+        public static void WaitForAllElementsToHaveText(this RemoteWebDriver driver, IList<IWebElement> elements, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitElementsHaveText(driver, elements, true, true, waitSec);
+        }
+
+        public static void WaitForSomeElementsToHaveText(this RemoteWebDriver driver, IList<IWebElement> elements, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitElementsHaveText(driver, elements, true, false, waitSec);
+        }
+
+        public static void WaitForAllElementsToNotHaveText(this RemoteWebDriver driver, IList<IWebElement> elements, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitElementsHaveText(driver, elements, false, true, waitSec);
+        }
+
+        public static void WaitForSomeElementsToNotHaveText(this RemoteWebDriver driver, IList<IWebElement> elements, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitElementsHaveText(driver, elements, false, false, waitSec);
+        }
+
         private static void WaitElementHaveText(this RemoteWebDriver driver, IWebElement element, bool condition, int waitSec)
         {
             try
@@ -2269,6 +2293,19 @@ namespace AutomationUtils.Extensions
             catch (Exception)
             {
                 throw new Exception($"Text is not appears/disappears in the element located by '{by}' selector after {waitSec} seconds");
+            }
+        }
+
+        private static void WaitElementsHaveText(this RemoteWebDriver driver, IList<IWebElement> elements, bool condition, bool allElements, int waitSec)
+        {
+            try
+            {
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(waitSec));
+                wait.Until(TextToBePresentInElements(elements, condition, allElements));
+            }
+            catch (Exception e)
+            {
+                throw new Exception($"Text is not appears/disappears in the some/all element after {waitSec} seconds: {e}");
             }
         }
 
@@ -2337,7 +2374,6 @@ namespace AutomationUtils.Extensions
             };
         }
 
-        //TODO add implementation for elements list
         private static Func<IWebDriver, bool> TextToBePresentInElements(IList<IWebElement> elements, bool condition, bool allElements)
         {
             return (driver) =>
