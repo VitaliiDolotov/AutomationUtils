@@ -1726,31 +1726,35 @@ namespace AutomationUtils.Extensions
                 {
                     return element.GetAttribute(attribute).Contains(text).Equals(condition);
                 }
-                catch (NoSuchElementException)
+                //catch (NoSuchElementException)
+                //{
+                //    // Returns false because the element is not present in DOM.
+                //    return false.Equals(condition);
+                //}
+                //catch (StaleElementReferenceException)
+                //{
+                //    // Returns false because stale element reference implies that element
+                //    // is no longer visible.
+                //    return false.Equals(condition);
+                //}
+                //catch (InvalidOperationException)
+                //{
+                //    // Return false as no elements was located
+                //    return false.Equals(condition);
+                //}
+                //catch (TargetInvocationException)
+                //{
+                //    // Return false as no elements was located
+                //    return false.Equals(condition);
+                //}
+                //catch (NullReferenceException)
+                //{
+                //    //Element not exists
+                //    return false.Equals(condition);
+                //}
+                catch (Exception e)
                 {
-                    // Returns false because the element is not present in DOM.
-                    return false.Equals(condition);
-                }
-                catch (StaleElementReferenceException)
-                {
-                    // Returns false because stale element reference implies that element
-                    // is no longer visible.
-                    return false.Equals(condition);
-                }
-                catch (InvalidOperationException)
-                {
-                    // Return false as no elements was located
-                    return false.Equals(condition);
-                }
-                catch (TargetInvocationException)
-                {
-                    // Return false as no elements was located
-                    return false.Equals(condition);
-                }
-                catch (NullReferenceException)
-                {
-                    //Element not exists
-                    return false.Equals(condition);
+                    throw e;
                 }
             };
         }
