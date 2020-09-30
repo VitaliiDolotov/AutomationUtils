@@ -17,7 +17,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DotNetSeleniumExtras.PageObjects" Version="3.11.0" />
+    <PackageReference Include="DotNetSeleniumExtras.PageObjects.Core" Version="4.0.0-alpha05" />
     <PackageReference Include="HtmlAgilityPack" Version="1.11.22" />
     <PackageReference Include="NUnit" Version="3.12.0" />
     <PackageReference Include="RestSharp" Version="106.10.1" />
