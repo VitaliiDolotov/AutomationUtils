@@ -296,6 +296,12 @@ namespace AutomationUtils.Extensions
             ex.ExecuteScript($"arguments[0].scrollTop = 0;", gridElement);
         }
 
+        public static void ScrollGridToTheLeft(this RemoteWebDriver driver, IWebElement gridElement)
+        {
+            IJavaScriptExecutor ex = driver;
+            ex.ExecuteScript($"arguments[0].scrollLeft = 0;", gridElement);
+        }
+
         public static void ScrollGridToTheEnd(this RemoteWebDriver driver, IWebElement gridElement)
         {
             IJavaScriptExecutor ex = driver;
