@@ -325,17 +325,18 @@ namespace AutomationUtils.Extensions
             Left
         }
 
-        public static void ScrollHorizontalyTo(this RemoteWebDriver driver, Direction direction, IWebElement element)
+        public static void ScrollHorizontalyTo(this RemoteWebDriver driver, Direction direction, IWebElement element, int percentage = 100)
         {
             IJavaScriptExecutor ex = driver;
             var clientWidth = int.Parse(ex.ExecuteScript("return arguments[0].clientWidth", element).ToString());
+            int percentageOfScroll = clientWidth * 100 / percentage;
             if (direction == Direction.Right)
             {
-                ex.ExecuteScript($"arguments[0].scrollBy({clientWidth}, 0)", element);
+                ex.ExecuteScript($"arguments[0].scrollBy({percentageOfScroll}, 0)", element);
             }
             else if (direction == Direction.Left)
             {
-                ex.ExecuteScript($"arguments[0].scrollBy(-{clientWidth}, 0)", element);
+                ex.ExecuteScript($"arguments[0].scrollBy(-{percentageOfScroll}, 0)", element);
             }
             else
             {
