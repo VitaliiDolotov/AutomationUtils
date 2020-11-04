@@ -329,7 +329,7 @@ namespace AutomationUtils.Extensions
         {
             IJavaScriptExecutor ex = driver;
             var clientWidth = int.Parse(ex.ExecuteScript("return arguments[0].clientWidth", element).ToString());
-            int percentageOfScroll = clientWidth * 100 / percentage;
+            int percentageOfScroll = clientWidth * percentage / 100;
             if (direction == Direction.Right)
             {
                 ex.ExecuteScript($"arguments[0].scrollBy({percentageOfScroll}, 0)", element);
