@@ -120,6 +120,10 @@ namespace AutomationUtils.Extensions
             {
                 return false;
             }
+            catch (ArgumentException)
+            {
+                return false;
+            }
 
             return true;
         }
