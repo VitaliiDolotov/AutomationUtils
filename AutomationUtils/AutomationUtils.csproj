@@ -1,19 +1,15 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <PackageId>AutomationUtils</PackageId>
-    <Version>1.0.53</Version>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+	<PackageId>AutomationUtils</PackageId>
+    <Version>1.1.0</Version>
     <Authors>VitaliiD</Authors>
     <Company>VitaliiD</Company>
     <Description>Extensions and Helpers for WebDriver based automation framework</Description>
     <Copyright>Copyright 2020 (c)</Copyright>
     <PackageTags>Automation WebDrier Selenium</PackageTags>
 	  <PackageLicenseExpression>MIT</PackageLicenseExpression>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>C:\Users\Vitalii\source\repos\AutomationUtils\AutomationUtils\AutomationUtils.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

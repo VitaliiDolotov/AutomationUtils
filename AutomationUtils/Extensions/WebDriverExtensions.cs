@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Threading;
+using AutomationUtils.Component;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Remote;
@@ -2959,6 +2960,35 @@ namespace AutomationUtils.Extensions
             File.WriteAllBytes(filePath, download.ToArray());
             return filePath;
         }
+
+        #endregion
+
+        #region Component
+
+        public static T Component<T>(this RemoteWebDriver driver, string identifier, string parentElementSelector, WaitTime waitTime = WaitTime.Long) where T : BaseWebComponent, new()
+        {
+            var component = new T { Driver = driver, Identifier = identifier, ParentElementSelector = parentElementSelector, WaitTime = waitTime };
+            return component;
+        }
+
+        public static T Component<T>(this RemoteWebDriver driver, string identifier, WebDriverExtensions.WaitTime waitTime = WaitTime.Long) where T : BaseWebComponent, new()
+        {
+            var component = new T { Driver = driver, Identifier = identifier, ParentElementSelector = string.Empty, WaitTime = waitTime };
+            return component;
+        }
+
+        public static IWebElement GetComponent<T>(this RemoteWebDriver driver, string identifier, string parentElementSelector, WaitTime waitTime = WaitTime.Long) where T : BaseWebComponent, new()
+        {
+            var component = driver.Component<T>(identifier, parentElementSelector, waitTime);
+            return component.Get;
+        }
+
+        public static IWebElement GetComponent<T>(this RemoteWebDriver driver, string identifier, WaitTime waitTime = WaitTime.Long) where T : BaseWebComponent, new()
+        {
+            var component = driver.Component<T>(identifier, waitTime);
+            return component.Get;
+        }
+
 
         #endregion
 
