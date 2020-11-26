@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reflection;
+using System.Threading;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Support.UI;
+using RestSharp;
 
 namespace AutomationUtils.Extensions
 {
@@ -2916,6 +2920,44 @@ namespace AutomationUtils.Extensions
             {
                 driver.ClickByActions(checkbox);
             }
+        }
+
+        #endregion
+
+        #region Download File
+
+        public static string GetFileWithName(this RemoteWebDriver driver, string fileName, string hubUri)
+        {
+            SessionId session = driver.SessionId;
+            RestClient client = new RestClient(hubUri.Replace("wd/hub", string.Empty));
+            RestRequest request = new RestRequest($"/download/{session}/{fileName}");
+            var response = client.Get(request);
+            for (int i = 0; i < 15; i++)
+            {
+                if (response.StatusCode.Equals(HttpStatusCode.OK))
+                {
+                    break;
+                }
+
+                Thread.Sleep(3000);
+
+                response = client.Get(request);
+            }
+
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                throw new Exception($"'{fileName}' file was not downloaded");
+            }
+
+            var download = client.DownloadData(request);
+
+            var dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var tempDir = Path.Combine(dir, $"TempDownloadDirectory_{Guid.NewGuid().ToString("N").ToUpper()}");
+            //Create temp dir for downloaded file
+            Directory.CreateDirectory(tempDir);
+            var filePath = Path.Combine(tempDir, fileName);
+            File.WriteAllBytes(filePath, download.ToArray());
+            return filePath;
         }
 
         #endregion
