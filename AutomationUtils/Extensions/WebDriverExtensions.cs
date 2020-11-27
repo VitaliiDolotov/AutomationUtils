@@ -2980,13 +2980,13 @@ namespace AutomationUtils.Extensions
         public static IWebElement GetComponent<T>(this RemoteWebDriver driver, string identifier, string parentElementSelector, WaitTime waitTime = WaitTime.Long) where T : BaseWebComponent, new()
         {
             var component = driver.Component<T>(identifier, parentElementSelector, waitTime);
-            return component.Get;
+            return component.Instance;
         }
 
         public static IWebElement GetComponent<T>(this RemoteWebDriver driver, string identifier, WaitTime waitTime = WaitTime.Long) where T : BaseWebComponent, new()
         {
             var component = driver.Component<T>(identifier, waitTime);
-            return component.Get;
+            return component.Instance;
         }
 
 

@@ -9,7 +9,7 @@ namespace AutomationUtils.Component
     {
         protected IWebElement Component;
 
-        public IWebElement Get
+        public IWebElement Instance
         {
             get { return Component ??= Construct(); }
         }
