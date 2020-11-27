@@ -2965,6 +2965,18 @@ namespace AutomationUtils.Extensions
 
         #region Component
 
+        public static T Component<T>(this RemoteWebDriver driver, WaitTime waitTime = WaitTime.Long) where T : BaseWebComponent, new()
+        {
+            var component = new T { Driver = driver, Identifier = string.Empty, ParentElementSelector = string.Empty, WaitTime = waitTime };
+            return component;
+        }
+
+        public static T ComponentWithParent<T>(this RemoteWebDriver driver, string parentElementSelector, WaitTime waitTime = WaitTime.Long) where T : BaseWebComponent, new()
+        {
+            var component = new T { Driver = driver, Identifier = string.Empty, ParentElementSelector = parentElementSelector, WaitTime = waitTime };
+            return component;
+        }
+
         public static T Component<T>(this RemoteWebDriver driver, string identifier, string parentElementSelector, WaitTime waitTime = WaitTime.Long) where T : BaseWebComponent, new()
         {
             var component = new T { Driver = driver, Identifier = identifier, ParentElementSelector = parentElementSelector, WaitTime = waitTime };
@@ -2975,6 +2987,18 @@ namespace AutomationUtils.Extensions
         {
             var component = new T { Driver = driver, Identifier = identifier, ParentElementSelector = string.Empty, WaitTime = waitTime };
             return component;
+        }
+
+        public static IWebElement GetComponent<T>(this RemoteWebDriver driver, WaitTime waitTime = WaitTime.Long) where T : BaseWebComponent, new()
+        {
+            var component = driver.Component<T>(waitTime);
+            return component.Instance;
+        }
+
+        public static IWebElement GetComponentWithParent<T>(this RemoteWebDriver driver, string parentElementSelector, WaitTime waitTime = WaitTime.Long) where T : BaseWebComponent, new()
+        {
+            var component = driver.ComponentWithParent<T>(parentElementSelector,waitTime);
+            return component.Instance;
         }
 
         public static IWebElement GetComponent<T>(this RemoteWebDriver driver, string identifier, string parentElementSelector, WaitTime waitTime = WaitTime.Long) where T : BaseWebComponent, new()
@@ -2988,7 +3012,6 @@ namespace AutomationUtils.Extensions
             var component = driver.Component<T>(identifier, waitTime);
             return component.Instance;
         }
-
 
         #endregion
 
