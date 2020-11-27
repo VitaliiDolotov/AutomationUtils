@@ -22,7 +22,7 @@ namespace AutomationUtils.Component
 
         public string ParentElementSelector { get; set; }
 
-        public abstract IWebElement Construct();
+        protected abstract IWebElement Construct();
 
         public bool Displayed
         {
@@ -30,7 +30,7 @@ namespace AutomationUtils.Component
             {
                 try
                 {
-                    return Get.Displayed();
+                    return Component.Displayed();
                 }
                 catch
                 {

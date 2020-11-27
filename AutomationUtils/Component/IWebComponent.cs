@@ -13,7 +13,5 @@ namespace AutomationUtils.Component
         string ParentElementSelector { get; set; }
 
         WebDriverExtensions.WaitTime WaitTime { set; }
-
-        IWebElement Construct();
     }
 }
