@@ -30,7 +30,7 @@ namespace AutomationUtils.Component
             {
                 try
                 {
-                    return Component.Displayed();
+                    return Instance.Displayed();
                 }
                 catch
                 {
