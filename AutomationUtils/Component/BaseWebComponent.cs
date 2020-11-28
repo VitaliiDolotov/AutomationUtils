@@ -1,5 +1,4 @@
-﻿using System;
-using AutomationUtils.Extensions;
+﻿using AutomationUtils.Extensions;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Remote;
 

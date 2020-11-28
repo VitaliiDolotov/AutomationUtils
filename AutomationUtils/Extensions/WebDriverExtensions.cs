@@ -41,7 +41,7 @@ namespace AutomationUtils.Extensions
             {
                 return element.Displayed;
             }
-            catch (Exception)
+            catch
             {
                 return false;
             }
