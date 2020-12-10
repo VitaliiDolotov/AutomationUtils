@@ -8,6 +8,8 @@ namespace AutomationUtils.Component
     {
         protected IWebElement Component;
 
+        protected abstract IWebElement Construct();
+
         public IWebElement Instance
         {
             get { return Component ??= Construct(); }
@@ -21,7 +23,7 @@ namespace AutomationUtils.Component
 
         public string ParentElementSelector { get; set; }
 
-        protected abstract IWebElement Construct();
+        public string Container { get; }
 
         public bool Displayed
         {

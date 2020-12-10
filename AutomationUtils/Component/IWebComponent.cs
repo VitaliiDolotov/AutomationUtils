@@ -10,6 +10,8 @@ namespace AutomationUtils.Component
 
         string Identifier { get; set; }
 
+        string Container { get; }
+
         string ParentElementSelector { get; set; }
 
         WebDriverExtensions.WaitTime WaitTime { set; }
