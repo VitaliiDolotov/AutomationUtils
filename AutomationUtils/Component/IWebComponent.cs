@@ -1,5 +1,4 @@
 ﻿using AutomationUtils.Extensions;
-using OpenQA.Selenium;
 using OpenQA.Selenium.Remote;
 
 namespace AutomationUtils.Component
