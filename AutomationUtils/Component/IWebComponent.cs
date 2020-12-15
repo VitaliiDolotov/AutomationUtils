@@ -3,7 +3,7 @@ using OpenQA.Selenium.Remote;
 
 namespace AutomationUtils.Component
 {
-    interface IWebComponent
+    public interface IWebComponent
     {
         RemoteWebDriver Driver { get; set; }
 
