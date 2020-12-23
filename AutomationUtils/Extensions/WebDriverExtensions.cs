@@ -467,7 +467,7 @@ namespace AutomationUtils.Extensions
             WaitForElementDisplayCondition(driver, locator, false, waitSec);
         }
 
-        private static void WaitForElementDisplayCondition(this RemoteWebDriver driver, By by, bool condition, int waitSeconds)
+        internal static void WaitForElementDisplayCondition(this RemoteWebDriver driver, By by, bool condition, int waitSeconds)
         {
             try
             {
@@ -2965,51 +2965,51 @@ namespace AutomationUtils.Extensions
 
         #region Component
 
-        public static T Component<T>(this RemoteWebDriver driver, WaitTime waitTime = WaitTime.Long) where T : BaseWebComponent, new()
+        public static T Component<T>(this RemoteWebDriver driver) where T : BaseWebComponent, new()
         {
-            var component = new T { Driver = driver, Identifier = string.Empty, ParentElementSelector = string.Empty, WaitTime = waitTime };
+            var component = new T { Driver = driver, Identifier = string.Empty };
             return component;
         }
 
-        public static T ComponentWithParent<T>(this RemoteWebDriver driver, string parentElementSelector, WaitTime waitTime = WaitTime.Long) where T : BaseWebComponent, new()
+        public static T Component<T>(this RemoteWebDriver driver, Properties props) where T : BaseWebComponent, new()
         {
-            var component = new T { Driver = driver, Identifier = string.Empty, ParentElementSelector = parentElementSelector, WaitTime = waitTime };
+            var component = new T { Driver = driver, Identifier = string.Empty, Props = props };
             return component;
         }
 
-        public static T Component<T>(this RemoteWebDriver driver, string identifier, string parentElementSelector, WaitTime waitTime = WaitTime.Long) where T : BaseWebComponent, new()
+        public static T Component<T>(this RemoteWebDriver driver, string identifier) where T : BaseWebComponent, new()
         {
-            var component = new T { Driver = driver, Identifier = identifier, ParentElementSelector = parentElementSelector, WaitTime = waitTime };
+            var component = new T { Driver = driver, Identifier = identifier };
             return component;
         }
 
-        public static T Component<T>(this RemoteWebDriver driver, string identifier, WebDriverExtensions.WaitTime waitTime = WaitTime.Long) where T : BaseWebComponent, new()
+        public static T Component<T>(this RemoteWebDriver driver, string identifier, Properties props) where T : BaseWebComponent, new()
         {
-            var component = new T { Driver = driver, Identifier = identifier, ParentElementSelector = string.Empty, WaitTime = waitTime };
+            var component = new T { Driver = driver, Identifier = identifier, Props = props };
             return component;
         }
 
-        public static IWebElement GetComponent<T>(this RemoteWebDriver driver, WaitTime waitTime = WaitTime.Long) where T : BaseWebComponent, new()
+        public static IWebElement GetComponent<T>(this RemoteWebDriver driver) where T : BaseWebComponent, new()
         {
-            var component = driver.Component<T>(waitTime);
+            var component = driver.Component<T>();
             return component.Instance;
         }
 
-        public static IWebElement GetComponentWithParent<T>(this RemoteWebDriver driver, string parentElementSelector, WaitTime waitTime = WaitTime.Long) where T : BaseWebComponent, new()
+        public static IWebElement GetComponent<T>(this RemoteWebDriver driver, Properties props) where T : BaseWebComponent, new()
         {
-            var component = driver.ComponentWithParent<T>(parentElementSelector,waitTime);
+            var component = driver.Component<T>(props);
             return component.Instance;
         }
 
-        public static IWebElement GetComponent<T>(this RemoteWebDriver driver, string identifier, string parentElementSelector, WaitTime waitTime = WaitTime.Long) where T : BaseWebComponent, new()
+        public static IWebElement GetComponent<T>(this RemoteWebDriver driver, string identifier) where T : BaseWebComponent, new()
         {
-            var component = driver.Component<T>(identifier, parentElementSelector, waitTime);
+            var component = driver.Component<T>(identifier);
             return component.Instance;
         }
 
-        public static IWebElement GetComponent<T>(this RemoteWebDriver driver, string identifier, WaitTime waitTime = WaitTime.Long) where T : BaseWebComponent, new()
+        public static IWebElement GetComponent<T>(this RemoteWebDriver driver, string identifier, Properties props) where T : BaseWebComponent, new()
         {
-            var component = driver.Component<T>(identifier, waitTime);
+            var component = driver.Component<T>(identifier, props);
             return component.Instance;
         }
 

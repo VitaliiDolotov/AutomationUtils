@@ -6,13 +6,34 @@ namespace AutomationUtils.Component
 {
     public abstract class BaseWebComponent : IWebComponent
     {
+        public Properties Props = new Properties();
+
         protected IWebElement Component;
 
-        protected abstract IWebElement Construct();
+        protected abstract By Construct();
 
         public IWebElement Instance
         {
-            get { return Component ??= Construct(); }
+            get
+            {
+                ParentElementSelector = Props.ParentElementSelector;
+                WaitTime = Props.WaitTime;
+
+                var waitSec = int.Parse(WaitTime.GetValue());
+
+                var selector = Construct();
+                Driver.WaitForElementDisplayCondition(selector, Props.Displayed, waitSec);
+
+                if (Props.Displayed)
+                {
+                    Component = Driver.FindElement(selector);
+                    return Component;
+                }
+                else
+                {
+                    return null;
+                }
+            }
         }
 
         public RemoteWebDriver Driver { get; set; }
@@ -39,5 +60,14 @@ namespace AutomationUtils.Component
                 }
             }
         }
+    }
+
+    public class Properties
+    {
+        public string ParentElementSelector = string.Empty;
+
+        public bool Displayed = true;
+
+        public WebDriverExtensions.WaitTime WaitTime = WebDriverExtensions.WaitTime.Medium;
     }
 }
