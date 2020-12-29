@@ -328,6 +328,13 @@ namespace AutomationUtils.Extensions
             ex.ExecuteScript($"arguments[0].scrollTo(0,{scrollHeight});", gridElement);
         }
 
+        public static Int64 HorizontalScrollPosition(this RemoteWebDriver driver, IWebElement element)
+        {
+            IJavaScriptExecutor ex = driver;
+            var result = (Int64)ex.ExecuteScript("return arguments[0].scrollLeft", element);
+            return result;
+        }
+
         public enum Direction
         {
             Right,
