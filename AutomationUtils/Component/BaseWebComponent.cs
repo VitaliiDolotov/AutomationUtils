@@ -30,21 +30,7 @@ namespace AutomationUtils.Component
                 {
                     Component = Driver.FindElement(selector);
                     //In case we have ParentElement
-                    if (!string.IsNullOrEmpty(ParentElementSelector))
-                    {
-                        if (Driver.IsElementDisplayed(By.XPath(ParentElementSelector), WaitTime))
-                        {
-                            PageFactory.InitElements(Driver.FindElement(By.XPath(ParentElementSelector)), this);
-                        }
-                        else
-                        {
-                            throw new Exception($"Unable to init component with '{ParentElementSelector}' parentElement selector");
-                        }
-                    }
-                    else
-                    {
-                        PageFactory.InitElements(Driver, this);
-                    }
+                    PageFactory.InitElements(Component, this);
                     return Component;
                 }
                 else
