@@ -14,31 +14,24 @@ namespace AutomationUtils.Component
 
         protected abstract By Construct();
 
-        public IWebElement Instance
+        public void Build()
         {
-            get
+            ParentElementSelector = Props.ParentElementSelector;
+            WaitTime = Props.WaitTime;
+
+            var waitSec = int.Parse(WaitTime.GetValue());
+
+            var selector = Construct();
+            Driver.WaitForElementDisplayCondition(selector, Props.Displayed, waitSec);
+
+            if (Props.Displayed)
             {
-                ParentElementSelector = Props.ParentElementSelector;
-                WaitTime = Props.WaitTime;
-
-                var waitSec = int.Parse(WaitTime.GetValue());
-
-                var selector = Construct();
-                Driver.WaitForElementDisplayCondition(selector, Props.Displayed, waitSec);
-
-                if (Props.Displayed)
-                {
-                    Component = Driver.FindElement(selector);
-                    //In case we have ParentElement
-                    PageFactory.InitElements(Component, this);
-                    return Component;
-                }
-                else
-                {
-                    return null;
-                }
+                Component = Driver.FindElement(selector);
+                PageFactory.InitElements(Component, this);
             }
         }
+
+        public IWebElement Instance => Props.Displayed ? Component : null;
 
         public RemoteWebDriver Driver { get; set; }
 

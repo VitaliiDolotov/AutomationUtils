@@ -2975,48 +2975,56 @@ namespace AutomationUtils.Extensions
         public static T Component<T>(this RemoteWebDriver driver) where T : BaseWebComponent, new()
         {
             var component = new T { Driver = driver, Identifier = string.Empty };
+            component.Build();
             return component;
         }
 
         public static T Component<T>(this RemoteWebDriver driver, Properties props) where T : BaseWebComponent, new()
         {
             var component = new T { Driver = driver, Identifier = string.Empty, Props = props };
+            component.Build();
             return component;
         }
 
         public static T Component<T>(this RemoteWebDriver driver, string identifier) where T : BaseWebComponent, new()
         {
             var component = new T { Driver = driver, Identifier = identifier };
+            component.Build();
             return component;
         }
 
         public static T Component<T>(this RemoteWebDriver driver, string identifier, Properties props) where T : BaseWebComponent, new()
         {
             var component = new T { Driver = driver, Identifier = identifier, Props = props };
+            component.Build();
             return component;
         }
 
         public static IWebElement GetComponent<T>(this RemoteWebDriver driver) where T : BaseWebComponent, new()
         {
             var component = driver.Component<T>();
+            component.Build();
             return component.Instance;
         }
 
         public static IWebElement GetComponent<T>(this RemoteWebDriver driver, Properties props) where T : BaseWebComponent, new()
         {
             var component = driver.Component<T>(props);
+            component.Build();
             return component.Instance;
         }
 
         public static IWebElement GetComponent<T>(this RemoteWebDriver driver, string identifier) where T : BaseWebComponent, new()
         {
             var component = driver.Component<T>(identifier);
+            component.Build();
             return component.Instance;
         }
 
         public static IWebElement GetComponent<T>(this RemoteWebDriver driver, string identifier, Properties props) where T : BaseWebComponent, new()
         {
             var component = driver.Component<T>(identifier, props);
+            component.Build();
             return component.Instance;
         }
 
