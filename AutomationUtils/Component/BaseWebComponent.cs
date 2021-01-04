@@ -1,6 +1,8 @@
-﻿using AutomationUtils.Extensions;
+﻿using System;
+using AutomationUtils.Extensions;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Remote;
+using SeleniumExtras.PageObjects;
 
 namespace AutomationUtils.Component
 {
@@ -27,6 +29,22 @@ namespace AutomationUtils.Component
                 if (Props.Displayed)
                 {
                     Component = Driver.FindElement(selector);
+                    //In case we have ParentElement
+                    if (!string.IsNullOrEmpty(ParentElementSelector))
+                    {
+                        if (Driver.IsElementDisplayed(By.XPath(ParentElementSelector), WaitTime))
+                        {
+                            PageFactory.InitElements(Driver.FindElement(By.XPath(ParentElementSelector)), this);
+                        }
+                        else
+                        {
+                            throw new Exception($"Unable to init component with '{ParentElementSelector}' parentElement selector");
+                        }
+                    }
+                    else
+                    {
+                        PageFactory.InitElements(Driver, this);
+                    }
                     return Component;
                 }
                 else
