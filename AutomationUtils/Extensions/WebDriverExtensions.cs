@@ -3028,6 +3028,118 @@ namespace AutomationUtils.Extensions
             return component.Instance;
         }
 
+        public static bool ComponentExistsState<T>(this RemoteWebDriver driver) where T : BaseWebComponent, new()
+        {
+            try
+            {
+                var component = driver.Component<T>();
+                component.Build();
+                return driver.IsElementExists(component.Instance);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public static bool ComponentExistsState<T>(this RemoteWebDriver driver, Properties props) where T : BaseWebComponent, new()
+        {
+            try
+            {
+                var component = driver.Component<T>(props);
+                component.Build();
+                return driver.IsElementExists(component.Instance);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public static bool ComponentExistsState<T>(this RemoteWebDriver driver, string identifier) where T : BaseWebComponent, new()
+        {
+            try
+            {
+                var component = driver.Component<T>(identifier);
+                component.Build();
+                return driver.IsElementExists(component.Instance);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public static bool ComponentExistsState<T>(this RemoteWebDriver driver, string identifier, Properties props) where T : BaseWebComponent, new()
+        {
+            try
+            {
+                var component = driver.Component<T>(identifier, props);
+                component.Build();
+                return driver.IsElementExists(component.Instance);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public static bool ComponentDisplayedState<T>(this RemoteWebDriver driver) where T : BaseWebComponent, new()
+        {
+            try
+            {
+                var component = driver.Component<T>();
+                component.Build();
+                return driver.IsElementDisplayed(component.Instance);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public static bool ComponentDisplayedState<T>(this RemoteWebDriver driver, Properties props) where T : BaseWebComponent, new()
+        {
+            try
+            {
+                var component = driver.Component<T>(props);
+                component.Build();
+                return driver.IsElementDisplayed(component.Instance);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public static bool ComponentDisplayedState<T>(this RemoteWebDriver driver, string identifier) where T : BaseWebComponent, new()
+        {
+            try
+            {
+                var component = driver.Component<T>(identifier);
+                component.Build();
+                return driver.IsElementDisplayed(component.Instance);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public static bool ComponentDisplayedState<T>(this RemoteWebDriver driver, string identifier, Properties props) where T : BaseWebComponent, new()
+        {
+            try
+            {
+                var component = driver.Component<T>(identifier, props);
+                component.Build();
+                return driver.IsElementDisplayed(component.Instance);
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         #endregion
 
         private static void RefreshPage(RemoteWebDriver driver)

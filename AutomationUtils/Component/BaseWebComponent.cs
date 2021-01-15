@@ -56,12 +56,8 @@ namespace AutomationUtils.Component
 
             if (Props.Displayed)
             {
-                try
-                {
-                    Component = Parent is null ? Driver.FindElement(selector) : Parent.FindElement(selector);
-                    PageFactory.InitElements(Component, this);
-                }
-                catch { }
+                Component = Parent is null ? Driver.FindElement(selector) : Parent.FindElement(selector);
+                PageFactory.InitElements(Component, this);
             }
         }
 
@@ -78,21 +74,6 @@ namespace AutomationUtils.Component
         protected IWebElement Parent { get; set; }
 
         public By Container { get; }
-
-        public bool Displayed
-        {
-            get
-            {
-                try
-                {
-                    return Instance.Displayed();
-                }
-                catch
-                {
-                    return false;
-                }
-            }
-        }
     }
 
     public class Properties
