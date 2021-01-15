@@ -34,7 +34,8 @@ namespace AutomationUtils.Component
             {
                 if (!Driver.IsElementExists(Props.ParentSelector, WaitTime))
                 {
-                    throw new Exception($"Unable to find Parent element with '{Props.ParentSelector}' selector");
+                    //throw new Exception($"Unable to find Parent element with '{Props.ParentSelector}' selector");
+                    return;
                 }
 
                 Parent = Driver.FindElement(ParentSelector);
@@ -55,8 +56,12 @@ namespace AutomationUtils.Component
 
             if (Props.Displayed)
             {
-                Component = Parent is null ? Driver.FindElement(selector) : Parent.FindElement(selector);
-                PageFactory.InitElements(Component, this);
+                try
+                {
+                    Component = Parent is null ? Driver.FindElement(selector) : Parent.FindElement(selector);
+                    PageFactory.InitElements(Component, this);
+                }
+                catch { }
             }
         }
 
