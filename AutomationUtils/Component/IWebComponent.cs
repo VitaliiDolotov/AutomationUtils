@@ -1,4 +1,5 @@
 ﻿using AutomationUtils.Extensions;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Remote;
 
 namespace AutomationUtils.Component
@@ -9,9 +10,7 @@ namespace AutomationUtils.Component
 
         string Identifier { get; set; }
 
-        string Container { get; }
-
-        string ParentElementSelector { get; set; }
+        By Container { get; }
 
         WebDriverExtensions.WaitTime WaitTime { set; }
     }

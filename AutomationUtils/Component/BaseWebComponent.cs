@@ -16,17 +16,46 @@ namespace AutomationUtils.Component
 
         public void Build()
         {
-            ParentElementSelector = Props.ParentElementSelector;
+            if (!(Props.ParentSelector is null) && !(Props.Parent is null))
+            {
+                throw new Exception("Not allowed to use Parent element selector and Parent element together");
+            }
+
+            ParentSelector = Props.ParentSelector;
+            Parent = Props.Parent;
+
             WaitTime = Props.WaitTime;
 
             var waitSec = int.Parse(WaitTime.GetValue());
 
+            #region Parent element
+
+            if (!(Props.ParentSelector is null))
+            {
+                if (!Driver.IsElementExists(Props.ParentSelector, WaitTime))
+                {
+                    throw new Exception($"Unable to find Parent element with '{Props.ParentSelector}' selector");
+                }
+
+                Parent = Driver.FindElement(ParentSelector);
+            }
+
+            #endregion
+
             var selector = Construct();
-            Driver.WaitForElementDisplayCondition(selector, Props.Displayed, waitSec);
+
+            if (Parent is null)
+            {
+                Driver.WaitForElementDisplayCondition(selector, Props.Displayed, waitSec);
+            }
+            else
+            {
+                Driver.WaitForElementInElementDisplayCondition(Parent, selector, Props.Displayed, waitSec);
+            }
 
             if (Props.Displayed)
             {
-                Component = Driver.FindElement(selector);
+                Component = Parent is null ? Driver.FindElement(selector) : Parent.FindElement(selector);
                 PageFactory.InitElements(Component, this);
             }
         }
@@ -39,9 +68,11 @@ namespace AutomationUtils.Component
 
         public string Identifier { get; set; }
 
-        public string ParentElementSelector { get; set; }
+        protected By ParentSelector { get; set; }
 
-        public string Container { get; }
+        protected IWebElement Parent { get; set; }
+
+        public By Container { get; }
 
         public bool Displayed
         {
@@ -61,7 +92,9 @@ namespace AutomationUtils.Component
 
     public class Properties
     {
-        public string ParentElementSelector = string.Empty;
+        public By ParentSelector = null;
+
+        public IWebElement Parent = null;
 
         public bool Displayed = true;
 
