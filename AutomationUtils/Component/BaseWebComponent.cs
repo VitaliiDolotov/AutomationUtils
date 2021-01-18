@@ -1,5 +1,6 @@
 ﻿using System;
 using AutomationUtils.Extensions;
+using Microsoft.VisualBasic;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Remote;
 using SeleniumExtras.PageObjects;
@@ -45,23 +46,43 @@ namespace AutomationUtils.Component
 
             var selector = Construct();
 
-            if (Parent is null)
+            //Displayed check
+            if (!Props.Displayed.Equals(TriState.UseDefault))
             {
-                Driver.WaitForElementDisplayCondition(selector, Props.Displayed, waitSec);
-            }
-            else
-            {
-                Driver.WaitForElementInElementDisplayCondition(Parent, selector, Props.Displayed, waitSec);
+                var displayedCondition = Props.Displayed.Equals(TriState.True);
+                if (Parent is null)
+                {
+                    Driver.WaitForElementDisplayCondition(selector, displayedCondition, waitSec);
+                }
+                else
+                {
+                    Driver.WaitForElementInElementDisplayCondition(Parent, selector, displayedCondition, waitSec);
+                }
             }
 
-            if (Props.Displayed)
+            //Exist check
+            if (!Props.Exist.Equals(TriState.UseDefault))
+            {
+                var existCondition = Props.Exist.Equals(TriState.True);
+                if (Parent is null)
+                {
+                    Driver.WhatForElementToBeInExistsCondition(selector, existCondition, waitSec);
+                }
+                else
+                {
+                    Driver.WaitForElementInElementExistsCondition(Parent, selector, existCondition, waitSec);
+                }
+            }
+
+            if (Props.Displayed.Equals(TriState.True) || Props.Exist.Equals(TriState.True))
             {
                 Component = Parent is null ? Driver.FindElement(selector) : Parent.FindElement(selector);
                 PageFactory.InitElements(Component, this);
             }
         }
 
-        public IWebElement Instance => Props.Displayed ? Component : null;
+        public IWebElement Instance =>
+            Props.Displayed.Equals(TriState.True) || Props.Exist.Equals(TriState.True) ? Component : null;
 
         public RemoteWebDriver Driver { get; set; }
 
@@ -82,7 +103,9 @@ namespace AutomationUtils.Component
 
         public IWebElement Parent = null;
 
-        public bool Displayed = true;
+        public TriState Displayed = TriState.True;
+
+        public TriState Exist = TriState.UseDefault;
 
         public WebDriverExtensions.WaitTime WaitTime = WebDriverExtensions.WaitTime.Medium;
     }

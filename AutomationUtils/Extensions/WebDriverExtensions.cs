@@ -1214,7 +1214,7 @@ namespace AutomationUtils.Extensions
             WhatForElementToBeInExistsCondition(driver, element, true, waitSec);
         }
 
-        private static void WhatForElementToBeInExistsCondition(this RemoteWebDriver driver, By by, bool expectedCondition, int waitTimeout)
+        internal static void WhatForElementToBeInExistsCondition(this RemoteWebDriver driver, By by, bool expectedCondition, int waitTimeout)
         {
             try
             {
@@ -1318,7 +1318,7 @@ namespace AutomationUtils.Extensions
             WaitForElementInElementExistsCondition(driver, parent, child, true, waitSec);
         }
 
-        private static void WaitForElementInElementExistsCondition(this RemoteWebDriver driver, IWebElement element, By selector, bool condition, int waitSeconds)
+        internal static void WaitForElementInElementExistsCondition(this RemoteWebDriver driver, IWebElement element, By selector, bool condition, int waitSeconds)
         {
             try
             {
