@@ -95,6 +95,8 @@ namespace AutomationUtils.Component
         protected IWebElement Parent { get; set; }
 
         public By Container { get; }
+
+        public By Frame { get; }
     }
 
     public class Properties

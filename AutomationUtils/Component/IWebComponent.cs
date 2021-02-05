@@ -12,6 +12,8 @@ namespace AutomationUtils.Component
 
         By Container { get; }
 
+        By Frame { get; }
+
         WebDriverExtensions.WaitTime WaitTime { set; }
     }
 }
