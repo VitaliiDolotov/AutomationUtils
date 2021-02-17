@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -8,7 +9,7 @@ namespace AutomationUtils.Utils
 {
     public static class ConfigReader
     {
-        private static string ConfigFilePath = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "appsettings.json");
+        public static string ConfigFilePath = Directory.GetParent(Assembly.GetCallingAssembly().Location).GetFiles("appsettings.json").First().FullName;
 
         public static string ByKey(string key)
         {
@@ -16,6 +17,7 @@ namespace AutomationUtils.Utils
             {
                 try
                 {
+                    
                     string configFileContent = sr.ReadToEnd();
 
                     var responseContent = JsonConvert.DeserializeObject<JObject>(configFileContent);
