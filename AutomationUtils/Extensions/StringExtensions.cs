@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
@@ -89,6 +90,34 @@ namespace AutomationUtils.Extensions
                 .Replace("\r\n", String.Empty)
                 .Replace("\r", string.Empty)
                 .Replace("\n", string.Empty);
+        }
+
+        /// <summary>
+        /// Used for appsettings file reading
+        /// </summary>
+        /// <param name="assemblyPath">Assembly Path</param>
+        /// <param name="key">Config Key</param>
+        /// <returns></returns>
+        public static string ByKey(this string assemblyPath, string key)
+        {
+            var path = Directory.GetParent(assemblyPath).GetFiles("appsettings.json").First().FullName;
+            using (StreamReader sr = new StreamReader(path))
+            {
+                try
+                {
+
+                    string configFileContent = sr.ReadToEnd();
+
+                    var responseContent = JsonConvert.DeserializeObject<JObject>(configFileContent);
+                    string value = responseContent[key].ToString();
+
+                    return value;
+                }
+                catch (Exception e)
+                {
+                    throw new Exception($"Unable to read configuration property for '{key}' key: {e}");
+                }
+            }
         }
     }
 }
