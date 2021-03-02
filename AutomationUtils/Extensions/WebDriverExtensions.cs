@@ -3146,5 +3146,20 @@ namespace AutomationUtils.Extensions
         {
             driver.Navigate().Refresh();
         }
+
+        public static void OpenInNewTab(this RemoteWebDriver driver, string url)
+        {
+            driver.ExecuteScript($"window.open('{url}','_blank');");
+            driver.SwitchTo().Window(driver.WindowHandles.Last());
+        }
+
+        public static void PingDriver(this RemoteWebDriver driver, int minutes)
+        {
+            for (int i = 0; i < minutes * 6; i++)
+            {
+                driver.FindElement(By.XPath(".//body"));
+                Thread.Sleep(10000);
+            }
+        }
     }
 }
