@@ -3161,5 +3161,10 @@ namespace AutomationUtils.Extensions
                 Thread.Sleep(10000);
             }
         }
+
+        public static void PingDriver(this RemoteWebDriver driver)
+        {
+            driver.FindElement(By.XPath(".//body"));
+        }
     }
 }
