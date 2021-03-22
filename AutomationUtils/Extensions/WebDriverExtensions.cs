@@ -3142,6 +3142,43 @@ namespace AutomationUtils.Extensions
 
         #endregion
 
+        #region Clipboard
+
+        public static string GetClipboard(this RemoteWebDriver driver, string hubUri)
+        {
+            SessionId sessionId = driver.SessionId;
+
+            RestClient client = new RestClient(hubUri.Replace("wd/hub", string.Empty));
+            RestRequest restRequest = new RestRequest($"/clipboard/{sessionId}");
+            IRestResponse restResponse = client.Get(restRequest);
+
+            if (restResponse.StatusCode.Equals(HttpStatusCode.OK))
+            {
+                throw new Exception("Unable to get clipboard");
+            }
+
+            var content = restResponse.Content;
+            return content;
+        }
+
+        public static void SetClipboard(this RemoteWebDriver driver, string hubUri, string data)
+        {
+            SessionId sessionId = driver.SessionId;
+
+            RestClient client = new RestClient(hubUri.Replace("wd/hub", string.Empty));
+
+            RestRequest request = new RestRequest($"/clipboard/{sessionId}");
+            request.AddParameter("data", data);
+            var restResponse = client.Post(request);
+
+            if (restResponse.StatusCode.Equals(HttpStatusCode.OK))
+            {
+                throw new Exception("Unable to set clipboard");
+            }
+        }
+
+        #endregion
+
         private static void RefreshPage(RemoteWebDriver driver)
         {
             driver.Navigate().Refresh();
