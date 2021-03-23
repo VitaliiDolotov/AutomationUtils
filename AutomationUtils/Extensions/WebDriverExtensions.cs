@@ -7,6 +7,7 @@ using System.Net;
 using System.Reflection;
 using System.Threading;
 using AutomationUtils.Component;
+using AutomationUtils.Pages;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Remote;
@@ -32,6 +33,51 @@ namespace AutomationUtils.Extensions
             [System.ComponentModel.Description("55")]
             ExtraLong
         }
+
+        #region NowAt
+
+        public static T NowAt<T>(this RemoteWebDriver driver, bool pageIdentitySelectorsDisplayed = true) where T : SeleniumBasePage, new()
+        {
+            var page = new T { Driver = driver, Actions = new Actions(driver) };
+            driver.WaitForLoadingElements(page, null, pageIdentitySelectorsDisplayed);
+            page.InitElements();
+            return page;
+        }
+
+        public static T NowAtWithContext<T>(this RemoteWebDriver driver, bool pageIdentitySelectorsDisplayed = true) where T : SeleniumBasePage, new()
+        {
+            var page = new T { Driver = driver, Actions = new Actions(driver) };
+            driver.WaitForLoadingElements(page, null, pageIdentitySelectorsDisplayed);
+            var contextPage = Activator.CreateInstance(typeof(T)) as IContextPage;
+            page.InitElements(contextPage.Context);
+            return page;
+        }
+
+        public static T NowAtWithoutWait<T>(this RemoteWebDriver driver) where T : SeleniumBasePage, new()
+        {
+            var page = new T { Driver = driver, Actions = new Actions(driver) };
+            page.InitElements();
+            return page;
+        }
+
+        public static void WaitForLoadingElements(this RemoteWebDriver driver, SeleniumBasePage page, By bySelector, bool pageIdentitySelectorsDisplayed)
+        {
+            var bys = bySelector != null ? new List<By> { bySelector } : page.GetPageIdentitySelectors();
+
+            foreach (var by in bys)
+            {
+                if (pageIdentitySelectorsDisplayed)
+                {
+                    driver.WaitForElementToBeDisplayed(by);
+                }
+                else
+                {
+                    driver.WaitForElementsToBeExists(by);
+                }
+            }
+        }
+
+        #endregion
 
         #region Availability of element
 
@@ -3152,7 +3198,7 @@ namespace AutomationUtils.Extensions
             RestRequest restRequest = new RestRequest($"/clipboard/{sessionId}");
             IRestResponse restResponse = client.Get(restRequest);
 
-            if (restResponse.StatusCode.Equals(HttpStatusCode.OK))
+            if (!restResponse.StatusCode.Equals(HttpStatusCode.OK))
             {
                 throw new Exception("Unable to get clipboard");
             }
@@ -3171,7 +3217,7 @@ namespace AutomationUtils.Extensions
             request.AddParameter("data", data);
             var restResponse = client.Post(request);
 
-            if (restResponse.StatusCode.Equals(HttpStatusCode.OK))
+            if (!restResponse.StatusCode.Equals(HttpStatusCode.OK))
             {
                 throw new Exception("Unable to set clipboard");
             }
