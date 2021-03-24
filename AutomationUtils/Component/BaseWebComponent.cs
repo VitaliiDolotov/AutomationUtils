@@ -94,7 +94,7 @@ namespace AutomationUtils.Component
 
         protected IWebElement Parent { get; set; }
 
-        public By Container { get; }
+        public By Context { get; }
 
         public By Frame { get; }
     }

@@ -2,7 +2,7 @@
 
 namespace AutomationUtils.Pages
 {
-    public interface IContextPage
+    public interface IContextContainer
     {
         By Context { get; }
     }

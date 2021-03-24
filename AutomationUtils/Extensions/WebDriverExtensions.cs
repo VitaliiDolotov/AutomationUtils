@@ -48,7 +48,7 @@ namespace AutomationUtils.Extensions
         {
             var page = new T { Driver = driver, Actions = new Actions(driver) };
             driver.WaitForLoadingElements(page, null, pageIdentitySelectorsDisplayed);
-            var contextPage = Activator.CreateInstance(typeof(T)) as IContextPage;
+            var contextPage = Activator.CreateInstance(typeof(T)) as IContextContainer;
             page.InitElements(contextPage.Context);
             return page;
         }
