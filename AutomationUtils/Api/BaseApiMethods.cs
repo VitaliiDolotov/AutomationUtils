@@ -1,6 +1,6 @@
 ﻿using RestSharp;
 
-namespace GravitAutomationCore.Base
+namespace AutomationUtils.Api
 {
     public abstract class BaseApiMethods
     {

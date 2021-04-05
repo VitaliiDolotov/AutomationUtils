@@ -1,4 +1,4 @@
-﻿using GravitAutomationCore.Base;
+﻿using AutomationUtils.Api;
 using RestSharp;
 
 namespace AutomationUtils.Extensions
