@@ -74,11 +74,12 @@ namespace AutomationUtils.Component
                 }
             }
 
-            if (Props.Displayed.Equals(TriState.True) || Props.Exist.Equals(TriState.True))
-            {
-                Component = Parent is null ? Driver.FindElement(selector) : Parent.FindElement(selector);
-                PageFactory.InitElements(Component, this);
-            }
+            //if (Props.Displayed.Equals(TriState.True) || Props.Exist.Equals(TriState.True))
+            //{
+            //    Component = Parent is null ? Driver.FindElement(selector) : Parent.FindElement(selector);
+            //    PageFactory.InitElements(Component, this);
+            //}
+            PageFactory.InitElements(Driver, this);
         }
 
         public IWebElement Instance =>
