@@ -77,9 +77,17 @@ namespace AutomationUtils.Component
             if (Props.Displayed.Equals(TriState.True) || Props.Exist.Equals(TriState.True))
             {
                 Component = Parent is null ? Driver.FindElement(selector) : Parent.FindElement(selector);
-                //PageFactory.InitElements(Component, this);
+
+                //Sometimes component lay outside of Parent and PageFactory should be called with Driver context
+                if (Props.InitWithoutContext)
+                {
+                    PageFactory.InitElements(Component, this);
+                }
+                else
+                {
+                    PageFactory.InitElements(Driver, this);
+                }
             }
-            PageFactory.InitElements(Driver, this);
         }
 
         public IWebElement Instance =>
@@ -111,5 +119,8 @@ namespace AutomationUtils.Component
         public TriState Exist = TriState.UseDefault;
 
         public WebDriverExtensions.WaitTime WaitTime = WebDriverExtensions.WaitTime.Medium;
+
+        //Page factory will use Driver as context for factory
+        public bool InitWithoutContext = false;
     }
 }

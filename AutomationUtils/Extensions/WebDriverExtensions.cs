@@ -198,6 +198,18 @@ namespace AutomationUtils.Extensions
             try
             {
                 driver.WaitForElementInElementToBeExists(element, selector, waitTime);
+                return IsElementInElementExists(driver, element, selector);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        public static bool IsElementInElementExists(this RemoteWebDriver driver, IWebElement element, By selector)
+        {
+            try
+            {
                 var elementInElement = element.FindElement(selector);
                 return IsElementExists(driver, elementInElement);
             }
