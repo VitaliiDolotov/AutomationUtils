@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using AutomationUtils.Extensions;
 using Microsoft.VisualBasic;
 using OpenQA.Selenium;
@@ -11,7 +14,7 @@ namespace AutomationUtils.Component
     {
         public Properties Props = new Properties();
 
-        protected IWebElement Component;
+        protected IList<IWebElement> Components;
 
         protected abstract By Construct();
 
@@ -76,22 +79,25 @@ namespace AutomationUtils.Component
 
             if (Props.Displayed.Equals(TriState.True) || Props.Exist.Equals(TriState.True))
             {
-                Component = Parent is null ? Driver.FindElement(selector) : Parent.FindElement(selector);
+                Components = Parent is null ? Driver.FindElements(selector).ToList() : Parent.FindElements(selector).ToList();
 
                 //Sometimes component lay outside of Parent and PageFactory should be called with Driver context
                 if (Props.InitWithoutContext)
                 {
-                    PageFactory.InitElements(Component, this);
+                    PageFactory.InitElements(Driver, this);
                 }
                 else
                 {
-                    PageFactory.InitElements(Driver, this);
+                    PageFactory.InitElements(Components.First(), this);
                 }
             }
         }
 
         public IWebElement Instance =>
-            Props.Displayed.Equals(TriState.True) || Props.Exist.Equals(TriState.True) ? Component : null;
+            Props.Displayed.Equals(TriState.True) || Props.Exist.Equals(TriState.True) ? Components.First() : null;
+
+        public IList<IWebElement> Instances =>
+            Props.Displayed.Equals(TriState.True) || Props.Exist.Equals(TriState.True) ? Components : null;
 
         public RemoteWebDriver Driver { get; set; }
 
