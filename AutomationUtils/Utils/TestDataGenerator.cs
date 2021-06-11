@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace AutomationUtils.Utils
@@ -53,7 +51,7 @@ namespace AutomationUtils.Utils
         public static string ValidPhoneNumber(int length)
         {
             const string numbers = "0123456789";
-            string phone = "";
+            var phone = string.Empty;
 
             while (true)
             {
@@ -62,12 +60,7 @@ namespace AutomationUtils.Utils
 
                 if (Regex.IsMatch(phone, @"^(\+?1)?[2-9]\d{2}[2-9](?!11)\d{6}", RegexOptions.IgnoreCase))
                 {
-                    Console.WriteLine($"Phone number {phone} is correct");
                     break;
-                }
-                else
-                {
-                    Console.WriteLine($"Phone number {phone} is invalid");
                 }
             }
             return phone;
