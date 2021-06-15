@@ -30,7 +30,7 @@ namespace AutomationUtils.Pages
             }
             else
             {
-                Driver.WhatForElementToBeExists(context);
+                Driver.WaitForElementToBeExists(context);
                 var contextElement = Driver.FindElement(context);
                 PageFactory.InitElements(contextElement, this);
             }

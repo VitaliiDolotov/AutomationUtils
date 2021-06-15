@@ -184,7 +184,7 @@ namespace AutomationUtils.Extensions
             try
             {
                 var time = int.Parse(waitTime.GetValue());
-                WhatForElementToBeInExistsCondition(driver, @by, true, time);
+                WaitForElementToBeInExistsCondition(driver, @by, true, time);
                 return driver.IsElementExists(@by);
             }
             catch (Exception)
@@ -1248,31 +1248,31 @@ namespace AutomationUtils.Extensions
 
         #region Wait for Element to be (not) Exists
 
-        public static void WhatForElementToBeNotExists(this RemoteWebDriver driver, By by, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementToBeNotExists(this RemoteWebDriver driver, By by, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
-            WhatForElementToBeInExistsCondition(driver, by, false, waitSec);
+            WaitForElementToBeInExistsCondition(driver, by, false, waitSec);
         }
 
-        public static void WhatForElementToBeNotExists(this RemoteWebDriver driver, IWebElement element, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementToBeNotExists(this RemoteWebDriver driver, IWebElement element, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
-            WhatForElementToBeInExistsCondition(driver, element, false, waitSec);
+            WaitForElementToBeInExistsCondition(driver, element, false, waitSec);
         }
 
-        public static void WhatForElementToBeExists(this RemoteWebDriver driver, By by, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementToBeExists(this RemoteWebDriver driver, By by, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
-            WhatForElementToBeInExistsCondition(driver, by, true, waitSec);
+            WaitForElementToBeInExistsCondition(driver, by, true, waitSec);
         }
 
-        public static void WhatForElementToBeExists(this RemoteWebDriver driver, IWebElement element, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementToBeExists(this RemoteWebDriver driver, IWebElement element, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
-            WhatForElementToBeInExistsCondition(driver, element, true, waitSec);
+            WaitForElementToBeInExistsCondition(driver, element, true, waitSec);
         }
 
-        internal static void WhatForElementToBeInExistsCondition(this RemoteWebDriver driver, By by, bool expectedCondition, int waitTimeout)
+        internal static void WaitForElementToBeInExistsCondition(this RemoteWebDriver driver, By by, bool expectedCondition, int waitTimeout)
         {
             try
             {
@@ -1286,7 +1286,7 @@ namespace AutomationUtils.Extensions
             }
         }
 
-        private static void WhatForElementToBeInExistsCondition(this RemoteWebDriver driver, IWebElement element, bool expectedCondition, int waitTimeout)
+        private static void WaitForElementToBeInExistsCondition(this RemoteWebDriver driver, IWebElement element, bool expectedCondition, int waitTimeout)
         {
             try
             {

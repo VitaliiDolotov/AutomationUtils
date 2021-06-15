@@ -69,7 +69,7 @@ namespace AutomationUtils.Component
                 var existCondition = Props.Exist.Equals(TriState.True);
                 if (Parent is null)
                 {
-                    Driver.WhatForElementToBeInExistsCondition(selector, existCondition, waitSec);
+                    Driver.WaitForElementToBeInExistsCondition(selector, existCondition, waitSec);
                 }
                 else
                 {
