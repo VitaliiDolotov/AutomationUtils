@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Threading;
 using AutomationUtils.Component;
 using AutomationUtils.Pages;
+using Newtonsoft.Json;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Remote;
@@ -3024,6 +3025,16 @@ namespace AutomationUtils.Extensions
             var filePath = Path.Combine(tempDir, fileName);
             File.WriteAllBytes(filePath, download.ToArray());
             return filePath;
+        }
+
+        public static List<string> GetDownloadedFiles(this RemoteWebDriver driver, string hubUri)
+        {
+            SessionId session = driver.SessionId;
+            RestClient client = new RestClient(hubUri.Replace("wd/hub", string.Empty));
+            RestRequest request = new RestRequest($"/download/{session}/?json");
+            var response = client.Get(request);
+            var result = JsonConvert.DeserializeObject<List<string>>(response.Content);
+            return result;
         }
 
         #endregion
