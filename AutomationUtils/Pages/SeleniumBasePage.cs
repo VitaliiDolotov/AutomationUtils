@@ -13,9 +13,13 @@ using SeleniumExtras.PageObjects;
 
 namespace AutomationUtils.Pages
 {
-    public abstract class SeleniumBasePage
+    public abstract class SeleniumBasePage : IContextContainer
     {
-        [FindsBy(How = How.XPath, Using = ".//body")]
+        private const string BodySelector = ".//body";
+
+        public By Context => By.XPath(BodySelector);
+
+        [FindsBy(How = How.XPath, Using = BodySelector)]
         public IWebElement BodyContainer { get; set; }
 
         public RemoteWebDriver Driver { get; set; }
@@ -47,6 +51,8 @@ namespace AutomationUtils.Pages
                 .Select(ByFactory.From)
                 .ToList();
         }
+
+        public IWebElement ContextElement => Driver.FindElement(Context);
 
         public By SelectorFor<TPage, TProperty>(TPage page, Expression<Func<TPage, TProperty>> expression)
         {
