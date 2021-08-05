@@ -2947,6 +2947,17 @@ namespace AutomationUtils.Extensions
 
         #endregion
 
+        public static void WaitFor(this RemoteWebDriver driver, Func<bool> flag, int seconds)
+        {
+            for (int i = 0; i < seconds; i++)
+            {
+                if (flag())
+                    break;
+
+                Thread.Sleep(1000);
+            }
+        }
+
         #region Frames
 
         public static void SwitchToFrame(this RemoteWebDriver driver, int frameNumber, WaitTime waitTime = WaitTime.Medium)
