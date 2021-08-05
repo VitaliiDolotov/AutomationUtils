@@ -2947,6 +2947,12 @@ namespace AutomationUtils.Extensions
 
         #endregion
 
+        public static void WaitForNewTab(this RemoteWebDriver driver, int tabNum, int seconds)
+        {
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(seconds));
+            wait.Until(d => d.WindowHandles.Count > tabNum - 1);
+        }
+
         public static void WaitFor(this RemoteWebDriver driver, Func<bool> flag, int seconds)
         {
             for (int i = 0; i < seconds; i++)
