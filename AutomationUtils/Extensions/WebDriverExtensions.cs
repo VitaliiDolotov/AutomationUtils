@@ -1914,6 +1914,199 @@ namespace AutomationUtils.Extensions
 
         #endregion
 
+        #region Wait for text in Element cssValue
+
+        public static void WaitForElementToNotContainsTextInCssValue(this RemoteWebDriver driver, IWebElement element, string expectedText, string attribute, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitElementContainsTextInCssValue(driver, element, expectedText, attribute, false, waitSec);
+        }
+
+        public static void WaitForElementToNotContainsTextInCssValue(this RemoteWebDriver driver, By selector, string expectedText, string attribute, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitElementContainsTextInCssValue(driver, selector, expectedText, attribute, false, waitSec);
+        }
+
+        public static void WaitForElementToContainsTextInCssValue(this RemoteWebDriver driver, IWebElement element, string expectedText, string attribute, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitElementContainsTextInCssValue(driver, element, expectedText, attribute, true, waitSec);
+        }
+
+        public static void WaitForElementToContainsTextInCssValue(this RemoteWebDriver driver, By selector, string expectedText, string attribute, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitElementContainsTextInCssValue(driver, selector, expectedText, attribute, true, waitSec);
+        }
+
+        public static void WaitForAnyElementToContainsTextInCssValue(this RemoteWebDriver driver, IEnumerable<IWebElement> elements, string expectedText, string attribute, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitElementsContainsTextInCssValue(driver, elements, expectedText, attribute, true, waitSec, false);
+        }
+
+        public static void WaitForAllElementsToContainsTextInCssValue(this RemoteWebDriver driver, IEnumerable<IWebElement> elements, string expectedText, string attribute, WaitTime waitTime = WaitTime.Medium)
+        {
+            var waitSec = int.Parse(waitTime.GetValue());
+            WaitElementsContainsTextInCssValue(driver, elements, expectedText, attribute, true, waitSec, true);
+        }
+
+        private static void WaitElementContainsTextInCssValue(this RemoteWebDriver driver, IWebElement element, string expectedText, string attribute, bool condition, int waitSec)
+        {
+            try
+            {
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(waitSec));
+                wait.Until(TextToBeContainsInElementCssValue(element, expectedText, attribute, condition));
+            }
+            catch (Exception e)
+            {
+                throw new Exception($"Text '{expectedText}' is not appears/disappears in the '{attribute}' element attribute after {waitSec} seconds: {e}");
+            }
+        }
+
+        private static void WaitElementContainsTextInCssValue(this RemoteWebDriver driver, By by, string expectedText, string attribute, bool condition, int waitSec)
+        {
+            try
+            {
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(waitSec));
+                wait.Until(TextToBeContainsInElementCssValue(by, expectedText, attribute, condition));
+            }
+            catch (Exception)
+            {
+                throw new Exception($"Text '{expectedText}' is not appears/disappears in the '{attribute}' element attribute located by '{by}' selector after {waitSec} seconds");
+            }
+        }
+
+        private static void WaitElementsContainsTextInCssValue(this RemoteWebDriver driver, IEnumerable<IWebElement> elements, string expectedText, string attribute, bool condition, int waitSec, bool allElements)
+        {
+            try
+            {
+                WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(waitSec));
+                wait.Until(TextToBeContainsInElementCssValue(elements, expectedText, attribute, condition, allElements));
+            }
+            catch (Exception)
+            {
+                throw new Exception($"Text '{expectedText}' is not appears/disappears in the '{attribute}' elements attribute after {waitSec} seconds");
+            }
+        }
+
+        private static Func<IWebDriver, bool> TextToBeContainsInElementCssValue(IWebElement element, string text, string attribute, bool condition)
+        {
+            return (driver) =>
+            {
+                try
+                {
+                    return element.GetCssValue(attribute).Contains(text).Equals(condition);
+                }
+                catch (NoSuchElementException)
+                {
+                    // Returns false because the element is not present in DOM.
+                    return false.Equals(condition);
+                }
+                catch (StaleElementReferenceException)
+                {
+                    // Returns false because stale element reference implies that element
+                    // is no longer visible.
+                    return false.Equals(condition);
+                }
+                catch (InvalidOperationException)
+                {
+                    // Return false as no elements was located
+                    return false.Equals(condition);
+                }
+                catch (TargetInvocationException)
+                {
+                    // Return false as no elements was located
+                    return false.Equals(condition);
+                }
+                catch (NullReferenceException)
+                {
+                    //Element not exists
+                    return false.Equals(condition);
+                }
+            };
+        }
+
+        private static Func<IWebDriver, bool> TextToBeContainsInElementCssValue(By by, string text, string attribute, bool condition)
+        {
+            return (driver) =>
+            {
+                try
+                {
+                    var element = driver.FindElement(by);
+                    return element.GetCssValue(attribute).Contains(text).Equals(condition);
+                }
+                catch (NoSuchElementException)
+                {
+                    // Returns false because the element is not present in DOM.
+                    return false.Equals(condition);
+                }
+                catch (StaleElementReferenceException)
+                {
+                    // Returns false because stale element reference implies that element
+                    // is no longer visible.
+                    return false.Equals(condition);
+                }
+                catch (InvalidOperationException)
+                {
+                    // Return false as no elements was located
+                    return false.Equals(condition);
+                }
+                catch (TargetInvocationException)
+                {
+                    // Return false as no elements was located
+                    return false.Equals(condition);
+                }
+                catch (NullReferenceException)
+                {
+                    //Element not exists
+                    return false.Equals(condition);
+                }
+            };
+        }
+
+        private static Func<IWebDriver, bool> TextToBeContainsInElementCssValue(IEnumerable<IWebElement> elements, string text, string attribute, bool condition, bool allElements)
+        {
+            return (driver) =>
+            {
+                try
+                {
+                    return allElements ?
+                        elements.All(x => x.GetCssValue(attribute).Contains(text).Equals(condition)) :
+                        elements.Any(x => x.GetCssValue(attribute).Contains(text).Equals(condition));
+                }
+                catch (NoSuchElementException)
+                {
+                    // Returns false because the element is not present in DOM.
+                    return false.Equals(condition);
+                }
+                catch (StaleElementReferenceException)
+                {
+                    // Returns false because stale element reference implies that element
+                    // is no longer visible.
+                    return false.Equals(condition);
+                }
+                catch (InvalidOperationException)
+                {
+                    // Return false as no elements was located
+                    return false.Equals(condition);
+                }
+                catch (TargetInvocationException)
+                {
+                    // Return false as no elements was located
+                    return false.Equals(condition);
+                }
+                catch (NullReferenceException)
+                {
+                    //Element not exists
+                    return false.Equals(condition);
+                }
+            };
+        }
+
+        #endregion
+
         #region Wait for Element(s) contains (not) text
 
         public static void WaitForElementToNotContainsText(this RemoteWebDriver driver, IWebElement element, string expectedText, WaitTime waitTime = WaitTime.Medium)
