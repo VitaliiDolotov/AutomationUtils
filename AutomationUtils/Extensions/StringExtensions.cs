@@ -118,5 +118,29 @@ namespace AutomationUtils.Extensions
                 }
             }
         }
+
+        public static List<string> GetTextBetween(this string source, char firstChar, bool includeChars)
+        {
+            return GetTextBetweenTwoCharacters(source, firstChar, firstChar, includeChars);
+        }
+
+        public static List<string> GetTextBetween(this string source, char firstChar, char secondChar, bool includeChars)
+        {
+            return GetTextBetweenTwoCharacters(source, firstChar, secondChar, includeChars);
+        }
+
+        private static List<string> GetTextBetweenTwoCharacters(string source, char firstChar, char secondChar, bool includeChars)
+        {
+            string pattern = includeChars ?
+                @"\" + firstChar + @"(.*?)\" + secondChar :
+                @"(?<=\" + firstChar + @")(.*?)(?=\" + secondChar + ")";
+            MatchCollection matches = Regex.Matches(source, pattern);
+            List<string> results = new List<string>();
+            foreach (Match match in matches)
+            {
+                results.Add(match.Value);
+            }
+            return results;
+        }
     }
 }
