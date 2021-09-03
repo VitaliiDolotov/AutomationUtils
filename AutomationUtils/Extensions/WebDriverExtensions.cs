@@ -224,19 +224,6 @@ namespace AutomationUtils.Extensions
 
         #region Actions
 
-        public static void MouseHover(this RemoteWebDriver driver, IWebElement element)
-        {
-            Actions action = new Actions(driver);
-            action.MoveToElement(element).Perform();
-        }
-
-        public static void MouseHover(this RemoteWebDriver driver, By by)
-        {
-            var element = driver.FindElement(by);
-            Actions action = new Actions(driver);
-            action.MoveToElement(element).Perform();
-        }
-
         public static void ClickByActions(this RemoteWebDriver driver, IWebElement element)
         {
             Actions action = new Actions(driver);
@@ -271,6 +258,13 @@ namespace AutomationUtils.Extensions
 
         public static void MoveToElement(this RemoteWebDriver driver, IWebElement element)
         {
+            Actions action = new Actions(driver);
+            action.MoveToElement(element).Perform();
+        }
+
+        public static void MoveToElement(this RemoteWebDriver driver, By by)
+        {
+            var element = driver.FindElement(by);
             Actions action = new Actions(driver);
             action.MoveToElement(element).Perform();
         }
