@@ -3476,5 +3476,60 @@ namespace AutomationUtils.Extensions
         {
             driver.FindElement(By.XPath(".//body"));
         }
+
+        // For cases with _driver.FindBy
+        public static void ExecuteAction(this RemoteWebDriver driver, Action actionToDo, int retryCount = 5)
+        {
+            for (int i = 0; i < retryCount; i++)
+            {
+                try
+                {
+                    actionToDo.Invoke();
+                    return;
+                }
+                catch (NoSuchElementException)
+                {
+                    Thread.Sleep(1000);
+                }
+                catch (StaleElementReferenceException)
+                {
+                    Thread.Sleep(1000);
+                }
+                catch (NullReferenceException)
+                {
+                    Thread.Sleep(1000);
+                }
+                catch (TargetInvocationException)
+                {
+                    Thread.Sleep(1000);
+                }
+                catch (ElementClickInterceptedException)
+                {
+                    Thread.Sleep(1000);
+                }
+                catch (InvalidElementStateException)
+                {
+                    Thread.Sleep(1000);
+                }
+            }
+        }
+
+        // For cases when we need return value
+        public static bool ExecuteFunc(this RemoteWebDriver driver, Func<bool> actionToDo, int retryCount = 2)
+        {
+            for (int i = 0; i < retryCount; i++)
+            {
+                try
+                {
+                    return actionToDo.Invoke();
+                }
+                catch (Exception)
+                {
+                    Thread.Sleep(1000);
+                }
+            }
+
+            return false;
+        }
     }
 }
