@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using AutomationUtils.Extensions;
@@ -38,7 +37,7 @@ namespace AutomationUtils.Component
             {
                 if (!Driver.IsElementExists(Props.ParentSelector, WaitTime))
                 {
-                    //throw new Exception($"Unable to find Parent element with '{Props.ParentSelector}' selector");
+                    // Throw new Exception($"Unable to find Parent element with '{Props.ParentSelector}' selector");
                     return;
                 }
 
@@ -49,7 +48,7 @@ namespace AutomationUtils.Component
 
             var selector = Construct();
 
-            //Displayed check
+            // Displayed check
             if (!Props.Displayed.Equals(TriState.UseDefault))
             {
                 var displayedCondition = Props.Displayed.Equals(TriState.True);
@@ -63,7 +62,7 @@ namespace AutomationUtils.Component
                 }
             }
 
-            //Exist check
+            // Exist check
             if (!Props.Exist.Equals(TriState.UseDefault))
             {
                 var existCondition = Props.Exist.Equals(TriState.True);
@@ -81,7 +80,7 @@ namespace AutomationUtils.Component
             {
                 Components = Parent is null ? Driver.FindElements(selector).ToList() : Parent.FindElements(selector).ToList();
 
-                //Sometimes component lay outside of Parent and PageFactory should be called with Driver context
+                // Sometimes component lay outside of Parent and PageFactory should be called with Driver context
                 if (Props.InitWithoutContext)
                 {
                     PageFactory.InitElements(Driver, this);
@@ -126,7 +125,7 @@ namespace AutomationUtils.Component
 
         public WebDriverExtensions.WaitTime WaitTime = WebDriverExtensions.WaitTime.Medium;
 
-        //Page factory will use Driver as context for factory
+        // Page factory will use Driver as context for factory
         public bool InitWithoutContext = false;
     }
 }
