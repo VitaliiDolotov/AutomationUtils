@@ -142,5 +142,10 @@ namespace AutomationUtils.Extensions
             }
             return results;
         }
+
+        public static int GetNumber(this string str)
+        {
+            return int.Parse(Regex.Match(str, @"\d+").Value);
+        }
     }
 }
