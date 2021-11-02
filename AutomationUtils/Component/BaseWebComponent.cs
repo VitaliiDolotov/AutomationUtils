@@ -11,13 +11,13 @@ namespace AutomationUtils.Component
 {
     public abstract class BaseWebComponent : IWebComponent
     {
+        public void CheckAutomationClass() { }
+
         public Properties Props = new Properties();
 
         protected IList<IWebElement> Components;
 
         protected abstract By Construct();
-
-        public void CheckAutomationClass() { }
 
         public void Build()
         {
