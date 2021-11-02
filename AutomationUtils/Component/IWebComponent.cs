@@ -14,5 +14,7 @@ namespace AutomationUtils.Component
         By Frame { get; }
 
         WebDriverExtensions.WaitTime WaitTime { set; }
+
+        void CheckAutomationClass();
     }
 }

@@ -17,6 +17,8 @@ namespace AutomationUtils.Component
 
         protected abstract By Construct();
 
+        public void CheckAutomationClass() { }
+
         public void Build()
         {
             if (!(Props.ParentSelector is null) && !(Props.Parent is null))
@@ -90,6 +92,12 @@ namespace AutomationUtils.Component
                     PageFactory.InitElements(Components.First(), this);
                 }
             }
+
+            try
+            {
+                CheckAutomationClass();
+            }
+            catch { }
         }
 
         public IWebElement Instance =>
