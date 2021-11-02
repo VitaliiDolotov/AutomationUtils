@@ -11,7 +11,7 @@ namespace AutomationUtils.Component
 {
     public abstract class BaseWebComponent : IWebComponent
     {
-        public abstract void CheckAutomationClass();
+        public virtual void CheckAutomationClass() { }
 
         public Properties Props = new Properties();
 
