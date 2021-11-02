@@ -119,7 +119,7 @@ namespace AutomationUtils.Extensions
             }
         }
 
-        public static List<string> GetTextBetween(this string source, string firstPart, bool secondPart)
+        public static List<string> GetTextBetween(this string source, string firstPart, string secondPart)
         {
             var pattern = @"(?<=" + firstPart + @")(.*)(?=" + secondPart + ")";
             var matches = Regex.Matches(source, pattern);
