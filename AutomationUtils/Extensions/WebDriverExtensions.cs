@@ -3151,17 +3151,25 @@ namespace AutomationUtils.Extensions
             }
         }
 
-        public static void Wait(this IWebDriver driver, Func<bool> condition, string message, int seconds = 30)
+        public static void Wait(this IWebDriver driver, Func<bool> condition, string message, int seconds = 30, bool throwException = true)
         {
-            var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
-            wait.IgnoreExceptionTypes(typeof(NoSuchElementException),
-                typeof(TargetInvocationException),
-                typeof(InvalidElementStateException),
-                typeof(NullReferenceException),
-                typeof(ElementNotInteractableException),
-                typeof(StaleElementReferenceException));
-            wait.Message = message;
-            wait.Until(d => condition.Invoke());
+            try
+            {
+                var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+                wait.IgnoreExceptionTypes(typeof(NoSuchElementException),
+                    typeof(TargetInvocationException),
+                    typeof(InvalidElementStateException),
+                    typeof(NullReferenceException),
+                    typeof(ElementNotInteractableException),
+                    typeof(StaleElementReferenceException));
+                wait.Message = message;
+                wait.Until(d => condition.Invoke());
+            }
+            catch (Exception e)
+            {
+                if (throwException)
+                    throw e;
+            }
         }
 
         #region Frames
