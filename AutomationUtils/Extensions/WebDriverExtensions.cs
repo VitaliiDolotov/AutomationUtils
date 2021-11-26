@@ -3155,7 +3155,7 @@ namespace AutomationUtils.Extensions
         {
             try
             {
-                var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+                var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(seconds));
                 wait.IgnoreExceptionTypes(typeof(NoSuchElementException),
                     typeof(TargetInvocationException),
                     typeof(InvalidElementStateException),
