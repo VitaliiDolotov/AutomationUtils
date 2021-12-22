@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
 	<PackageId>AutomationUtils</PackageId>
-    <Version>1.1.72</Version>
+    <Version>1.1.73</Version>
     <Authors>VitaliiD</Authors>
     <Company>VitaliiD</Company>
     <Description>Extensions and Helpers for WebDriver based automation framework</Description>

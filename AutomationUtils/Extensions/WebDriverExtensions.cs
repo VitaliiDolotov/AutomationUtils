@@ -3440,19 +3440,19 @@ namespace AutomationUtils.Extensions
 
         public static string GetClipboard(this RemoteWebDriver driver, string hubUri)
         {
-            SessionId sessionId = driver.SessionId;
+                SessionId sessionId = driver.SessionId;
 
-            RestClient client = new RestClient(hubUri.Replace("wd/hub", string.Empty));
-            RestRequest restRequest = new RestRequest($"/clipboard/{sessionId}");
-            IRestResponse restResponse = client.Get(restRequest);
+                RestClient client = new RestClient(hubUri.Replace("wd/hub", string.Empty));
+                RestRequest restRequest = new RestRequest($"/clipboard/{sessionId}");
+                IRestResponse restResponse = client.Get(restRequest);
 
-            if (!restResponse.StatusCode.Equals(HttpStatusCode.OK))
-            {
-                throw new Exception("Unable to get clipboard");
-            }
+                if (!restResponse.StatusCode.Equals(HttpStatusCode.OK))
+                {
+                    throw new Exception("Unable to get clipboard");
+                }
 
-            var content = restResponse.Content;
-            return content;
+                var content = restResponse.Content;
+                return content;
         }
 
         public static void SetClipboard(this RemoteWebDriver driver, string hubUri, string data)
@@ -3551,6 +3551,34 @@ namespace AutomationUtils.Extensions
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// This method is used to check the REALLY (with naked eye) visibility of an element
+        /// </summary>
+        /// <returns></returns>
+        public static bool IsElementVisibleInViewport(this RemoteWebDriver driver, IWebElement element)
+        {
+            try
+            {
+                return (bool)driver.ExecuteScript(
+                    "var elem = arguments[0],                 " +
+                    "  box = elem.getBoundingClientRect(),    " +
+                    "  cx = box.left + box.width / 2,         " +
+                    "  cy = box.top + box.height / 2,         " +
+                    "  e = document.elementFromPoint(cx, cy); " +
+                    "for (; e; e = e.parentElement) {         " +
+                    "  if (e === elem)                        " +
+                    "    return true;                         " +
+                    "}                                        " +
+                    "return false;                            "
+                    , element);
+            }
+            catch (NoSuchElementException)
+            {
+                // Returns false because the element is not present in DOM.
+                return false;
+            }
         }
     }
 }
