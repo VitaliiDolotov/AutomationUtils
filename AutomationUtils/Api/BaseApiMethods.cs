@@ -2,7 +2,12 @@
 
 namespace AutomationUtils.Api
 {
-    public abstract class BaseApiMethods
+    interface IBaseApiMethods
+    {
+        RestClient Client { set; }
+    }
+
+    public abstract class BaseApiMethods : IBaseApiMethods
     {
         private RestClient _client;
 
