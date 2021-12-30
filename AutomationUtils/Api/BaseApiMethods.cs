@@ -2,7 +2,7 @@
 
 namespace AutomationUtils.Api
 {
-    interface IBaseApiMethods
+    public interface IBaseApiMethods
     {
         RestClient Client { set; }
     }
