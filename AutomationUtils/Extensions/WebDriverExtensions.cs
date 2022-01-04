@@ -3557,7 +3557,7 @@ namespace AutomationUtils.Extensions
         /// This method is used to check the REALLY (with naked eye) visibility of an element
         /// </summary>
         /// <returns></returns>
-        public static bool IsElementVisibleInViewport(this RemoteWebDriver driver, IWebElement element)
+        public static bool Visible(this RemoteWebDriver driver, IWebElement element)
         {
             try
             {
