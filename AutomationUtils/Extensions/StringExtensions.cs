@@ -119,9 +119,11 @@ namespace AutomationUtils.Extensions
             }
         }
 
-        public static List<string> GetTextBetween(this string source, string firstPart, string secondPart)
+        public static List<string> GetTextBetween(this string source, string firstPart, string secondPart, bool textBeforeLastOccurrenceOfSecondString = true)
         {
-            var pattern = @"(?<=" + firstPart + @")(.*)(?=" + secondPart + ")";
+            var pattern = textBeforeLastOccurrenceOfSecondString ?
+                @"(?<=" + firstPart + @")(.*)(?=" + secondPart + ")" :
+                @"(?<=" + firstPart + ").+?(?=" + secondPart + ")";
             var matches = Regex.Matches(source, pattern);
             var results = new List<string>();
             foreach (Match match in matches)
@@ -131,9 +133,9 @@ namespace AutomationUtils.Extensions
             return results;
         }
 
-        public static List<string> GetTextBetween(this string source, char firstChar, bool includeChars)
+        public static List<string> GetTextBetween(this string source, char characters, bool includeChars)
         {
-            return GetTextBetweenTwoCharacters(source, firstChar, firstChar, includeChars);
+            return GetTextBetweenTwoCharacters(source, characters, characters, includeChars);
         }
 
         public static List<string> GetTextBetween(this string source, char firstChar, char secondChar, bool includeChars)
