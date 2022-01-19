@@ -13,7 +13,7 @@
             <param name="fieldNumbers">Starts from 0</param>
             <returns></returns>
         </member>
-        <member name="M:AutomationUtils.Extensions.WebDriverExtensions.WaitForElementChildElements(OpenQA.Selenium.Remote.RemoteWebDriver,OpenQA.Selenium.IWebElement,OpenQA.Selenium.By,System.Int32,AutomationUtils.Extensions.WebDriverExtensions.WaitTime)">
+        <member name="M:AutomationUtils.Extensions.WebDriverExtensions.WaitForElementChildElements(OpenQA.Selenium.Remote.WebDriver,OpenQA.Selenium.IWebElement,OpenQA.Selenium.By,System.Int32,AutomationUtils.Extensions.WebDriverExtensions.WaitTime)">
             <summary>
             Wait while element do not have specified number of child elements
             </summary>

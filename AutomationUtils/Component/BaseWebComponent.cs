@@ -106,19 +106,17 @@ namespace AutomationUtils.Component
         public IList<IWebElement> Instances =>
             Props.Displayed.Equals(TriState.True) || Props.Exist.Equals(TriState.True) ? Components : null;
 
-        public RemoteWebDriver Driver { get; set; }
+        public WebDriver Driver { get; set; }
 
         public WebDriverExtensions.WaitTime WaitTime { get; set; }
 
         public string Identifier { get; set; }
 
-        protected By ParentSelector { get; set; }
+        private By ParentSelector { get; set; }
 
-        protected IWebElement Parent { get; set; }
+        private IWebElement Parent { get; set; }
 
         public By Context { get; }
-
-        public By Frame { get; }
     }
 
     public class Properties

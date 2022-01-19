@@ -1,9 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
 	<PackageId>AutomationUtils</PackageId>
-    <Version>1.1.77</Version>
+    <Version>1.1.77.1</Version>
     <Authors>VitaliiD</Authors>
     <Company>VitaliiD</Company>
     <Description>Extensions and Helpers for WebDriver based automation framework</Description>
@@ -13,12 +13,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DotNetSeleniumExtras.PageObjects.Core" Version="3.12.0" />
+    <PackageReference Include="DotNetSeleniumExtras.PageObjects.Core" Version="4.0.1" />
     <PackageReference Include="HtmlAgilityPack" Version="1.11.22" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
     <PackageReference Include="NUnit" Version="3.12.0" />
     <PackageReference Include="RestSharp" Version="106.10.1" />
-    <PackageReference Include="Selenium.Support" Version="3.141.0" />
+    <PackageReference Include="Selenium.Support" Version="4.1.0" />
   </ItemGroup>
 
 </Project>

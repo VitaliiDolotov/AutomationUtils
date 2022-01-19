@@ -22,7 +22,7 @@ namespace AutomationUtils.Pages
         [FindsBy(How = How.XPath, Using = BodySelector)]
         public IWebElement BodyContainer { get; set; }
 
-        public RemoteWebDriver Driver { get; set; }
+        public WebDriver Driver { get; set; }
 
         public Actions Actions { get; set; }
 

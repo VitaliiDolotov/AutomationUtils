@@ -54,7 +54,7 @@ namespace AutomationUtils.Extensions
             }
         }
 
-        public static void ClearWithHomeButton(this IWebElement textbox, RemoteWebDriver driver)
+        public static void ClearWithHomeButton(this IWebElement textbox, WebDriver driver)
         {
             Actions action = new Actions(driver);
             action.Click(textbox).SendKeys(Keys.End).KeyDown(Keys.Shift).SendKeys(Keys.Home).KeyUp(Keys.Shift)
@@ -149,7 +149,7 @@ namespace AutomationUtils.Extensions
             }
         }
 
-        public static IWebElement UntilElementHasChilds(this IWebElement element, RemoteWebDriver driver, By locator,
+        public static IWebElement UntilElementHasChilds(this IWebElement element, WebDriver driver, By locator,
             TimeSpan timeOut, int childsCount = 4)
         {
             new WebDriverWait(driver, timeOut).Until(d => element.FindElements(locator).Count >= childsCount);

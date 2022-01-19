@@ -7,11 +7,12 @@ namespace AutomationUtils.Component
 {
     public interface IWebComponent : IContextContainer
     {
-        RemoteWebDriver Driver { get; set; }
+        WebDriver Driver { get; set; }
 
         string Identifier { get; set; }
 
-        By Frame { get; }
+        // TODO Uncomment when logic will be implemented
+        // By Frame { get; }
 
         WebDriverExtensions.WaitTime WaitTime { set; }
     }

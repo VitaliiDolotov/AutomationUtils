@@ -37,7 +37,7 @@ namespace AutomationUtils.Extensions
 
         #region NowAt
 
-        public static T NowAt<T>(this RemoteWebDriver driver, bool pageIdentitySelectorsDisplayed = true) where T : SeleniumBasePage, new()
+        public static T NowAt<T>(this WebDriver driver, bool pageIdentitySelectorsDisplayed = true) where T : SeleniumBasePage, new()
         {
             var page = new T { Driver = driver, Actions = new Actions(driver) };
             driver.WaitForLoadingElements(page, null, pageIdentitySelectorsDisplayed);
@@ -45,7 +45,7 @@ namespace AutomationUtils.Extensions
             return page;
         }
 
-        public static T NowAtWithContext<T>(this RemoteWebDriver driver, bool pageIdentitySelectorsDisplayed = true) where T : SeleniumBasePage, new()
+        public static T NowAtWithContext<T>(this WebDriver driver, bool pageIdentitySelectorsDisplayed = true) where T : SeleniumBasePage, new()
         {
             var page = new T { Driver = driver, Actions = new Actions(driver) };
             driver.WaitForLoadingElements(page, null, pageIdentitySelectorsDisplayed);
@@ -54,14 +54,14 @@ namespace AutomationUtils.Extensions
             return page;
         }
 
-        public static T NowAtWithoutWait<T>(this RemoteWebDriver driver) where T : SeleniumBasePage, new()
+        public static T NowAtWithoutWait<T>(this WebDriver driver) where T : SeleniumBasePage, new()
         {
             var page = new T { Driver = driver, Actions = new Actions(driver) };
             page.InitElements();
             return page;
         }
 
-        public static void WaitForLoadingElements(this RemoteWebDriver driver, SeleniumBasePage page, By bySelector, bool pageIdentitySelectorsDisplayed)
+        public static void WaitForLoadingElements(this WebDriver driver, SeleniumBasePage page, By bySelector, bool pageIdentitySelectorsDisplayed)
         {
             var bys = bySelector != null ? new List<By> { bySelector } : page.GetPageIdentitySelectors();
 
@@ -82,7 +82,7 @@ namespace AutomationUtils.Extensions
 
         #region Availability of element
 
-        public static bool IsElementDisplayed(this RemoteWebDriver driver, IWebElement element)
+        public static bool IsElementDisplayed(this WebDriver driver, IWebElement element)
         {
             try
             {
@@ -94,7 +94,7 @@ namespace AutomationUtils.Extensions
             }
         }
 
-        public static bool IsElementDisplayed(this RemoteWebDriver driver, IWebElement element, WaitTime waitTime)
+        public static bool IsElementDisplayed(this WebDriver driver, IWebElement element, WaitTime waitTime)
         {
             try
             {
@@ -107,7 +107,7 @@ namespace AutomationUtils.Extensions
             }
         }
 
-        public static bool IsElementDisplayed(this RemoteWebDriver driver, By selector)
+        public static bool IsElementDisplayed(this WebDriver driver, By selector)
         {
             try
             {
@@ -119,7 +119,7 @@ namespace AutomationUtils.Extensions
             }
         }
 
-        public static bool IsElementDisplayed(this RemoteWebDriver driver, By selector, WaitTime waitTime)
+        public static bool IsElementDisplayed(this WebDriver driver, By selector, WaitTime waitTime)
         {
             try
             {
@@ -132,7 +132,7 @@ namespace AutomationUtils.Extensions
             }
         }
 
-        public static bool IsElementInElementDisplayed(this RemoteWebDriver driver, IWebElement element, By selector, WaitTime waitTime)
+        public static bool IsElementInElementDisplayed(this WebDriver driver, IWebElement element, By selector, WaitTime waitTime)
         {
             try
             {
@@ -180,7 +180,7 @@ namespace AutomationUtils.Extensions
             return true;
         }
 
-        public static bool IsElementExists(this RemoteWebDriver driver, By @by, WaitTime waitTime)
+        public static bool IsElementExists(this WebDriver driver, By @by, WaitTime waitTime)
         {
             try
             {
@@ -194,7 +194,7 @@ namespace AutomationUtils.Extensions
             }
         }
 
-        public static bool IsElementInElementExists(this RemoteWebDriver driver, IWebElement element, By selector, WaitTime waitTime)
+        public static bool IsElementInElementExists(this WebDriver driver, IWebElement element, By selector, WaitTime waitTime)
         {
             try
             {
@@ -207,7 +207,7 @@ namespace AutomationUtils.Extensions
             }
         }
 
-        public static bool IsElementInElementExists(this RemoteWebDriver driver, IWebElement element, By selector)
+        public static bool IsElementInElementExists(this WebDriver driver, IWebElement element, By selector)
         {
             try
             {
@@ -224,13 +224,13 @@ namespace AutomationUtils.Extensions
 
         #region Actions
 
-        public static void ClickByActions(this RemoteWebDriver driver, IWebElement element)
+        public static void ClickByActions(this WebDriver driver, IWebElement element)
         {
             Actions action = new Actions(driver);
             action.Click(element).Perform();
         }
 
-        public static void ClickElementLeftCenter(this RemoteWebDriver driver, IWebElement element)
+        public static void ClickElementLeftCenter(this WebDriver driver, IWebElement element)
         {
             var width = element.Size.Width;
             var height = element.Size.Height;
@@ -238,45 +238,45 @@ namespace AutomationUtils.Extensions
             action.MoveToElement(element, width / 4, height / 2).Click().Build().Perform();
         }
 
-        public static void DoubleClick(this RemoteWebDriver driver, IWebElement element)
+        public static void DoubleClick(this WebDriver driver, IWebElement element)
         {
             Actions action = new Actions(driver);
             action.DoubleClick(element).Build().Perform();
         }
 
-        public static void ContextClick(this RemoteWebDriver driver, IWebElement element)
+        public static void ContextClick(this WebDriver driver, IWebElement element)
         {
             Actions action = new Actions(driver);
             action.ContextClick(element).Build().Perform();
         }
 
-        public static void HoverAndClick(this RemoteWebDriver driver, IWebElement element)
+        public static void HoverAndClick(this WebDriver driver, IWebElement element)
         {
             Actions action = new Actions(driver);
             action.MoveToElement(element).Click(element).Perform();
         }
 
-        public static void MoveToElement(this RemoteWebDriver driver, IWebElement element)
+        public static void MoveToElement(this WebDriver driver, IWebElement element)
         {
             Actions action = new Actions(driver);
             action.MoveToElement(element).Perform();
         }
 
-        public static void MoveToElement(this RemoteWebDriver driver, By by)
+        public static void MoveToElement(this WebDriver driver, By by)
         {
             var element = driver.FindElement(by);
             Actions action = new Actions(driver);
             action.MoveToElement(element).Perform();
         }
 
-        public static void DragAndDrop(this RemoteWebDriver driver, IWebElement elementToBeMoved,
+        public static void DragAndDrop(this WebDriver driver, IWebElement elementToBeMoved,
             IWebElement moveToElement)
         {
             Actions action = new Actions(driver);
             action.DragAndDrop(elementToBeMoved, moveToElement).Perform();
         }
 
-        public static void InsertFromClipboard(this RemoteWebDriver driver, IWebElement textbox)
+        public static void InsertFromClipboard(this WebDriver driver, IWebElement textbox)
         {
             Actions action = new Actions(driver);
             //TODO: below code stopped work on Aug 13 2019; splitted into 2 rows
@@ -288,7 +288,7 @@ namespace AutomationUtils.Extensions
             action.KeyUp(Keys.Shift).Build().Perform();
         }
 
-        public static void SearchOnPage(this RemoteWebDriver driver)
+        public static void SearchOnPage(this WebDriver driver)
         {
             Actions action = new Actions(driver);
             action.KeyDown(Keys.Control).SendKeys("F").Build().Perform();
@@ -299,38 +299,38 @@ namespace AutomationUtils.Extensions
 
         #region Actions with Javascript
 
-        public static void ClickByJavascript(this RemoteWebDriver driver, IWebElement element)
+        public static void ClickByJavascript(this WebDriver driver, IWebElement element)
         {
             IJavaScriptExecutor ex = (IJavaScriptExecutor)driver;
             ex.ExecuteScript("arguments[0].click();", element);
         }
 
-        public static void ClearByJavascript(this RemoteWebDriver driver, IWebElement element)
+        public static void ClearByJavascript(this WebDriver driver, IWebElement element)
         {
             IJavaScriptExecutor ex = (IJavaScriptExecutor)driver;
             ex.ExecuteScript("arguments[0].value = '';", element);
         }
 
-        public static void SendKeyByJavascript(this RemoteWebDriver driver, IWebElement element, string str)
+        public static void SendKeyByJavascript(this WebDriver driver, IWebElement element, string str)
         {
             IJavaScriptExecutor ex = (IJavaScriptExecutor)driver;
             ex.ExecuteScript($"arguments[0].value = '{str}';", element);
         }
 
-        public static void MouseHoverByJavascript(this RemoteWebDriver driver, IWebElement element)
+        public static void MouseHoverByJavascript(this WebDriver driver, IWebElement element)
         {
             IJavaScriptExecutor ex = driver;
             ex.ExecuteScript("arguments[0].scrollIntoView(true);", element);
         }
 
-        public static void SetAttributeByJavascript(this RemoteWebDriver driver, IWebElement element, string attribute,
+        public static void SetAttributeByJavascript(this WebDriver driver, IWebElement element, string attribute,
             string text)
         {
             IJavaScriptExecutor ex = driver;
             ex.ExecuteScript($"arguments[0].setAttribute('{attribute}', '{text}')", element);
         }
 
-        public static String GetNetworkLogByJavascript(this RemoteWebDriver driver)
+        public static String GetNetworkLogByJavascript(this WebDriver driver)
         {
             String scriptToExecute = "var performance = window.performance  || window.mozPerformance  || window.msPerformance  || window.webkitPerformance || {}; var network = performance.getEntries() || {}; return JSON.stringify(network);";
             IJavaScriptExecutor ex = driver;
@@ -338,33 +338,33 @@ namespace AutomationUtils.Extensions
             return netData.ToString();
         }
 
-        public static bool IsElementHaveVerticalScrollbar(this RemoteWebDriver driver, IWebElement element)
+        public static bool IsElementHaveVerticalScrollbar(this WebDriver driver, IWebElement element)
         {
             IJavaScriptExecutor ex = driver;
             bool result = (bool)ex.ExecuteScript("return arguments[0].scrollHeight > arguments[0].clientHeight", element);
             return result;
         }
 
-        public static bool IsElementHaveHorizontalScrollbar(this RemoteWebDriver driver, IWebElement element)
+        public static bool IsElementHaveHorizontalScrollbar(this WebDriver driver, IWebElement element)
         {
             IJavaScriptExecutor ex = driver;
             bool result = (bool)ex.ExecuteScript("return arguments[0].scrollHeight > arguments[0].clientHeight", element);
             return result;
         }
 
-        public static void ScrollGridToTheTop(this RemoteWebDriver driver, IWebElement gridElement)
+        public static void ScrollGridToTheTop(this WebDriver driver, IWebElement gridElement)
         {
             IJavaScriptExecutor ex = driver;
             ex.ExecuteScript($"arguments[0].scrollTop = 0;", gridElement);
         }
 
-        public static void ScrollGridToTheLeft(this RemoteWebDriver driver, IWebElement gridElement)
+        public static void ScrollGridToTheLeft(this WebDriver driver, IWebElement gridElement)
         {
             IJavaScriptExecutor ex = driver;
             ex.ExecuteScript($"arguments[0].scrollLeft = 0;", gridElement);
         }
 
-        public static void ScrollGridToTheEnd(this RemoteWebDriver driver, IWebElement gridElement)
+        public static void ScrollGridToTheEnd(this WebDriver driver, IWebElement gridElement)
         {
             IJavaScriptExecutor ex = driver;
 
@@ -381,7 +381,7 @@ namespace AutomationUtils.Extensions
             ex.ExecuteScript($"arguments[0].scrollTo(0,{scrollHeight});", gridElement);
         }
 
-        public static Int64 HorizontalScrollPosition(this RemoteWebDriver driver, IWebElement element)
+        public static Int64 HorizontalScrollPosition(this WebDriver driver, IWebElement element)
         {
             IJavaScriptExecutor ex = driver;
             var result = (Int64)ex.ExecuteScript("return arguments[0].scrollLeft", element);
@@ -394,7 +394,7 @@ namespace AutomationUtils.Extensions
             Left
         }
 
-        public static void ScrollHorizontalyTo(this RemoteWebDriver driver, Direction direction, IWebElement element, int percentage = 100)
+        public static void ScrollHorizontalyTo(this WebDriver driver, Direction direction, IWebElement element, int percentage = 100)
         {
             IJavaScriptExecutor ex = driver;
             var clientWidth = int.Parse(ex.ExecuteScript("return arguments[0].clientWidth", element).ToString());
@@ -413,7 +413,7 @@ namespace AutomationUtils.Extensions
             }
         }
 
-        public static List<string> GetElementAttributes(this RemoteWebDriver driver, IWebElement element)
+        public static List<string> GetElementAttributes(this WebDriver driver, IWebElement element)
         {
             IJavaScriptExecutor ex = driver;
             var attributesAndValues = (Dictionary<string, object>)ex.ExecuteScript("var items = { }; for (index = 0; index < arguments[0].attributes.length; ++index) { items[arguments[0].attributes[index].name] = arguments[0].attributes[index].value }; return items;", element);
@@ -421,12 +421,12 @@ namespace AutomationUtils.Extensions
             return attributes;
         }
 
-        public static string GetSelectedText(this RemoteWebDriver driver)
+        public static string GetSelectedText(this WebDriver driver)
         {
             return ((IJavaScriptExecutor)driver).ExecuteScript("return window.getSelection().toString()").ToString();
         }
 
-        public static string GetPseudoElementValue(this RemoteWebDriver driver, IWebElement element, Pseudo pseudo, string value)
+        public static string GetPseudoElementValue(this WebDriver driver, IWebElement element, Pseudo pseudo, string value)
         {
             string script = $"return window.getComputedStyle(arguments[0], ':{pseudo.GetValue()}').getPropertyValue('{value}');";
             return driver.ExecuteScript(script, element).ToString().Trim('"');
@@ -444,19 +444,19 @@ namespace AutomationUtils.Extensions
 
         #region JavaSctipt Alert
 
-        public static void AcceptAlert(this RemoteWebDriver driver, WaitTime waitTime = WaitTime.Short)
+        public static void AcceptAlert(this WebDriver driver, WaitTime waitTime = WaitTime.Short)
         {
             WaitForAlert(driver, waitTime);
             driver.SwitchTo().Alert().Accept();
         }
 
-        public static void DismissAlert(this RemoteWebDriver driver, WaitTime waitTime = WaitTime.Short)
+        public static void DismissAlert(this WebDriver driver, WaitTime waitTime = WaitTime.Short)
         {
             WaitForAlert(driver, waitTime);
             driver.SwitchTo().Alert().Dismiss();
         }
 
-        public static bool IsAlertPresent(this RemoteWebDriver driver, WaitTime waitTime = WaitTime.Short)
+        public static bool IsAlertPresent(this WebDriver driver, WaitTime waitTime = WaitTime.Short)
         {
             try
             {
@@ -469,7 +469,7 @@ namespace AutomationUtils.Extensions
             }
         }
 
-        public static void WaitForAlert(this RemoteWebDriver driver, WaitTime waitTime = WaitTime.Short)
+        public static void WaitForAlert(this WebDriver driver, WaitTime waitTime = WaitTime.Short)
         {
             try
             {
@@ -503,31 +503,31 @@ namespace AutomationUtils.Extensions
 
         #region Wait for Element to be (not) Displayed
 
-        public static void WaitForElementToBeNotDisplayed(this RemoteWebDriver driver, IWebElement element, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementToBeNotDisplayed(this WebDriver driver, IWebElement element, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitForElementDisplayCondition(driver, element, false, waitSec);
         }
 
-        public static void WaitForElementToBeDisplayed(this RemoteWebDriver driver, IWebElement element, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementToBeDisplayed(this WebDriver driver, IWebElement element, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitForElementDisplayCondition(driver, element, true, waitSec);
         }
 
-        public static void WaitForElementToBeDisplayed(this RemoteWebDriver driver, By locator, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementToBeDisplayed(this WebDriver driver, By locator, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitForElementDisplayCondition(driver, locator, true, waitSec);
         }
 
-        public static void WaitForElementToBeNotDisplayed(this RemoteWebDriver driver, By locator, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementToBeNotDisplayed(this WebDriver driver, By locator, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitForElementDisplayCondition(driver, locator, false, waitSec);
         }
 
-        internal static void WaitForElementDisplayCondition(this RemoteWebDriver driver, By by, bool condition, int waitSeconds)
+        internal static void WaitForElementDisplayCondition(this WebDriver driver, By by, bool condition, int waitSeconds)
         {
             try
             {
@@ -540,7 +540,7 @@ namespace AutomationUtils.Extensions
             }
         }
 
-        private static void WaitForElementDisplayCondition(this RemoteWebDriver driver, IWebElement element, bool condition, int waitSeconds)
+        private static void WaitForElementDisplayCondition(this WebDriver driver, IWebElement element, bool condition, int waitSeconds)
         {
             try
             {
@@ -631,19 +631,19 @@ namespace AutomationUtils.Extensions
 
         #region Wait for Element to be (not) Displayed in Element
 
-        public static void WaitForElementInElementToBeNotDisplayed(this RemoteWebDriver driver, IWebElement element, By selector, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementInElementToBeNotDisplayed(this WebDriver driver, IWebElement element, By selector, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitForElementInElementDisplayCondition(driver, element, selector, false, waitSec);
         }
 
-        public static void WaitForElementInElementToBeDisplayed(this RemoteWebDriver driver, IWebElement element, By selector, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementInElementToBeDisplayed(this WebDriver driver, IWebElement element, By selector, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitForElementInElementDisplayCondition(driver, element, selector, true, waitSec);
         }
 
-        public static void WaitForElementInElementDisplayCondition(this RemoteWebDriver driver, IWebElement element, By selector, bool condition, int waitSeconds)
+        public static void WaitForElementInElementDisplayCondition(this WebDriver driver, IWebElement element, By selector, bool condition, int waitSeconds)
         {
             try
             {
@@ -697,38 +697,38 @@ namespace AutomationUtils.Extensions
 
         #region Wait for Element to be (not) Displayed After Refresh
 
-        public static void WaitForElementToBeNotDisplayedAfterRefresh(this RemoteWebDriver driver, IWebElement element, Action<RemoteWebDriver> waitForDataLoadingMethod, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementToBeNotDisplayedAfterRefresh(this WebDriver driver, IWebElement element, Action<WebDriver> waitForDataLoadingMethod, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitForElementDisplayConditionAfterRefresh(driver, element, false, waitSec, waitForDataLoadingMethod);
         }
 
         //Only elements from PageObject are allowed!!!
-        public static void WaitForElementToBeDisplayedAfterRefresh(this RemoteWebDriver driver, IWebElement element, Action<RemoteWebDriver> waitForDataLoadingMethod, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementToBeDisplayedAfterRefresh(this WebDriver driver, IWebElement element, Action<WebDriver> waitForDataLoadingMethod, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitForElementDisplayConditionAfterRefresh(driver, element, true, waitSec, waitForDataLoadingMethod);
         }
 
-        public static void WaitForElementToBeDisplayedAfterRefresh(this RemoteWebDriver driver, IWebElement element, By by, Action<RemoteWebDriver> waitForDataLoadingMethod, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementToBeDisplayedAfterRefresh(this WebDriver driver, IWebElement element, By by, Action<WebDriver> waitForDataLoadingMethod, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitForElementDisplayConditionAfterRefresh(driver, element, by, true, waitSec, waitForDataLoadingMethod);
         }
 
-        public static void WaitForElementToBeDisplayedAfterRefresh(this RemoteWebDriver driver, By locator, Action<RemoteWebDriver> waitForDataLoadingMethod, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementToBeDisplayedAfterRefresh(this WebDriver driver, By locator, Action<WebDriver> waitForDataLoadingMethod, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitForElementDisplayConditionAfterRefresh(driver, locator, true, waitSec, waitForDataLoadingMethod);
         }
 
-        public static void WaitForElementToBeNotDisplayedAfterRefresh(this RemoteWebDriver driver, By locator, Action<RemoteWebDriver> waitForDataLoadingMethod, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementToBeNotDisplayedAfterRefresh(this WebDriver driver, By locator, Action<WebDriver> waitForDataLoadingMethod, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitForElementDisplayConditionAfterRefresh(driver, locator, false, waitSec, waitForDataLoadingMethod);
         }
 
-        private static void WaitForElementDisplayConditionAfterRefresh(this RemoteWebDriver driver, By by, bool condition, int waitSeconds, Action<RemoteWebDriver> waitForDataLoadingMethod)
+        private static void WaitForElementDisplayConditionAfterRefresh(this WebDriver driver, By by, bool condition, int waitSeconds, Action<WebDriver> waitForDataLoadingMethod)
         {
             try
             {
@@ -741,7 +741,7 @@ namespace AutomationUtils.Extensions
             }
         }
 
-        private static void WaitForElementDisplayConditionAfterRefresh(this RemoteWebDriver driver, IWebElement element, bool condition, int waitSeconds, Action<RemoteWebDriver> waitForDataLoadingMethod)
+        private static void WaitForElementDisplayConditionAfterRefresh(this WebDriver driver, IWebElement element, bool condition, int waitSeconds, Action<WebDriver> waitForDataLoadingMethod)
         {
             try
             {
@@ -754,7 +754,7 @@ namespace AutomationUtils.Extensions
             }
         }
 
-        private static void WaitForElementDisplayConditionAfterRefresh(this RemoteWebDriver driver, IWebElement element, By by, bool condition, int waitSeconds, Action<RemoteWebDriver> waitForDataLoadingMethod)
+        private static void WaitForElementDisplayConditionAfterRefresh(this WebDriver driver, IWebElement element, By by, bool condition, int waitSeconds, Action<WebDriver> waitForDataLoadingMethod)
         {
             try
             {
@@ -768,18 +768,18 @@ namespace AutomationUtils.Extensions
         }
 
         //Return true if find at least one element by provided selector with Displayed condition true
-        private static Func<IWebDriver, bool> ElementIsInDisplayedConditionAfterRefresh(By locator, bool displayedCondition, Action<RemoteWebDriver> waitForDataLoadingMethod, Action<RemoteWebDriver> refresh)
+        private static Func<IWebDriver, bool> ElementIsInDisplayedConditionAfterRefresh(By locator, bool displayedCondition, Action<WebDriver> waitForDataLoadingMethod, Action<WebDriver> refresh)
         {
             return (driver) =>
             {
                 try
                 {
-                    refresh((RemoteWebDriver)driver);
+                    refresh((WebDriver)driver);
                     refresh = RefreshPage;
 
-                    waitForDataLoadingMethod((RemoteWebDriver)driver);
+                    waitForDataLoadingMethod((WebDriver)driver);
 
-                    return IsElementDisplayed((RemoteWebDriver)driver, locator, WebDriverExtensions.WaitTime.Short).Equals(displayedCondition);
+                    return IsElementDisplayed((WebDriver)driver, locator, WebDriverExtensions.WaitTime.Short).Equals(displayedCondition);
                 }
                 catch (NoSuchElementException)
                 {
@@ -805,18 +805,18 @@ namespace AutomationUtils.Extensions
             };
         }
 
-        private static Func<IWebDriver, bool> ElementIsInDisplayedConditionAfterRefresh(IWebElement element, bool displayedCondition, Action<RemoteWebDriver> waitForDataLoadingMethod, Action<RemoteWebDriver> refresh)
+        private static Func<IWebDriver, bool> ElementIsInDisplayedConditionAfterRefresh(IWebElement element, bool displayedCondition, Action<WebDriver> waitForDataLoadingMethod, Action<WebDriver> refresh)
         {
             return (driver) =>
             {
                 try
                 {
-                    refresh((RemoteWebDriver)driver);
+                    refresh((WebDriver)driver);
                     refresh = RefreshPage;
 
-                    waitForDataLoadingMethod((RemoteWebDriver)driver);
+                    waitForDataLoadingMethod((WebDriver)driver);
 
-                    return IsElementDisplayed((RemoteWebDriver)driver, element, WebDriverExtensions.WaitTime.Short).Equals(displayedCondition);
+                    return IsElementDisplayed((WebDriver)driver, element, WebDriverExtensions.WaitTime.Short).Equals(displayedCondition);
                 }
                 catch (NoSuchElementException)
                 {
@@ -842,18 +842,18 @@ namespace AutomationUtils.Extensions
             };
         }
 
-        private static Func<IWebDriver, bool> ElementIsInDisplayedConditionAfterRefresh(IWebElement element, By by, bool displayedCondition, Action<RemoteWebDriver> waitForDataLoadingMethod, Action<RemoteWebDriver> refresh)
+        private static Func<IWebDriver, bool> ElementIsInDisplayedConditionAfterRefresh(IWebElement element, By by, bool displayedCondition, Action<WebDriver> waitForDataLoadingMethod, Action<WebDriver> refresh)
         {
             return (driver) =>
             {
                 try
                 {
-                    refresh((RemoteWebDriver)driver);
+                    refresh((WebDriver)driver);
                     refresh = RefreshPage;
 
-                    waitForDataLoadingMethod((RemoteWebDriver)driver);
+                    waitForDataLoadingMethod((WebDriver)driver);
 
-                    return IsElementInElementDisplayed((RemoteWebDriver)driver, element, by,
+                    return IsElementInElementDisplayed((WebDriver)driver, element, by,
                         WebDriverExtensions.WaitTime.Short).Equals(displayedCondition);
                 }
                 catch (NoSuchElementException)
@@ -884,7 +884,7 @@ namespace AutomationUtils.Extensions
 
         #region Wait for ElementS to be (not) Displayed
 
-        public static void WaitForElementsToBeNotDisplayed(this RemoteWebDriver driver, By by, WaitTime waitTime = WaitTime.Medium, bool allElements = true)
+        public static void WaitForElementsToBeNotDisplayed(this WebDriver driver, By by, WaitTime waitTime = WaitTime.Medium, bool allElements = true)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             if (allElements)
@@ -893,7 +893,7 @@ namespace AutomationUtils.Extensions
                 WaitForAtLeastOneElementDisplayCondition(driver, by, false, waitSec);
         }
 
-        public static void WaitForElementsToBeNotDisplayed(this RemoteWebDriver driver, List<By> bys, WaitTime waitTime = WaitTime.Medium, bool allElements = true)
+        public static void WaitForElementsToBeNotDisplayed(this WebDriver driver, List<By> bys, WaitTime waitTime = WaitTime.Medium, bool allElements = true)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             if (allElements)
@@ -902,13 +902,13 @@ namespace AutomationUtils.Extensions
                 WaitForAtLeastOneElementDisplayCondition(driver, bys, false, waitSec);
         }
 
-        public static void WaitForElementsToBeNotDisplayed(this RemoteWebDriver driver, IList<IWebElement> elements, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementsToBeNotDisplayed(this WebDriver driver, IList<IWebElement> elements, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitForElementsDisplayCondition(driver, elements, false, waitSec);
         }
 
-        public static void WaitForElementsToBeDisplayed(this RemoteWebDriver driver, By by, WaitTime waitTime = WaitTime.Medium, bool allElements = true)
+        public static void WaitForElementsToBeDisplayed(this WebDriver driver, By by, WaitTime waitTime = WaitTime.Medium, bool allElements = true)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             if (allElements)
@@ -917,7 +917,7 @@ namespace AutomationUtils.Extensions
                 WaitForAtLeastOneElementDisplayCondition(driver, by, true, waitSec);
         }
 
-        public static void WaitForElementsToBeDisplayed(this RemoteWebDriver driver, List<By> bys, WaitTime waitTime = WaitTime.Medium, bool allElements = true)
+        public static void WaitForElementsToBeDisplayed(this WebDriver driver, List<By> bys, WaitTime waitTime = WaitTime.Medium, bool allElements = true)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             if (allElements)
@@ -926,7 +926,7 @@ namespace AutomationUtils.Extensions
                 WaitForAtLeastOneElementDisplayCondition(driver, bys, true, waitSec);
         }
 
-        public static void WaitForElementsToBeDisplayed(this RemoteWebDriver driver, IList<IWebElement> elements, WaitTime waitTime = WaitTime.Medium, bool allElements = true)
+        public static void WaitForElementsToBeDisplayed(this WebDriver driver, IList<IWebElement> elements, WaitTime waitTime = WaitTime.Medium, bool allElements = true)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             if (allElements)
@@ -935,7 +935,7 @@ namespace AutomationUtils.Extensions
                 WaitForAtLeastOneElementDisplayCondition(driver, elements, true, waitSec);
         }
 
-        private static void WaitForElementsDisplayCondition(this RemoteWebDriver driver, By by, bool condition, int waitSeconds)
+        private static void WaitForElementsDisplayCondition(this WebDriver driver, By by, bool condition, int waitSeconds)
         {
             try
             {
@@ -948,7 +948,7 @@ namespace AutomationUtils.Extensions
             }
         }
 
-        private static void WaitForElementsDisplayCondition(this RemoteWebDriver driver, List<By> bys, bool condition, int waitSeconds)
+        private static void WaitForElementsDisplayCondition(this WebDriver driver, List<By> bys, bool condition, int waitSeconds)
         {
             try
             {
@@ -961,7 +961,7 @@ namespace AutomationUtils.Extensions
             }
         }
 
-        private static void WaitForElementsDisplayCondition(this RemoteWebDriver driver, IList<IWebElement> elements, bool condition, int waitSeconds)
+        private static void WaitForElementsDisplayCondition(this WebDriver driver, IList<IWebElement> elements, bool condition, int waitSeconds)
         {
             try
             {
@@ -974,7 +974,7 @@ namespace AutomationUtils.Extensions
             }
         }
 
-        private static void WaitForAtLeastOneElementDisplayCondition(this RemoteWebDriver driver, List<By> bys, bool condition, int waitSeconds)
+        private static void WaitForAtLeastOneElementDisplayCondition(this WebDriver driver, List<By> bys, bool condition, int waitSeconds)
         {
             try
             {
@@ -987,7 +987,7 @@ namespace AutomationUtils.Extensions
             }
         }
 
-        private static void WaitForAtLeastOneElementDisplayCondition(this RemoteWebDriver driver, By by, bool condition, int waitSeconds)
+        private static void WaitForAtLeastOneElementDisplayCondition(this WebDriver driver, By by, bool condition, int waitSeconds)
         {
             try
             {
@@ -1000,7 +1000,7 @@ namespace AutomationUtils.Extensions
             }
         }
 
-        private static void WaitForAtLeastOneElementDisplayCondition(this RemoteWebDriver driver, IList<IWebElement> elements, bool condition, int waitSeconds)
+        private static void WaitForAtLeastOneElementDisplayCondition(this WebDriver driver, IList<IWebElement> elements, bool condition, int waitSeconds)
         {
             try
             {
@@ -1243,31 +1243,31 @@ namespace AutomationUtils.Extensions
 
         #region Wait for Element to be (not) Exists
 
-        public static void WaitForElementToBeNotExists(this RemoteWebDriver driver, By by, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementToBeNotExists(this WebDriver driver, By by, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitForElementToBeInExistsCondition(driver, by, false, waitSec);
         }
 
-        public static void WaitForElementToBeNotExists(this RemoteWebDriver driver, IWebElement element, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementToBeNotExists(this WebDriver driver, IWebElement element, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitForElementToBeInExistsCondition(driver, element, false, waitSec);
         }
 
-        public static void WaitForElementToBeExists(this RemoteWebDriver driver, By by, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementToBeExists(this WebDriver driver, By by, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitForElementToBeInExistsCondition(driver, by, true, waitSec);
         }
 
-        public static void WaitForElementToBeExists(this RemoteWebDriver driver, IWebElement element, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementToBeExists(this WebDriver driver, IWebElement element, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitForElementToBeInExistsCondition(driver, element, true, waitSec);
         }
 
-        internal static void WaitForElementToBeInExistsCondition(this RemoteWebDriver driver, By by, bool expectedCondition, int waitTimeout)
+        internal static void WaitForElementToBeInExistsCondition(this WebDriver driver, By by, bool expectedCondition, int waitTimeout)
         {
             try
             {
@@ -1281,7 +1281,7 @@ namespace AutomationUtils.Extensions
             }
         }
 
-        private static void WaitForElementToBeInExistsCondition(this RemoteWebDriver driver, IWebElement element, bool expectedCondition, int waitTimeout)
+        private static void WaitForElementToBeInExistsCondition(this WebDriver driver, IWebElement element, bool expectedCondition, int waitTimeout)
         {
             try
             {
@@ -1347,31 +1347,31 @@ namespace AutomationUtils.Extensions
 
         #region Wait for Element to be (not) Exists in Element
 
-        public static void WaitForElementInElementToBeNotExists(this RemoteWebDriver driver, IWebElement element, By selector, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementInElementToBeNotExists(this WebDriver driver, IWebElement element, By selector, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitForElementInElementExistsCondition(driver, element, selector, false, waitSec);
         }
 
-        public static void WaitForElementInElementToBeNotExists(this RemoteWebDriver driver, By parent, By child, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementInElementToBeNotExists(this WebDriver driver, By parent, By child, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitForElementInElementExistsCondition(driver, parent, child, false, waitSec);
         }
 
-        public static void WaitForElementInElementToBeExists(this RemoteWebDriver driver, IWebElement element, By selector, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementInElementToBeExists(this WebDriver driver, IWebElement element, By selector, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitForElementInElementExistsCondition(driver, element, selector, true, waitSec);
         }
 
-        public static void WaitForElementInElementToBeExists(this RemoteWebDriver driver, By parent, By child, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementInElementToBeExists(this WebDriver driver, By parent, By child, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitForElementInElementExistsCondition(driver, parent, child, true, waitSec);
         }
 
-        internal static void WaitForElementInElementExistsCondition(this RemoteWebDriver driver, IWebElement element, By selector, bool condition, int waitSeconds)
+        internal static void WaitForElementInElementExistsCondition(this WebDriver driver, IWebElement element, By selector, bool condition, int waitSeconds)
         {
             try
             {
@@ -1384,7 +1384,7 @@ namespace AutomationUtils.Extensions
             }
         }
 
-        private static void WaitForElementInElementExistsCondition(this RemoteWebDriver driver, By parent, By child, bool condition, int waitSeconds)
+        private static void WaitForElementInElementExistsCondition(this WebDriver driver, By parent, By child, bool condition, int waitSeconds)
         {
             try
             {
@@ -1471,31 +1471,31 @@ namespace AutomationUtils.Extensions
 
         #region Wait for ElementS to be (not) Exists
 
-        public static void WaitForElementsToBeExists(this RemoteWebDriver driver, By by, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementsToBeExists(this WebDriver driver, By by, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitForElementsExistsCondition(driver, by, true, waitSec);
         }
 
-        public static void WaitForElementsToBeExists(this RemoteWebDriver driver, IList<IWebElement> elements, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementsToBeExists(this WebDriver driver, IList<IWebElement> elements, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitForElementsExistsCondition(driver, elements, true, waitSec);
         }
 
-        public static void WaitForElementsToBeNotExists(this RemoteWebDriver driver, By by, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementsToBeNotExists(this WebDriver driver, By by, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitForElementsExistsCondition(driver, by, false, waitSec);
         }
 
-        public static void WaitForElementsToBeNotExists(this RemoteWebDriver driver, IList<IWebElement> elements, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementsToBeNotExists(this WebDriver driver, IList<IWebElement> elements, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitForElementsExistsCondition(driver, elements, false, waitSec);
         }
 
-        private static void WaitForElementsExistsCondition(this RemoteWebDriver driver, By by, bool condition, int waitSeconds)
+        private static void WaitForElementsExistsCondition(this WebDriver driver, By by, bool condition, int waitSeconds)
         {
             try
             {
@@ -1508,7 +1508,7 @@ namespace AutomationUtils.Extensions
             }
         }
 
-        private static void WaitForElementsExistsCondition(this RemoteWebDriver driver, IList<IWebElement> elements, bool condition, int waitSeconds)
+        private static void WaitForElementsExistsCondition(this WebDriver driver, IList<IWebElement> elements, bool condition, int waitSeconds)
         {
             try
             {
@@ -1592,31 +1592,31 @@ namespace AutomationUtils.Extensions
 
         #region Wait for text in Element after refresh
 
-        public static void WaitForElementToNotContainsTextAfterRefresh(this RemoteWebDriver driver, IWebElement element, string expectedText, Action<RemoteWebDriver> waitForDataLoadingMethod, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementToNotContainsTextAfterRefresh(this WebDriver driver, IWebElement element, string expectedText, Action<WebDriver> waitForDataLoadingMethod, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitElementContainsTextAfterRefresh(driver, element, expectedText, false, waitSec, waitForDataLoadingMethod);
         }
 
-        public static void WaitForElementToNotContainsTextAfterRefresh(this RemoteWebDriver driver, By selector, string expectedText, Action<RemoteWebDriver> waitForDataLoadingMethod, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementToNotContainsTextAfterRefresh(this WebDriver driver, By selector, string expectedText, Action<WebDriver> waitForDataLoadingMethod, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitElementContainsTextAfterRefresh(driver, selector, expectedText, false, waitSec, waitForDataLoadingMethod);
         }
 
-        public static void WaitForElementToContainsTextAfterRefresh(this RemoteWebDriver driver, IWebElement element, string expectedText, Action<RemoteWebDriver> waitForDataLoadingMethod, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementToContainsTextAfterRefresh(this WebDriver driver, IWebElement element, string expectedText, Action<WebDriver> waitForDataLoadingMethod, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitElementContainsTextAfterRefresh(driver, element, expectedText, true, waitSec, waitForDataLoadingMethod);
         }
 
-        public static void WaitForElementToContainsTextAfterRefresh(this RemoteWebDriver driver, By selector, string expectedText, Action<RemoteWebDriver> waitForDataLoadingMethod, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementToContainsTextAfterRefresh(this WebDriver driver, By selector, string expectedText, Action<WebDriver> waitForDataLoadingMethod, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitElementContainsTextAfterRefresh(driver, selector, expectedText, true, waitSec, waitForDataLoadingMethod);
         }
 
-        private static void WaitElementContainsTextAfterRefresh(this RemoteWebDriver driver, IWebElement element, string expectedText, bool condition, int waitSec, Action<RemoteWebDriver> waitForDataLoadingMethod)
+        private static void WaitElementContainsTextAfterRefresh(this WebDriver driver, IWebElement element, string expectedText, bool condition, int waitSec, Action<WebDriver> waitForDataLoadingMethod)
         {
             try
             {
@@ -1629,7 +1629,7 @@ namespace AutomationUtils.Extensions
             }
         }
 
-        private static void WaitElementContainsTextAfterRefresh(this RemoteWebDriver driver, By by, string expectedText, bool condition, int waitSec, Action<RemoteWebDriver> waitForDataLoadingMethod)
+        private static void WaitElementContainsTextAfterRefresh(this WebDriver driver, By by, string expectedText, bool condition, int waitSec, Action<WebDriver> waitForDataLoadingMethod)
         {
             try
             {
@@ -1642,13 +1642,13 @@ namespace AutomationUtils.Extensions
             }
         }
 
-        private static Func<IWebDriver, bool> TextToBeContainsInElementAfterRefresh(IWebElement element, string text, bool condition, Action<RemoteWebDriver> waitForDataLoadingMethod)
+        private static Func<IWebDriver, bool> TextToBeContainsInElementAfterRefresh(IWebElement element, string text, bool condition, Action<WebDriver> waitForDataLoadingMethod)
         {
             return (driver) =>
             {
                 try
                 {
-                    WaitForElementToBeDisplayedAfterRefresh((RemoteWebDriver)driver, element, waitForDataLoadingMethod);
+                    WaitForElementToBeDisplayedAfterRefresh((WebDriver)driver, element, waitForDataLoadingMethod);
 
                     return element.GetText().Contains(text).Equals(condition);
                 }
@@ -1681,13 +1681,13 @@ namespace AutomationUtils.Extensions
             };
         }
 
-        private static Func<IWebDriver, bool> TextToBeContainsInElementAfterRefresh(By by, string text, bool condition, Action<RemoteWebDriver> waitForDataLoadingMethod)
+        private static Func<IWebDriver, bool> TextToBeContainsInElementAfterRefresh(By by, string text, bool condition, Action<WebDriver> waitForDataLoadingMethod)
         {
             return (driver) =>
             {
                 try
                 {
-                    WaitForElementToBeDisplayedAfterRefresh((RemoteWebDriver)driver, by, waitForDataLoadingMethod);
+                    WaitForElementToBeDisplayedAfterRefresh((WebDriver)driver, by, waitForDataLoadingMethod);
 
                     var element = driver.FindElement(by);
                     return element.GetText().Contains(text).Equals(condition);
@@ -1725,37 +1725,37 @@ namespace AutomationUtils.Extensions
 
         #region Wait for text in Element attribute
 
-        public static void WaitForElementToNotContainsTextInAttribute(this RemoteWebDriver driver, IWebElement element, string expectedText, string attribute, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementToNotContainsTextInAttribute(this WebDriver driver, IWebElement element, string expectedText, string attribute, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitElementContainsTextInAttribute(driver, element, expectedText, attribute, false, waitSec);
         }
 
-        public static void WaitForElementToNotContainsTextInAttribute(this RemoteWebDriver driver, By selector, string expectedText, string attribute, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementToNotContainsTextInAttribute(this WebDriver driver, By selector, string expectedText, string attribute, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitElementContainsTextInAttribute(driver, selector, expectedText, attribute, false, waitSec);
         }
 
-        public static void WaitForElementToContainsTextInAttribute(this RemoteWebDriver driver, IWebElement element, string expectedText, string attribute, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementToContainsTextInAttribute(this WebDriver driver, IWebElement element, string expectedText, string attribute, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitElementContainsTextInAttribute(driver, element, expectedText, attribute, true, waitSec);
         }
 
-        public static void WaitForElementToContainsTextInAttribute(this RemoteWebDriver driver, By selector, string expectedText, string attribute, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementToContainsTextInAttribute(this WebDriver driver, By selector, string expectedText, string attribute, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitElementContainsTextInAttribute(driver, selector, expectedText, attribute, true, waitSec);
         }
 
-        public static void WaitForAnyElementToContainsTextInAttribute(this RemoteWebDriver driver, IEnumerable<IWebElement> elements, string expectedText, string attribute, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForAnyElementToContainsTextInAttribute(this WebDriver driver, IEnumerable<IWebElement> elements, string expectedText, string attribute, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitElementContainsTextInAttribute(driver, elements, expectedText, attribute, true, waitSec);
         }
 
-        private static void WaitElementContainsTextInAttribute(this RemoteWebDriver driver, IWebElement element, string expectedText, string attribute, bool condition, int waitSec)
+        private static void WaitElementContainsTextInAttribute(this WebDriver driver, IWebElement element, string expectedText, string attribute, bool condition, int waitSec)
         {
             try
             {
@@ -1768,7 +1768,7 @@ namespace AutomationUtils.Extensions
             }
         }
 
-        private static void WaitElementContainsTextInAttribute(this RemoteWebDriver driver, By by, string expectedText, string attribute, bool condition, int waitSec)
+        private static void WaitElementContainsTextInAttribute(this WebDriver driver, By by, string expectedText, string attribute, bool condition, int waitSec)
         {
             try
             {
@@ -1781,7 +1781,7 @@ namespace AutomationUtils.Extensions
             }
         }
 
-        private static void WaitElementContainsTextInAttribute(this RemoteWebDriver driver, IEnumerable<IWebElement> elements, string expectedText, string attribute, bool condition, int waitSec)
+        private static void WaitElementContainsTextInAttribute(this WebDriver driver, IEnumerable<IWebElement> elements, string expectedText, string attribute, bool condition, int waitSec)
         {
             try
             {
@@ -1910,43 +1910,43 @@ namespace AutomationUtils.Extensions
 
         #region Wait for text in Element cssValue
 
-        public static void WaitForElementToNotContainsTextInCssValue(this RemoteWebDriver driver, IWebElement element, string expectedText, string attribute, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementToNotContainsTextInCssValue(this WebDriver driver, IWebElement element, string expectedText, string attribute, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitElementContainsTextInCssValue(driver, element, expectedText, attribute, false, waitSec);
         }
 
-        public static void WaitForElementToNotContainsTextInCssValue(this RemoteWebDriver driver, By selector, string expectedText, string attribute, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementToNotContainsTextInCssValue(this WebDriver driver, By selector, string expectedText, string attribute, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitElementContainsTextInCssValue(driver, selector, expectedText, attribute, false, waitSec);
         }
 
-        public static void WaitForElementToContainsTextInCssValue(this RemoteWebDriver driver, IWebElement element, string expectedText, string attribute, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementToContainsTextInCssValue(this WebDriver driver, IWebElement element, string expectedText, string attribute, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitElementContainsTextInCssValue(driver, element, expectedText, attribute, true, waitSec);
         }
 
-        public static void WaitForElementToContainsTextInCssValue(this RemoteWebDriver driver, By selector, string expectedText, string attribute, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementToContainsTextInCssValue(this WebDriver driver, By selector, string expectedText, string attribute, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitElementContainsTextInCssValue(driver, selector, expectedText, attribute, true, waitSec);
         }
 
-        public static void WaitForAnyElementToContainsTextInCssValue(this RemoteWebDriver driver, IEnumerable<IWebElement> elements, string expectedText, string attribute, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForAnyElementToContainsTextInCssValue(this WebDriver driver, IEnumerable<IWebElement> elements, string expectedText, string attribute, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitElementsContainsTextInCssValue(driver, elements, expectedText, attribute, true, waitSec, false);
         }
 
-        public static void WaitForAllElementsToContainsTextInCssValue(this RemoteWebDriver driver, IEnumerable<IWebElement> elements, string expectedText, string attribute, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForAllElementsToContainsTextInCssValue(this WebDriver driver, IEnumerable<IWebElement> elements, string expectedText, string attribute, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitElementsContainsTextInCssValue(driver, elements, expectedText, attribute, true, waitSec, true);
         }
 
-        private static void WaitElementContainsTextInCssValue(this RemoteWebDriver driver, IWebElement element, string expectedText, string attribute, bool condition, int waitSec)
+        private static void WaitElementContainsTextInCssValue(this WebDriver driver, IWebElement element, string expectedText, string attribute, bool condition, int waitSec)
         {
             try
             {
@@ -1959,7 +1959,7 @@ namespace AutomationUtils.Extensions
             }
         }
 
-        private static void WaitElementContainsTextInCssValue(this RemoteWebDriver driver, By by, string expectedText, string attribute, bool condition, int waitSec)
+        private static void WaitElementContainsTextInCssValue(this WebDriver driver, By by, string expectedText, string attribute, bool condition, int waitSec)
         {
             try
             {
@@ -1972,7 +1972,7 @@ namespace AutomationUtils.Extensions
             }
         }
 
-        private static void WaitElementsContainsTextInCssValue(this RemoteWebDriver driver, IEnumerable<IWebElement> elements, string expectedText, string attribute, bool condition, int waitSec, bool allElements)
+        private static void WaitElementsContainsTextInCssValue(this WebDriver driver, IEnumerable<IWebElement> elements, string expectedText, string attribute, bool condition, int waitSec, bool allElements)
         {
             try
             {
@@ -2103,55 +2103,55 @@ namespace AutomationUtils.Extensions
 
         #region Wait for Element(s) contains (not) text
 
-        public static void WaitForElementToNotContainsText(this RemoteWebDriver driver, IWebElement element, string expectedText, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementToNotContainsText(this WebDriver driver, IWebElement element, string expectedText, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitElementContainsText(driver, element, expectedText, false, waitSec);
         }
 
-        public static void WaitForElementToNotContainsText(this RemoteWebDriver driver, By selector, string expectedText, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementToNotContainsText(this WebDriver driver, By selector, string expectedText, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitElementContainsText(driver, selector, expectedText, false, waitSec);
         }
 
-        public static void WaitForElementToContainsText(this RemoteWebDriver driver, IWebElement element, string expectedText, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementToContainsText(this WebDriver driver, IWebElement element, string expectedText, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitElementContainsText(driver, element, expectedText, true, waitSec);
         }
 
-        public static void WaitForElementToContainsText(this RemoteWebDriver driver, By selector, string expectedText, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementToContainsText(this WebDriver driver, By selector, string expectedText, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitElementContainsText(driver, selector, expectedText, true, waitSec);
         }
 
-        public static void WaitForAllElementsToContainsText(this RemoteWebDriver driver, IList<IWebElement> elements, string expectedText, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForAllElementsToContainsText(this WebDriver driver, IList<IWebElement> elements, string expectedText, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitElementsContainsText(driver, elements, expectedText, true, true, waitSec);
         }
 
-        public static void WaitForAllElementsToNotContainsText(this RemoteWebDriver driver, IList<IWebElement> elements, string expectedText, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForAllElementsToNotContainsText(this WebDriver driver, IList<IWebElement> elements, string expectedText, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitElementsContainsText(driver, elements, expectedText, false, true, waitSec);
         }
 
-        public static void WaitForSomeElementsToContainsText(this RemoteWebDriver driver, IList<IWebElement> elements, string expectedText, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForSomeElementsToContainsText(this WebDriver driver, IList<IWebElement> elements, string expectedText, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitElementsContainsText(driver, elements, expectedText, true, false, waitSec);
         }
 
-        public static void WaitForSomeElementsToNotContainsText(this RemoteWebDriver driver, IList<IWebElement> elements, string expectedText, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForSomeElementsToNotContainsText(this WebDriver driver, IList<IWebElement> elements, string expectedText, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitElementsContainsText(driver, elements, expectedText, false, false, waitSec);
         }
 
-        private static void WaitElementContainsText(this RemoteWebDriver driver, IWebElement element, string expectedText, bool condition, int waitSec)
+        private static void WaitElementContainsText(this WebDriver driver, IWebElement element, string expectedText, bool condition, int waitSec)
         {
             try
             {
@@ -2165,7 +2165,7 @@ namespace AutomationUtils.Extensions
             }
         }
 
-        private static void WaitElementContainsText(this RemoteWebDriver driver, By by, string expectedText, bool condition, int waitSec)
+        private static void WaitElementContainsText(this WebDriver driver, By by, string expectedText, bool condition, int waitSec)
         {
             try
             {
@@ -2179,7 +2179,7 @@ namespace AutomationUtils.Extensions
             }
         }
 
-        private static void WaitElementsContainsText(this RemoteWebDriver driver, IList<IWebElement> elements, string expectedText, bool condition, bool allElements, int waitSec)
+        private static void WaitElementsContainsText(this WebDriver driver, IList<IWebElement> elements, string expectedText, bool condition, bool allElements, int waitSec)
         {
             try
             {
@@ -2286,19 +2286,19 @@ namespace AutomationUtils.Extensions
 
         #region Wait for exact text in Element(s)
 
-        public static void WaitForElementToNotHaveText(this RemoteWebDriver driver, IWebElement element, string expectedText, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementToNotHaveText(this WebDriver driver, IWebElement element, string expectedText, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitElementHaveText(driver, element, expectedText, false, waitSec);
         }
 
-        public static void WaitForElementToNotHaveText(this RemoteWebDriver driver, By selector, string expectedText, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementToNotHaveText(this WebDriver driver, By selector, string expectedText, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitElementHaveText(driver, selector, expectedText, false, waitSec);
         }
 
-        public static void WaitForElementToHaveText(this RemoteWebDriver driver, IWebElement element, string expectedText, WaitTime waitTime = WaitTime.Medium, bool throwException = true)
+        public static void WaitForElementToHaveText(this WebDriver driver, IWebElement element, string expectedText, WaitTime waitTime = WaitTime.Medium, bool throwException = true)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             try
@@ -2314,37 +2314,37 @@ namespace AutomationUtils.Extensions
             }
         }
 
-        public static void WaitForElementToHaveText(this RemoteWebDriver driver, By selector, string expectedText, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementToHaveText(this WebDriver driver, By selector, string expectedText, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitElementHaveText(driver, selector, expectedText, true, waitSec);
         }
 
-        public static void WaitForAllElementsToHaveText(this RemoteWebDriver driver, IList<IWebElement> elements, string expectedText, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForAllElementsToHaveText(this WebDriver driver, IList<IWebElement> elements, string expectedText, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitElementsHaveText(driver, elements, expectedText, true, waitSec, true);
         }
 
-        public static void WaitForAllElementsToNotHaveText(this RemoteWebDriver driver, IList<IWebElement> elements, string expectedText, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForAllElementsToNotHaveText(this WebDriver driver, IList<IWebElement> elements, string expectedText, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitElementsHaveText(driver, elements, expectedText, false, waitSec, true);
         }
 
-        public static void WaitForSomeElementsToHaveText(this RemoteWebDriver driver, IList<IWebElement> elements, string expectedText, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForSomeElementsToHaveText(this WebDriver driver, IList<IWebElement> elements, string expectedText, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitElementsHaveText(driver, elements, expectedText, true, waitSec, false);
         }
 
-        public static void WaitForSomeElementsToNotHaveText(this RemoteWebDriver driver, IList<IWebElement> elements, string expectedText, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForSomeElementsToNotHaveText(this WebDriver driver, IList<IWebElement> elements, string expectedText, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitElementsHaveText(driver, elements, expectedText, false, waitSec, false);
         }
 
-        private static void WaitElementHaveText(this RemoteWebDriver driver, IWebElement element, string expectedText, bool condition, int waitSec)
+        private static void WaitElementHaveText(this WebDriver driver, IWebElement element, string expectedText, bool condition, int waitSec)
         {
             try
             {
@@ -2357,7 +2357,7 @@ namespace AutomationUtils.Extensions
             }
         }
 
-        private static void WaitElementHaveText(this RemoteWebDriver driver, By by, string expectedText, bool condition, int waitSec)
+        private static void WaitElementHaveText(this WebDriver driver, By by, string expectedText, bool condition, int waitSec)
         {
             try
             {
@@ -2370,7 +2370,7 @@ namespace AutomationUtils.Extensions
             }
         }
 
-        private static void WaitElementsHaveText(this RemoteWebDriver driver, IList<IWebElement> elements, string expectedText, bool condition, int waitSec, bool allElements)
+        private static void WaitElementsHaveText(this WebDriver driver, IList<IWebElement> elements, string expectedText, bool condition, int waitSec, bool allElements)
         {
             try
             {
@@ -2491,55 +2491,55 @@ namespace AutomationUtils.Extensions
 
         #region Wait for Element have (not have) any text
 
-        public static void WaitForElementToHaveText(this RemoteWebDriver driver, IWebElement element, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementToHaveText(this WebDriver driver, IWebElement element, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitElementHaveText(driver, element, true, waitSec);
         }
 
-        public static void WaitForElementToNotHaveText(this RemoteWebDriver driver, IWebElement element, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementToNotHaveText(this WebDriver driver, IWebElement element, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitElementHaveText(driver, element, false, waitSec);
         }
 
-        public static void WaitForElementToHaveText(this RemoteWebDriver driver, By selector, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementToHaveText(this WebDriver driver, By selector, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitElementHaveText(driver, selector, true, waitSec);
         }
 
-        public static void WaitForElementToNotHaveText(this RemoteWebDriver driver, By selector, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementToNotHaveText(this WebDriver driver, By selector, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitElementHaveText(driver, selector, false, waitSec);
         }
 
-        public static void WaitForAllElementsToHaveText(this RemoteWebDriver driver, IList<IWebElement> elements, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForAllElementsToHaveText(this WebDriver driver, IList<IWebElement> elements, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitElementsHaveText(driver, elements, true, true, waitSec);
         }
 
-        public static void WaitForSomeElementsToHaveText(this RemoteWebDriver driver, IList<IWebElement> elements, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForSomeElementsToHaveText(this WebDriver driver, IList<IWebElement> elements, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitElementsHaveText(driver, elements, true, false, waitSec);
         }
 
-        public static void WaitForAllElementsToNotHaveText(this RemoteWebDriver driver, IList<IWebElement> elements, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForAllElementsToNotHaveText(this WebDriver driver, IList<IWebElement> elements, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitElementsHaveText(driver, elements, false, true, waitSec);
         }
 
-        public static void WaitForSomeElementsToNotHaveText(this RemoteWebDriver driver, IList<IWebElement> elements, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForSomeElementsToNotHaveText(this WebDriver driver, IList<IWebElement> elements, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitElementsHaveText(driver, elements, false, false, waitSec);
         }
 
-        private static void WaitElementHaveText(this RemoteWebDriver driver, IWebElement element, bool condition, int waitSec)
+        private static void WaitElementHaveText(this WebDriver driver, IWebElement element, bool condition, int waitSec)
         {
             try
             {
@@ -2552,7 +2552,7 @@ namespace AutomationUtils.Extensions
             }
         }
 
-        private static void WaitElementHaveText(this RemoteWebDriver driver, By by, bool condition, int waitSec)
+        private static void WaitElementHaveText(this WebDriver driver, By by, bool condition, int waitSec)
         {
             try
             {
@@ -2565,7 +2565,7 @@ namespace AutomationUtils.Extensions
             }
         }
 
-        private static void WaitElementsHaveText(this RemoteWebDriver driver, IList<IWebElement> elements, bool condition, bool allElements, int waitSec)
+        private static void WaitElementsHaveText(this WebDriver driver, IList<IWebElement> elements, bool condition, bool allElements, int waitSec)
         {
             try
             {
@@ -2686,31 +2686,31 @@ namespace AutomationUtils.Extensions
 
         #region Wait for Element to be (not) Enabled
 
-        public static void WaitForElementToBeNotEnabled(this RemoteWebDriver driver, IWebElement element, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementToBeNotEnabled(this WebDriver driver, IWebElement element, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitForElementEnabledCondition(driver, element, false, waitSec);
         }
 
-        public static void WaitForElementToBeEnabled(this RemoteWebDriver driver, IWebElement element, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementToBeEnabled(this WebDriver driver, IWebElement element, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitForElementEnabledCondition(driver, element, true, waitSec);
         }
 
-        public static void WaitForElementToBeEnabled(this RemoteWebDriver driver, By locator, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementToBeEnabled(this WebDriver driver, By locator, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitForElementEnabledCondition(driver, locator, true, waitSec);
         }
 
-        public static void WaitForElementToBeNotEnabled(this RemoteWebDriver driver, By locator, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementToBeNotEnabled(this WebDriver driver, By locator, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitForElementEnabledCondition(driver, locator, false, waitSec);
         }
 
-        private static void WaitForElementEnabledCondition(this RemoteWebDriver driver, By by, bool condition, int waitSeconds)
+        private static void WaitForElementEnabledCondition(this WebDriver driver, By by, bool condition, int waitSeconds)
         {
             try
             {
@@ -2723,7 +2723,7 @@ namespace AutomationUtils.Extensions
             }
         }
 
-        private static void WaitForElementEnabledCondition(this RemoteWebDriver driver, IWebElement element, bool condition, int waitSeconds)
+        private static void WaitForElementEnabledCondition(this WebDriver driver, IWebElement element, bool condition, int waitSeconds)
         {
             try
             {
@@ -2814,31 +2814,31 @@ namespace AutomationUtils.Extensions
 
         #region Wait for Element to be (not) Clickable
 
-        public static void WaitForElementToBeNotClickable(this RemoteWebDriver driver, IWebElement element, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementToBeNotClickable(this WebDriver driver, IWebElement element, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitForElementClickableCondition(driver, element, false, waitSec);
         }
 
-        public static void WaitForElementToBeClickable(this RemoteWebDriver driver, IWebElement element, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementToBeClickable(this WebDriver driver, IWebElement element, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitForElementClickableCondition(driver, element, true, waitSec);
         }
 
-        public static void WaitForElementToBeClickable(this RemoteWebDriver driver, By locator, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementToBeClickable(this WebDriver driver, By locator, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitForElementClickableCondition(driver, locator, true, waitSec);
         }
 
-        public static void WaitForElementToBeNotClickable(this RemoteWebDriver driver, By locator, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementToBeNotClickable(this WebDriver driver, By locator, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitForElementClickableCondition(driver, locator, false, waitSec);
         }
 
-        private static void WaitForElementClickableCondition(this RemoteWebDriver driver, By by, bool condition, int waitSeconds)
+        private static void WaitForElementClickableCondition(this WebDriver driver, By by, bool condition, int waitSeconds)
         {
             try
             {
@@ -2851,7 +2851,7 @@ namespace AutomationUtils.Extensions
             }
         }
 
-        private static void WaitForElementClickableCondition(this RemoteWebDriver driver, IWebElement element, bool condition, int waitSeconds)
+        private static void WaitForElementClickableCondition(this WebDriver driver, IWebElement element, bool condition, int waitSeconds)
         {
             try
             {
@@ -2959,7 +2959,7 @@ namespace AutomationUtils.Extensions
         /// <param name="element"></param>
         /// <param name="childSelector"></param>
         /// <param name="expectedCount"></param>
-        public static void WaitForElementChildElements(this RemoteWebDriver driver, IWebElement element,
+        public static void WaitForElementChildElements(this WebDriver driver, IWebElement element,
             By childSelector, int expectedCount, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
@@ -3015,31 +3015,31 @@ namespace AutomationUtils.Extensions
 
         #region Element to be (not) Selected
 
-        public static void WaitForElementToBeSelected(this RemoteWebDriver driver, By by, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementToBeSelected(this WebDriver driver, By by, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitForElementsSelectedCondition(driver, by, true, waitSec);
         }
 
-        public static void WaitForElementToBeSelected(this RemoteWebDriver driver, IWebElement element, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementToBeSelected(this WebDriver driver, IWebElement element, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitForElementsSelectedCondition(driver, element, true, waitSec);
         }
 
-        public static void WaitForElementToBeNotSelected(this RemoteWebDriver driver, By by, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementToBeNotSelected(this WebDriver driver, By by, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitForElementsSelectedCondition(driver, by, false, waitSec);
         }
 
-        public static void WaitForElementToBeNotSelected(this RemoteWebDriver driver, IWebElement element, WaitTime waitTime = WaitTime.Medium)
+        public static void WaitForElementToBeNotSelected(this WebDriver driver, IWebElement element, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WaitForElementsSelectedCondition(driver, element, false, waitSec);
         }
 
-        private static void WaitForElementsSelectedCondition(this RemoteWebDriver driver, By by, bool condition, int waitSeconds)
+        private static void WaitForElementsSelectedCondition(this WebDriver driver, By by, bool condition, int waitSeconds)
         {
             try
             {
@@ -3052,7 +3052,7 @@ namespace AutomationUtils.Extensions
             }
         }
 
-        private static void WaitForElementsSelectedCondition(this RemoteWebDriver driver, IWebElement element, bool condition, int waitSeconds)
+        private static void WaitForElementsSelectedCondition(this WebDriver driver, IWebElement element, bool condition, int waitSeconds)
         {
             try
             {
@@ -3134,13 +3134,13 @@ namespace AutomationUtils.Extensions
 
         #endregion
 
-        public static void WaitForNewTab(this RemoteWebDriver driver, int tabNum, int seconds)
+        public static void WaitForNewTab(this WebDriver driver, int tabNum, int seconds)
         {
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(seconds));
             wait.Until(d => d.WindowHandles.Count > tabNum - 1);
         }
 
-        public static void WaitFor(this RemoteWebDriver driver, Func<bool> flag, int seconds)
+        public static void WaitFor(this WebDriver driver, Func<bool> flag, int seconds)
         {
             for (int i = 0; i < seconds; i++)
             {
@@ -3174,7 +3174,7 @@ namespace AutomationUtils.Extensions
 
         #region Frames
 
-        public static void SwitchToFrame(this RemoteWebDriver driver, int frameNumber, WaitTime waitTime = WaitTime.Medium)
+        public static void SwitchToFrame(this WebDriver driver, int frameNumber, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(waitSec));
@@ -3184,7 +3184,7 @@ namespace AutomationUtils.Extensions
             driver.SwitchTo().Frame(frames[frameNumber]);
         }
 
-        public static void SwitchToFrame(this RemoteWebDriver driver, string frameIdName, WaitTime waitTime = WaitTime.Medium)
+        public static void SwitchToFrame(this WebDriver driver, string frameIdName, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(waitSec));
@@ -3193,7 +3193,7 @@ namespace AutomationUtils.Extensions
             driver.SwitchTo().Frame(frameIdName);
         }
 
-        public static void SwitchToFrame(this RemoteWebDriver driver, By selector, WaitTime waitTime = WaitTime.Medium)
+        public static void SwitchToFrame(this WebDriver driver, By selector, WaitTime waitTime = WaitTime.Medium)
         {
             var waitSec = int.Parse(waitTime.GetValue());
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(waitSec));
@@ -3206,7 +3206,7 @@ namespace AutomationUtils.Extensions
 
         #region Checkbox
 
-        public static void SetCheckboxStateByAction(this RemoteWebDriver driver, IWebElement checkbox, bool desiredState)
+        public static void SetCheckboxStateByAction(this WebDriver driver, IWebElement checkbox, bool desiredState)
         {
             if (!checkbox.Selected.Equals(desiredState))
             {
@@ -3218,7 +3218,7 @@ namespace AutomationUtils.Extensions
 
         #region Download File
 
-        public static string GetFileWithName(this RemoteWebDriver driver, string fileName, string hubUri)
+        public static string GetFileWithName(this WebDriver driver, string fileName, string hubUri)
         {
             SessionId session = driver.SessionId;
             RestClient client = new RestClient(hubUri.Replace("wd/hub", string.Empty));
@@ -3252,7 +3252,7 @@ namespace AutomationUtils.Extensions
             return filePath;
         }
 
-        public static List<string> GetDownloadedFiles(this RemoteWebDriver driver, string hubUri)
+        public static List<string> GetDownloadedFiles(this WebDriver driver, string hubUri)
         {
             SessionId session = driver.SessionId;
             RestClient client = new RestClient(hubUri.Replace("wd/hub", string.Empty));
@@ -3266,63 +3266,63 @@ namespace AutomationUtils.Extensions
 
         #region Component
 
-        public static T Component<T>(this RemoteWebDriver driver) where T : BaseWebComponent, new()
+        public static T Component<T>(this WebDriver driver) where T : BaseWebComponent, new()
         {
             var component = new T { Driver = driver, Identifier = string.Empty };
             component.Build();
             return component;
         }
 
-        public static T Component<T>(this RemoteWebDriver driver, Properties props) where T : BaseWebComponent, new()
+        public static T Component<T>(this WebDriver driver, Properties props) where T : BaseWebComponent, new()
         {
             var component = new T { Driver = driver, Identifier = string.Empty, Props = props };
             component.Build();
             return component;
         }
 
-        public static T Component<T>(this RemoteWebDriver driver, string identifier) where T : BaseWebComponent, new()
+        public static T Component<T>(this WebDriver driver, string identifier) where T : BaseWebComponent, new()
         {
             var component = new T { Driver = driver, Identifier = identifier };
             component.Build();
             return component;
         }
 
-        public static T Component<T>(this RemoteWebDriver driver, string identifier, Properties props) where T : BaseWebComponent, new()
+        public static T Component<T>(this WebDriver driver, string identifier, Properties props) where T : BaseWebComponent, new()
         {
             var component = new T { Driver = driver, Identifier = identifier, Props = props };
             component.Build();
             return component;
         }
 
-        public static IWebElement GetComponent<T>(this RemoteWebDriver driver) where T : BaseWebComponent, new()
+        public static IWebElement GetComponent<T>(this WebDriver driver) where T : BaseWebComponent, new()
         {
             var component = driver.Component<T>();
             component.Build();
             return component.Instance;
         }
 
-        public static IWebElement GetComponent<T>(this RemoteWebDriver driver, Properties props) where T : BaseWebComponent, new()
+        public static IWebElement GetComponent<T>(this WebDriver driver, Properties props) where T : BaseWebComponent, new()
         {
             var component = driver.Component<T>(props);
             component.Build();
             return component.Instance;
         }
 
-        public static IWebElement GetComponent<T>(this RemoteWebDriver driver, string identifier) where T : BaseWebComponent, new()
+        public static IWebElement GetComponent<T>(this WebDriver driver, string identifier) where T : BaseWebComponent, new()
         {
             var component = driver.Component<T>(identifier);
             component.Build();
             return component.Instance;
         }
 
-        public static IWebElement GetComponent<T>(this RemoteWebDriver driver, string identifier, Properties props) where T : BaseWebComponent, new()
+        public static IWebElement GetComponent<T>(this WebDriver driver, string identifier, Properties props) where T : BaseWebComponent, new()
         {
             var component = driver.Component<T>(identifier, props);
             component.Build();
             return component.Instance;
         }
 
-        public static bool ComponentExistsState<T>(this RemoteWebDriver driver) where T : BaseWebComponent, new()
+        public static bool ComponentExistsState<T>(this WebDriver driver) where T : BaseWebComponent, new()
         {
             try
             {
@@ -3336,7 +3336,7 @@ namespace AutomationUtils.Extensions
             }
         }
 
-        public static bool ComponentExistsState<T>(this RemoteWebDriver driver, Properties props) where T : BaseWebComponent, new()
+        public static bool ComponentExistsState<T>(this WebDriver driver, Properties props) where T : BaseWebComponent, new()
         {
             try
             {
@@ -3350,7 +3350,7 @@ namespace AutomationUtils.Extensions
             }
         }
 
-        public static bool ComponentExistsState<T>(this RemoteWebDriver driver, string identifier) where T : BaseWebComponent, new()
+        public static bool ComponentExistsState<T>(this WebDriver driver, string identifier) where T : BaseWebComponent, new()
         {
             try
             {
@@ -3364,7 +3364,7 @@ namespace AutomationUtils.Extensions
             }
         }
 
-        public static bool ComponentExistsState<T>(this RemoteWebDriver driver, string identifier, Properties props) where T : BaseWebComponent, new()
+        public static bool ComponentExistsState<T>(this WebDriver driver, string identifier, Properties props) where T : BaseWebComponent, new()
         {
             try
             {
@@ -3378,7 +3378,7 @@ namespace AutomationUtils.Extensions
             }
         }
 
-        public static bool ComponentDisplayedState<T>(this RemoteWebDriver driver) where T : BaseWebComponent, new()
+        public static bool ComponentDisplayedState<T>(this WebDriver driver) where T : BaseWebComponent, new()
         {
             try
             {
@@ -3392,7 +3392,7 @@ namespace AutomationUtils.Extensions
             }
         }
 
-        public static bool ComponentDisplayedState<T>(this RemoteWebDriver driver, Properties props) where T : BaseWebComponent, new()
+        public static bool ComponentDisplayedState<T>(this WebDriver driver, Properties props) where T : BaseWebComponent, new()
         {
             try
             {
@@ -3406,7 +3406,7 @@ namespace AutomationUtils.Extensions
             }
         }
 
-        public static bool ComponentDisplayedState<T>(this RemoteWebDriver driver, string identifier) where T : BaseWebComponent, new()
+        public static bool ComponentDisplayedState<T>(this WebDriver driver, string identifier) where T : BaseWebComponent, new()
         {
             try
             {
@@ -3420,7 +3420,7 @@ namespace AutomationUtils.Extensions
             }
         }
 
-        public static bool ComponentDisplayedState<T>(this RemoteWebDriver driver, string identifier, Properties props) where T : BaseWebComponent, new()
+        public static bool ComponentDisplayedState<T>(this WebDriver driver, string identifier, Properties props) where T : BaseWebComponent, new()
         {
             try
             {
@@ -3438,7 +3438,7 @@ namespace AutomationUtils.Extensions
 
         #region Clipboard
 
-        public static string GetClipboard(this RemoteWebDriver driver, string hubUri)
+        public static string GetClipboard(this WebDriver driver, string hubUri)
         {
                 SessionId sessionId = driver.SessionId;
 
@@ -3455,7 +3455,7 @@ namespace AutomationUtils.Extensions
                 return content;
         }
 
-        public static void SetClipboard(this RemoteWebDriver driver, string hubUri, string data)
+        public static void SetClipboard(this WebDriver driver, string hubUri, string data)
         {
             SessionId sessionId = driver.SessionId;
 
@@ -3473,18 +3473,18 @@ namespace AutomationUtils.Extensions
 
         #endregion
 
-        private static void RefreshPage(RemoteWebDriver driver)
+        private static void RefreshPage(WebDriver driver)
         {
             driver.Navigate().Refresh();
         }
 
-        public static void OpenInNewTab(this RemoteWebDriver driver, string url)
+        public static void OpenInNewTab(this WebDriver driver, string url)
         {
             driver.ExecuteScript($"window.open('{url}','_blank');");
             driver.SwitchTo().Window(driver.WindowHandles.Last());
         }
 
-        public static void PingDriver(this RemoteWebDriver driver, int minutes)
+        public static void PingDriver(this WebDriver driver, int minutes)
         {
             for (int i = 0; i < minutes * 6; i++)
             {
@@ -3493,13 +3493,13 @@ namespace AutomationUtils.Extensions
             }
         }
 
-        public static void PingDriver(this RemoteWebDriver driver)
+        public static void PingDriver(this WebDriver driver)
         {
             driver.FindElement(By.XPath(".//body"));
         }
 
         // For cases with _driver.FindBy
-        public static void ExecuteAction(this RemoteWebDriver driver, Action actionToDo, int retryCount = 5)
+        public static void ExecuteAction(this WebDriver driver, Action actionToDo, int retryCount = 5)
         {
             for (int i = 0; i < retryCount; i++)
             {
@@ -3536,7 +3536,7 @@ namespace AutomationUtils.Extensions
         }
 
         // For cases when we need return value
-        public static bool ExecuteFunc(this RemoteWebDriver driver, Func<bool> actionToDo, int retryCount = 2)
+        public static bool ExecuteFunc(this WebDriver driver, Func<bool> actionToDo, int retryCount = 2)
         {
             for (int i = 0; i < retryCount; i++)
             {
@@ -3557,7 +3557,7 @@ namespace AutomationUtils.Extensions
         /// This method is used to check the REALLY (with naked eye) visibility of an element
         /// </summary>
         /// <returns></returns>
-        public static bool Visible(this RemoteWebDriver driver, IWebElement element)
+        public static bool Visible(this WebDriver driver, IWebElement element)
         {
             try
             {
