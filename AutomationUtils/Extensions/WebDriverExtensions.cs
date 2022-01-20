@@ -3297,28 +3297,24 @@ namespace AutomationUtils.Extensions
         public static IWebElement GetComponent<T>(this WebDriver driver) where T : BaseWebComponent, new()
         {
             var component = driver.Component<T>();
-            component.Build();
             return component.Instance;
         }
 
         public static IWebElement GetComponent<T>(this WebDriver driver, Properties props) where T : BaseWebComponent, new()
         {
             var component = driver.Component<T>(props);
-            component.Build();
             return component.Instance;
         }
 
         public static IWebElement GetComponent<T>(this WebDriver driver, string identifier) where T : BaseWebComponent, new()
         {
             var component = driver.Component<T>(identifier);
-            component.Build();
             return component.Instance;
         }
 
         public static IWebElement GetComponent<T>(this WebDriver driver, string identifier, Properties props) where T : BaseWebComponent, new()
         {
             var component = driver.Component<T>(identifier, props);
-            component.Build();
             return component.Instance;
         }
 
