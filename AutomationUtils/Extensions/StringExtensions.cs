@@ -161,5 +161,13 @@ namespace AutomationUtils.Extensions
         {
             return int.Parse(Regex.Match(str, @"\d+").Value);
         }
+
+        public static string FirstCharToUpper(this string input) =>
+            input switch
+            {
+                null => throw new ArgumentNullException(nameof(input)),
+                "" => input,
+                _ => $"{char.ToUpper(input[0])}{input[1..]}"
+            };
     }
 }
