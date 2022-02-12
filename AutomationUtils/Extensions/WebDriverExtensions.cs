@@ -3531,7 +3531,13 @@ namespace AutomationUtils.Extensions
             }
         }
 
-        // For cases when we need return value
+        /// <summary>
+        /// For cases when need to check exists or displayed state
+        /// </summary>
+        /// <param name="driver"></param>
+        /// <param name="actionToDo">() =></param>
+        /// <param name="retryCount"></param>
+        /// <returns></returns>
         public static bool ExecuteFunc(this WebDriver driver, Func<bool> actionToDo, int retryCount = 2)
         {
             for (int i = 0; i < retryCount; i++)
@@ -3547,6 +3553,31 @@ namespace AutomationUtils.Extensions
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// For cases when need to return some Type
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="driver"></param>
+        /// <param name="actionToDo">() =></param>
+        /// <param name="retryCount"></param>
+        /// <returns></returns>
+        public static T ExecuteFunc<T>(WebDriver driver, Func<T> actionToDo, int retryCount = 2)
+        {
+            for (int i = 0; i < retryCount; i++)
+            {
+                try
+                {
+                    return (T)actionToDo.Invoke();
+                }
+                catch (Exception)
+                {
+                    Thread.Sleep(1000);
+                }
+            }
+
+            throw new Exception("Unable to execute Function for WebDriver");
         }
 
         /// <summary>
