@@ -3563,7 +3563,7 @@ namespace AutomationUtils.Extensions
         /// <param name="actionToDo">() =></param>
         /// <param name="retryCount"></param>
         /// <returns></returns>
-        public static T ExecuteFunc<T>(WebDriver driver, Func<T> actionToDo, int retryCount = 2)
+        public static T ExecuteFunc<T>(this WebDriver driver, Func<T> actionToDo, int retryCount = 2)
         {
             for (int i = 0; i < retryCount; i++)
             {

@@ -169,5 +169,16 @@ namespace AutomationUtils.Extensions
                 "" => input,
                 _ => $"{char.ToUpper(input[0])}{input[1..]}"
             };
+
+        public static string RemoveAfter(this string value, string removeAfter)
+        {
+            var index = value.IndexOf(removeAfter);
+            if (index >= 0)
+            {
+                value = value.Remove(index);
+            }
+
+            return value;
+        }
     }
 }
