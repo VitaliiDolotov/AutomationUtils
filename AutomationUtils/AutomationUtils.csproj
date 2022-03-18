@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
 	<PackageId>AutomationUtils</PackageId>
-    <Version>1.1.83</Version>
+    <Version>1.1.84</Version>
     <Authors>VitaliiD</Authors>
     <Company>VitaliiD</Company>
     <Description>Extensions and Helpers for WebDriver based automation framework</Description>
@@ -17,6 +17,7 @@
     <Compile Remove="Component\IWebComponent.cs" />
     <Compile Remove="Extensions\ByExtensions.cs" />
     <Compile Remove="Extensions\CookieExtensions.cs" />
+    <Compile Remove="Extensions\ReflectionExtensions.cs" />
     <Compile Remove="Extensions\WebDriverExtensions.cs" />
     <Compile Remove="Extensions\WebElementExtensions.cs" />
     <Compile Remove="Pages\IContextContainer.cs" />
