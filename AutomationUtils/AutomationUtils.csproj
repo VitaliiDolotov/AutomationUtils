@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
 	<PackageId>AutomationUtils</PackageId>
-    <Version>1.1.82</Version>
+    <Version>1.1.83</Version>
     <Authors>VitaliiD</Authors>
     <Company>VitaliiD</Company>
     <Description>Extensions and Helpers for WebDriver based automation framework</Description>
@@ -13,11 +13,29 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Component\BaseWebComponent.cs" />
+    <Compile Remove="Component\IWebComponent.cs" />
+    <Compile Remove="Extensions\ByExtensions.cs" />
+    <Compile Remove="Extensions\CookieExtensions.cs" />
+    <Compile Remove="Extensions\WebDriverExtensions.cs" />
+    <Compile Remove="Extensions\WebElementExtensions.cs" />
+    <Compile Remove="Pages\IContextContainer.cs" />
+    <Compile Remove="Pages\SeleniumBasePage.cs" />
+    <Compile Remove="Utils\ByFactory.cs" />
+    <Compile Remove="Utils\FluentWait.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="DotNetSeleniumExtras.PageObjects.Core" Version="4.0.1" />
     <PackageReference Include="HtmlAgilityPack" Version="1.11.22" />
     <PackageReference Include="NUnit" Version="3.12.0" />
     <PackageReference Include="RestSharp" Version="106.10.1" />
     <PackageReference Include="Selenium.Support" Version="4.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Component\" />
+    <Folder Include="Pages\" />
   </ItemGroup>
 
 </Project>

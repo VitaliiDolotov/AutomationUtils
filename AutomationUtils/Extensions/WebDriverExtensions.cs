@@ -11,7 +11,6 @@ using AutomationUtils.Pages;
 using Newtonsoft.Json;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
-using OpenQA.Selenium.Remote;
 using OpenQA.Selenium.Support.UI;
 using RestSharp;
 

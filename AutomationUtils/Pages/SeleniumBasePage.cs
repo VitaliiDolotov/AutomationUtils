@@ -8,7 +8,6 @@ using AutomationUtils.Extensions;
 using AutomationUtils.Utils;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
-using OpenQA.Selenium.Remote;
 using SeleniumExtras.PageObjects;
 
 namespace AutomationUtils.Pages
