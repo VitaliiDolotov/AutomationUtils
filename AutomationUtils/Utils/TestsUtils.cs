@@ -141,5 +141,18 @@ namespace AutomationUtils.Utils
 
             return iterator;
         }
+
+        public static List<string> GetAllFeatureFileLines()
+        {
+            var allFiles = new List<string>();
+            var allLines = new List<string>();
+            AddFileNamesToList(SourceFolder, Extension, allFiles);
+            foreach (var fileName in allFiles)
+            {
+                allLines.AddRange(File.ReadAllLines(fileName));
+            }
+
+            return allLines;
+        }
     }
 }
