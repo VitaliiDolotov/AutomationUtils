@@ -22,11 +22,15 @@ namespace AutomationUtils.Utils
             }
         }
 
-        private static readonly List<KeyValuePair<string, List<string>>> TestsAndTagsList = new List<KeyValuePair<string, List<string>>>();
+        private static readonly List<KeyValuePair<string, List<string>>> TestsAndTagsList =
+            new List<KeyValuePair<string, List<string>>>();
         private static readonly string SourceFolder = SolutionDirectoryInfo().FullName;
         private const string Extension = "*.feature";
         private const string ScenarioKeyword = "Scenario";
         private static readonly Regex SearchWord = new Regex($@"{ScenarioKeyword}\s*(\w*):\s*");
+        private static readonly List<string> allFilesAsLines = new List<string>();
+        public static List<string> AllFilesAsLines { get; } =
+            AddFileNamesToList(SourceFolder, Extension, allFilesAsLines);
 
         private static DirectoryInfo SolutionDirectoryInfo()
         {
@@ -35,18 +39,17 @@ namespace AutomationUtils.Utils
             {
                 directory = directory.Parent;
             }
+
             return directory;
         }
 
         public static List<KeyValuePair<string, List<string>>> GetTestsNamesAndTags()
         {
-            var allFiles = new List<string>();
-            AddFileNamesToList(SourceFolder, Extension, allFiles);
-            CheckAllFilesAndAddData(allFiles);
+            CheckAllFilesAndAddData(AllFilesAsLines);
             return TestsAndTagsList;
         }
 
-        private static void AddFileNamesToList(string sourceDir, string extension, List<string> allFiles)
+        private static List<string> AddFileNamesToList(string sourceDir, string extension, List<string> allFiles)
         {
             var fileEntries = Directory.GetFiles(sourceDir, extension);
             allFiles.AddRange(fileEntries);
@@ -61,6 +64,8 @@ namespace AutomationUtils.Utils
                     AddFileNamesToList(item, extension, allFiles);
                 }
             }
+
+            return allFiles;
         }
 
         private static void CheckAllFilesAndAddData(List<string> allFiles)
@@ -120,6 +125,7 @@ namespace AutomationUtils.Utils
                         {
                             break;
                         }
+
                         i++;
 
                         i = SkipLineBreaksAndCommentsInExamplesTable(enumerable, i);
@@ -144,10 +150,8 @@ namespace AutomationUtils.Utils
 
         public static List<string> GetAllFeatureFileLines()
         {
-            var allFiles = new List<string>();
             var allLines = new List<string>();
-            AddFileNamesToList(SourceFolder, Extension, allFiles);
-            foreach (var fileName in allFiles)
+            foreach (var fileName in AllFilesAsLines)
             {
                 allLines.AddRange(File.ReadAllLines(fileName));
             }
