@@ -22,31 +22,16 @@ namespace AutomationUtils.Utils
             }
         }
 
-        public static Dictionary<string, List<string>> FeatureFilesAndTheirContent
-        {
-            get
-            {
-                if (!FeaturesAndTheirContent.Any())
-                {
-                    AllFeatureFilesAndTheirContent();
-                }
-
-                return FeaturesAndTheirContent;
-            }
-        }
-
         private static readonly List<KeyValuePair<string, List<string>>> TestsAndTagsList =
             new List<KeyValuePair<string, List<string>>>();
-        private static readonly Dictionary<string, List<string>> FeaturesAndTheirContent =
-            new Dictionary<string, List<string>>();
         private static readonly string SourceFolder = SolutionDirectoryInfo().FullName;
         private const string Extension = "*.feature";
         private const string ScenarioKeyword = "Scenario";
         private static readonly Regex SearchWord = new Regex($@"{ScenarioKeyword}\s*(\w*):\s*");
         private static readonly List<string> _allFilesNames = new List<string>();
-
         private static List<string> AllFilesNames { get; } =
             AddFileNamesToList(SourceFolder, Extension, _allFilesNames);
+        public static Dictionary<string, List<string>> FeatureFilesAndTheirContent = AllFeatureFilesAndTheirContent();
 
         private static DirectoryInfo SolutionDirectoryInfo()
         {
@@ -166,12 +151,13 @@ namespace AutomationUtils.Utils
 
         private static Dictionary<string, List<string>> AllFeatureFilesAndTheirContent()
         {
+            Dictionary<string, List<string>> a = new Dictionary<string, List<string>>();
             foreach (var fileName in AllFilesNames)
             {
-                FeaturesAndTheirContent.Add(fileName, File.ReadAllLines(fileName).ToList());
+                a.Add(fileName, File.ReadAllLines(fileName).ToList());
             }
 
-            return FeaturesAndTheirContent;
+            return a;
         }
     }
 }

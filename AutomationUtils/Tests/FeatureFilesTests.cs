@@ -21,9 +21,9 @@ namespace AutomationUtils.Tests
         public void Check_AllFeatureFilesAndTheirContent_FileNames()
         {
             var featureFilesContent = TestsUtils.FeatureFilesAndTheirContent;
-            Verify.IsTrue(featureFilesContent.Keys.Contains("TestFeatureFile1.feature"),
+            Verify.IsTrue(featureFilesContent.Keys.Any(x => x.Contains("TestFeatureFile1.feature")),
                 "Getting all feature files and their content method returns incorrect files names");
-            Verify.IsTrue(featureFilesContent.Keys.Contains("TestFeatureFile2.feature"),
+            Verify.IsTrue(featureFilesContent.Keys.Any(x => x.Contains("TestFeatureFile2.feature")),
                 "Getting all feature files and their content method returns incorrect files names");
         }
 
