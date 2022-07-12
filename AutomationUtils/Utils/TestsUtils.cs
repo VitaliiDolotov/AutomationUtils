@@ -150,13 +150,13 @@ namespace AutomationUtils.Utils
 
         public static Dictionary<string, List<string>> GetAllFeatureFilesAndItContent()
         {
-            var allLines = new Dictionary<string, List<string>>();
+            var featuresAndContent = new Dictionary<string, List<string>>();
             foreach (var fileName in AllFileNames)
             {
-                allLines.Add(fileName, File.ReadAllLines(fileName).ToList());
+                featuresAndContent.Add(fileName, File.ReadAllLines(fileName).ToList());
             }
 
-            return allLines;
+            return featuresAndContent;
         }
     }
 }
