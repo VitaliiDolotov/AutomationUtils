@@ -12,7 +12,7 @@ namespace AutomationUtils.Tests
         [Test]
         public void Check_AllFeatureFilesAndTheirContent_CountOfFiles()
         {
-            var featureFilesContent = TestsUtils.AllFeatureFilesAndTheirContent();
+            var featureFilesContent = TestsUtils.FeatureFilesAndTheirContent;
             Verify.AreEqual(2, featureFilesContent.Count,
                 "Getting all feature files and their content method returns incorrect count of files");
         }
@@ -20,43 +20,47 @@ namespace AutomationUtils.Tests
         [Test]
         public void Check_AllFeatureFilesAndTheirContent_FileNames()
         {
-            var featureFilesContent = TestsUtils.AllFeatureFilesAndTheirContent();
-            Verify.AreEqual("TestFeatureFile1.feature", Path.GetFileName(featureFilesContent.ElementAt(0).Key),
+            var featureFilesContent = TestsUtils.FeatureFilesAndTheirContent;
+            Verify.IsTrue(featureFilesContent.Keys.Contains("TestFeatureFile1.feature"),
                 "Getting all feature files and their content method returns incorrect files names");
-            Verify.AreEqual("TestFeatureFile2.feature", Path.GetFileName(featureFilesContent.ElementAt(1).Key),
+            Verify.IsTrue(featureFilesContent.Keys.Contains("TestFeatureFile2.feature"),
                 "Getting all feature files and their content method returns incorrect files names");
         }
 
         [Test]
         public void Check_AllFeatureFilesAndTheirContent_ContentLength()
         {
-            var featureFilesContent = TestsUtils.AllFeatureFilesAndTheirContent();
-            Verify.AreEqual(21, featureFilesContent.ElementAt(0).Value.Count,
-                "Getting all feature files and their content method returns incorrect content length for 'TestFeatureFile1.feature' file");
-            Verify.AreEqual(21, featureFilesContent.ElementAt(1).Value.Count,
-                "Getting all feature files and their content method returns incorrect content length for 'TestFeatureFile2.feature' file");
+            var featureFilesContent = TestsUtils.FeatureFilesAndTheirContent;
+            foreach (var featureFile in featureFilesContent)
+            {
+                Verify.AreEqual(21, featureFile.Value.Count, $"Getting all feature files and their content method returns incorrect content length for {featureFile.Key} feature file");
+            }
         }
 
         [Test]
         public void Check_AllFeatureFilesAndTheirContent_ScenariosContent()
         {
-            var featureFilesContent = TestsUtils.AllFeatureFilesAndTheirContent();
+            var featureFilesContent = TestsUtils.FeatureFilesAndTheirContent;
             foreach (var featureFile in featureFilesContent)
             {
-                Verify.IsTrue(featureFile.Value.Contains("Scenario: TestScenario"), "Getting all feature files and their content method returns incorrect content, 'TestScenario' is not presenting");
-                Verify.IsTrue(featureFile.Value.Contains("Scenario: SecondTestScenario"), "Getting all feature files and their content method returns incorrect content, 'SecondTestScenario' is not presenting");
-                Verify.IsTrue(featureFile.Value.Contains("Scenario: ThirdTestScenario"), "Getting all feature files and their content method returns incorrect content, 'ThirdTestScenario' is not presenting");
+                Verify.IsTrue(featureFile.Value.Contains("Scenario: TestScenario"),
+                    "Getting all feature files and their content method returns incorrect content, 'TestScenario' is not presenting");
+                Verify.IsTrue(featureFile.Value.Contains("Scenario: SecondTestScenario"),
+                    "Getting all feature files and their content method returns incorrect content, 'SecondTestScenario' is not presenting");
+                Verify.IsTrue(featureFile.Value.Contains("Scenario: ThirdTestScenario"),
+                    "Getting all feature files and their content method returns incorrect content, 'ThirdTestScenario' is not presenting");
             }
         }
 
         [Test]
         public void Check_AllFeatureFilesAndTheirContent_Tags()
         {
-            var featureFilesContent = TestsUtils.AllFeatureFilesAndTheirContent();
+            var featureFilesContent = TestsUtils.FeatureFilesAndTheirContent;
             foreach (var featureFile in featureFilesContent)
             {
                 var tags = featureFile.Value.Where(x => x.Contains("@Regression @LinebreaksTest")).ToList();
-                Verify.AreEqual(3, tags.Count, "Getting all feature files and their content method return incorrect content (tags)");
+                Verify.AreEqual(3, tags.Count,
+                    "Getting all feature files and their content method return incorrect content (tags)");
             }
         }
 
@@ -64,7 +68,8 @@ namespace AutomationUtils.Tests
         public void Check_TestsAndTags_CountOfTests()
         {
             var testsAndTags = TestsUtils.TestsAndTags;
-            Verify.AreEqual(6, testsAndTags.Count, "Getting all feature files and their content method returns incorrect count of tests");
+            Verify.AreEqual(6, testsAndTags.Count,
+                "Getting all feature files and their content method returns incorrect count of tests");
         }
 
         [Test]
@@ -73,7 +78,8 @@ namespace AutomationUtils.Tests
             var testsAndTags = TestsUtils.TestsAndTags;
             foreach (var test in testsAndTags)
             {
-                Verify.AreEqual(2, test.Value.Count, "Getting all feature files and their content method returns incorrect count of tags");
+                Verify.AreEqual(2, test.Value.Count,
+                    "Getting all feature files and their content method returns incorrect count of tags");
             }
         }
 
@@ -81,12 +87,18 @@ namespace AutomationUtils.Tests
         public void Check_TestsAndTags_TestNames()
         {
             var testsAndTags = TestsUtils.TestsAndTags;
-            Verify.AreEqual("TestScenario", testsAndTags[0].Key, "Getting all feature files and their content method returns incorrect test name");
-            Verify.AreEqual("SecondTestScenario", testsAndTags[1].Key, "Getting all feature files and their content method returns incorrect test name");
-            Verify.AreEqual("ThirdTestScenario", testsAndTags[2].Key, "Getting all feature files and their content method returns incorrect test name");
-            Verify.AreEqual("TestScenario", testsAndTags[3].Key, "Getting all feature files and their content method returns incorrect test name");
-            Verify.AreEqual("SecondTestScenario", testsAndTags[4].Key, "Getting all feature files and their content method returns incorrect test name");
-            Verify.AreEqual("ThirdTestScenario", testsAndTags[5].Key, "Getting all feature files and their content method returns incorrect test name");
+            Verify.AreEqual("TestScenario", testsAndTags[0].Key,
+                "Getting all feature files and their content method returns incorrect test name");
+            Verify.AreEqual("SecondTestScenario", testsAndTags[1].Key,
+                "Getting all feature files and their content method returns incorrect test name");
+            Verify.AreEqual("ThirdTestScenario", testsAndTags[2].Key,
+                "Getting all feature files and their content method returns incorrect test name");
+            Verify.AreEqual("TestScenario", testsAndTags[3].Key,
+                "Getting all feature files and their content method returns incorrect test name");
+            Verify.AreEqual("SecondTestScenario", testsAndTags[4].Key,
+                "Getting all feature files and their content method returns incorrect test name");
+            Verify.AreEqual("ThirdTestScenario", testsAndTags[5].Key,
+                "Getting all feature files and their content method returns incorrect test name");
         }
 
         [Test]
