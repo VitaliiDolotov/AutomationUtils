@@ -28,9 +28,9 @@ namespace AutomationUtils.Utils
         private const string Extension = "*.feature";
         private const string ScenarioKeyword = "Scenario";
         private static readonly Regex SearchWord = new Regex($@"{ScenarioKeyword}\s*(\w*):\s*");
-        private static readonly List<string> _allFileNames = new List<string>();
-        public static List<string> AllFileNames { get; } =
-            AddFileNamesToList(SourceFolder, Extension, _allFileNames);
+        private static readonly List<string> _allFilesNames = new List<string>();
+        private static List<string> AllFilesNames { get; } =
+            AddFileNamesToList(SourceFolder, Extension, _allFilesNames);
 
         private static DirectoryInfo SolutionDirectoryInfo()
         {
@@ -43,9 +43,9 @@ namespace AutomationUtils.Utils
             return directory;
         }
 
-        public static List<KeyValuePair<string, List<string>>> GetTestsNamesAndTags()
+        private static List<KeyValuePair<string, List<string>>> GetTestsNamesAndTags()
         {
-            CheckAllFilesAndAddData(AllFileNames);
+            CheckAllFilesAndAddData(AllFilesNames);
             return TestsAndTagsList;
         }
 
@@ -148,15 +148,15 @@ namespace AutomationUtils.Utils
             return iterator;
         }
 
-        public static Dictionary<string, List<string>> GetAllFeatureFilesAndItContent()
+        public static Dictionary<string, List<string>> AllFeatureFilesAndTheirContent()
         {
-            var featuresAndContent = new Dictionary<string, List<string>>();
-            foreach (var fileName in AllFileNames)
+            var featuresAndTheirContent = new Dictionary<string, List<string>>();
+            foreach (var fileName in AllFilesNames)
             {
-                featuresAndContent.Add(fileName, File.ReadAllLines(fileName).ToList());
+                featuresAndTheirContent.Add(fileName, File.ReadAllLines(fileName).ToList());
             }
 
-            return featuresAndContent;
+            return featuresAndTheirContent;
         }
     }
 }
