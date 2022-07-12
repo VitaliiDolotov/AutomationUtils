@@ -28,9 +28,9 @@ namespace AutomationUtils.Utils
         private const string Extension = "*.feature";
         private const string ScenarioKeyword = "Scenario";
         private static readonly Regex SearchWord = new Regex($@"{ScenarioKeyword}\s*(\w*):\s*");
-        private static readonly List<string> allFilesAsLines = new List<string>();
-        public static List<string> AllFilesAsLines { get; } =
-            AddFileNamesToList(SourceFolder, Extension, allFilesAsLines);
+        private static readonly List<string> _allFileNames = new List<string>();
+        public static List<string> AllFileNames { get; } =
+            AddFileNamesToList(SourceFolder, Extension, _allFileNames);
 
         private static DirectoryInfo SolutionDirectoryInfo()
         {
@@ -45,7 +45,7 @@ namespace AutomationUtils.Utils
 
         public static List<KeyValuePair<string, List<string>>> GetTestsNamesAndTags()
         {
-            CheckAllFilesAndAddData(AllFilesAsLines);
+            CheckAllFilesAndAddData(AllFileNames);
             return TestsAndTagsList;
         }
 
@@ -148,12 +148,12 @@ namespace AutomationUtils.Utils
             return iterator;
         }
 
-        public static List<string> GetAllFeatureFileLines()
+        public static Dictionary<string, List<string>> GetAllFeatureFilesAndItContent()
         {
-            var allLines = new List<string>();
-            foreach (var fileName in AllFilesAsLines)
+            var allLines = new Dictionary<string, List<string>>();
+            foreach (var fileName in AllFileNames)
             {
-                allLines.AddRange(File.ReadAllLines(fileName));
+                allLines.Add(fileName, File.ReadAllLines(fileName).ToList());
             }
 
             return allLines;
