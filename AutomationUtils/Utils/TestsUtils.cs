@@ -9,20 +9,12 @@ namespace AutomationUtils.Utils
 {
     public class TestsUtils
     {
-        public static List<KeyValuePair<string, List<string>>> TestsAndTags
+        static TestsUtils()
         {
-            get
-            {
-                if (!TestsAndTagsList.Any())
-                {
-                    GetTestsNamesAndTags();
-                }
-
-                return TestsAndTagsList;
-            }
+            CheckAllFilesAndAddData(AllFilesNames);
         }
 
-        private static readonly List<KeyValuePair<string, List<string>>> TestsAndTagsList =
+        public static readonly List<KeyValuePair<string, List<string>>> TestsAndTags =
             new List<KeyValuePair<string, List<string>>>();
         private static readonly string SourceFolder = SolutionDirectoryInfo().FullName;
         private const string Extension = "*.feature";
@@ -42,12 +34,6 @@ namespace AutomationUtils.Utils
             }
 
             return directory;
-        }
-
-        private static List<KeyValuePair<string, List<string>>> GetTestsNamesAndTags()
-        {
-            CheckAllFilesAndAddData(AllFilesNames);
-            return TestsAndTagsList;
         }
 
         private static List<string> AddFileNamesToList(string sourceDir, string extension, List<string> allFiles)
@@ -100,7 +86,7 @@ namespace AutomationUtils.Utils
                         continue;
                     }
 
-                    TestsAndTagsList.Add(new KeyValuePair<string, List<string>>(result, tagList));
+                    TestsAndTags.Add(new KeyValuePair<string, List<string>>(result, tagList));
                     tagList = new List<string>();
                 }
 
@@ -120,7 +106,7 @@ namespace AutomationUtils.Utils
                     {
                         var example = enumerable[i].Trim().GetTextBetween('|', '|', false).First().Trim();
                         var testName = string.Concat(result, ", ", example);
-                        TestsAndTagsList.Add(new KeyValuePair<string, List<string>>(testName, tagList));
+                        TestsAndTags.Add(new KeyValuePair<string, List<string>>(testName, tagList));
 
                         if (i == enumerable.Count - 1)
                         {
