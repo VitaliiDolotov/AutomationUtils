@@ -36,15 +36,17 @@ namespace AutomationUtils.Extensions
             return result;
         }
 
-        //Usage EnumExtensions.Parse<YourEnum>()
-        public static T Parse<T>(string enumValue) where T : System.Enum
+        // Usage EnumExtensions.Parse<YourEnum>()
+        public static T Parse<T>(string enumValue) where T : Enum
         {
             var result = EnumExtensions.GetAllValues<T>().First(x =>
                 x.GetValueAndDescription().Key.Equals(enumValue) || x.GetValueAndDescription().Value.Equals(enumValue));
             return result;
         }
 
-        //Usage EnumExtensions.GetAllValues<YourEnum>()
+        /// <summary>
+        /// Usage EnumExtensions.GetAllValues<YourEnum>()
+        /// </summary>
         public static IEnumerable<T> GetAllValues<T>()
         {
             return Enum.GetValues(typeof(T)).Cast<T>().ToList();

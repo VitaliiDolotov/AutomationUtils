@@ -133,7 +133,7 @@ namespace AutomationUtils.Utils
             return iterator;
         }
 
-        public static Dictionary<string, List<string>> AllFeatureFilesAndTheirContent()
+        private static Dictionary<string, List<string>> AllFeatureFilesAndTheirContent()
         {
             Dictionary<string, List<string>> dictionary = new();
 
