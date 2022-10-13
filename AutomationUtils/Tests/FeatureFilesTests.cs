@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using AutomationUtils.Utils;
+﻿using AutomationUtils.Utils;
 using NUnit.Framework;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace AutomationUtils.Tests
 {

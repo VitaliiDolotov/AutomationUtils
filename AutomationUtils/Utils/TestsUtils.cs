@@ -1,9 +1,9 @@
-﻿using System;
+﻿using AutomationUtils.Extensions;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using AutomationUtils.Extensions;
 
 namespace AutomationUtils.Utils
 {
@@ -14,15 +14,13 @@ namespace AutomationUtils.Utils
             CheckAllFilesAndAddData(AllFilesNames);
         }
 
-        public static readonly List<KeyValuePair<string, List<string>>> TestsAndTags =
-            new List<KeyValuePair<string, List<string>>>();
+        public static readonly List<KeyValuePair<string, List<string>>> TestsAndTags = new();
         private static readonly string SourceFolder = SolutionDirectoryInfo().FullName;
         private const string Extension = "*.feature";
         private const string ScenarioKeyword = "Scenario";
-        private static readonly Regex SearchWord = new Regex($@"{ScenarioKeyword}\s*(\w*):\s*");
-        private static readonly List<string> _allFilesNames = new List<string>();
-        private static List<string> AllFilesNames { get; } =
-            AddFileNamesToList(SourceFolder, Extension, _allFilesNames);
+        private static readonly Regex SearchWord = new($@"{ScenarioKeyword}\s*(\w*):\s*");
+        private static readonly List<string> AllFileNames = new();
+        private static List<string> AllFilesNames { get; } = AddFileNamesToList(SourceFolder, Extension, AllFileNames);
         public static Dictionary<string, List<string>> FeatureFilesAndTheirContent = AllFeatureFilesAndTheirContent();
 
         private static DirectoryInfo SolutionDirectoryInfo()
@@ -135,15 +133,20 @@ namespace AutomationUtils.Utils
             return iterator;
         }
 
-        private static Dictionary<string, List<string>> AllFeatureFilesAndTheirContent()
+        public static Dictionary<string, List<string>> AllFeatureFilesAndTheirContent()
         {
-            Dictionary<string, List<string>> a = new Dictionary<string, List<string>>();
+            Dictionary<string, List<string>> dictionary = new();
+
             foreach (var fileName in AllFilesNames)
             {
-                a.Add(fileName, File.ReadAllLines(fileName).ToList());
+                FileStream fileStream = new(fileName, FileMode.Open);
+                StreamReader streamReader = new(fileStream);
+                var fileLines = streamReader.ReadToEnd().Split("\r\n").ToList();
+
+                dictionary.Add(fileName, fileLines);
             }
 
-            return a;
+            return dictionary;
         }
     }
 }
