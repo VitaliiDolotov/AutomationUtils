@@ -141,7 +141,7 @@ namespace AutomationUtils.Utils
             {
                 FileStream fileStream = new(fileName, FileMode.Open);
                 StreamReader streamReader = new(fileStream);
-                var fileLines = streamReader.ReadToEnd().Split("\r\n").ToList();
+                var fileLines = streamReader.ReadToEnd().Split(Environment.NewLine).ToList();
 
                 dictionary.Add(fileName, fileLines);
             }
