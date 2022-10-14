@@ -4,8 +4,8 @@
     <TargetFramework>net6.0</TargetFramework>
 	<PackageId>AutomationUtils</PackageId>
     <Version>1.1.92.1</Version>
-    <Authors>VitaliiD</Authors>
-    <Company>VitaliiD</Company>
+    <Authors>Vitalii Dolotov</Authors>
+    <Company>Vitalii Dolotov</Company>
     <Description>Extensions and Helpers for UI automation framework</Description>
     <Copyright>Copyright 2022 (c)</Copyright>
     <PackageTags>Automation WebUIAutomation TestAutomation</PackageTags>
