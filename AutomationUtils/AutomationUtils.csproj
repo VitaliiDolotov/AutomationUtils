@@ -10,6 +10,7 @@
     <Copyright>Copyright 2022 (c)</Copyright>
     <PackageTags>Automation WebUIAutomation TestAutomation</PackageTags>
 	  <PackageLicenseExpression>MIT</PackageLicenseExpression>
+	  <PackageProjectUrl>https://github.com/VitaliiDolotov/AutomationUtils</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>
