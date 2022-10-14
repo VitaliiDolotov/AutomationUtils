@@ -139,8 +139,8 @@ namespace AutomationUtils.Utils
 
             foreach (var fileName in AllFilesNames)
             {
-                FileStream fileStream = new(fileName, FileMode.Open);
-                StreamReader streamReader = new(fileStream);
+                using FileStream fileStream = new(fileName, FileMode.Open);
+                using StreamReader streamReader = new(fileStream);
                 var fileLines = streamReader.ReadToEnd().Split(Environment.NewLine).ToList();
 
                 dictionary.Add(fileName, fileLines);
