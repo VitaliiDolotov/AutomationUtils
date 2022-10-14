@@ -3,12 +3,12 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
 	<PackageId>AutomationUtils</PackageId>
-    <Version>1.1.92</Version>
+    <Version>1.1.91</Version>
     <Authors>VitaliiD</Authors>
     <Company>VitaliiD</Company>
-    <Description>Extensions and Helpers for WebDriver based automation framework</Description>
-    <Copyright>Copyright 2020 (c)</Copyright>
-    <PackageTags>Automation WebDrier Selenium</PackageTags>
+    <Description>Extensions and Helpers for UI automation framework</Description>
+    <Copyright>Copyright 2022 (c)</Copyright>
+    <PackageTags>Automation WebUIAutomation TestAutomation</PackageTags>
 	  <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
