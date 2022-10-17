@@ -139,11 +139,18 @@ namespace AutomationUtils.Utils
 
             foreach (var fileName in AllFilesNames)
             {
-                FileStream fileStream = new(fileName, FileMode.Open);
-                StreamReader streamReader = new(fileStream);
-                var fileLines = streamReader.ReadToEnd().Split(Environment.NewLine).ToList();
+                using FileStream fileStream = new(fileName, FileMode.Open);
+                using StreamReader streamReader = new(fileStream);
+                var fileData = streamReader.ReadToEnd();
 
-                dictionary.Add(fileName, fileLines);
+                var splitLines = fileData.Split(Environment.NewLine).ToList();
+
+                if (splitLines.Count == 1)
+                {
+                    splitLines = fileData.Split("\n").ToList();
+                }
+
+                dictionary.Add(fileName, splitLines);
             }
 
             return dictionary;
