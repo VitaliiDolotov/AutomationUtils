@@ -9,9 +9,19 @@ namespace AutomationUtils.Utils
 {
     public class TestsUtils
     {
+        private const string _extension = "*.feature";
+        private const string _scenarioKeyword = "Scenario";
+
+        private static readonly string _sourceFolder = SolutionDirectoryInfo().FullName;
+        private static readonly Regex _searchWord = new($@"{_scenarioKeyword}\s*(\w*):\s*");
+        private static readonly List<string> _allFileNames = new();
+
+        public static readonly List<KeyValuePair<string, List<string>>> TestsAndTags = new();
+        public static readonly Dictionary<string, List<string>> FeatureFilesAndTheirContent = new();
+
         static TestsUtils()
         {
-            AllFilesNames = AddFileNamesToList(SourceFolder, Extension, AllFilesNames);
+            _allFileNames = AddFileNamesToList(_sourceFolder, _extension, _allFileNames);
             FeatureFilesAndTheirContent = AllFeatureFilesAndTheirContent();
 
             foreach (var file in FeatureFilesAndTheirContent)
@@ -19,15 +29,6 @@ namespace AutomationUtils.Utils
                 AddTestAndTagsToList(new List<string>(), file.Value);
             }
         }
-
-        private static readonly string SourceFolder = SolutionDirectoryInfo().FullName;
-        private const string Extension = "*.feature";
-        private const string ScenarioKeyword = "Scenario";
-        private static readonly Regex SearchWord = new($@"{ScenarioKeyword}\s*(\w*):\s*");
-        private static readonly List<string> AllFilesNames = new();
-
-        public static readonly List<KeyValuePair<string, List<string>>> TestsAndTags = new();
-        public static Dictionary<string, List<string>> FeatureFilesAndTheirContent = new();
 
         private static DirectoryInfo SolutionDirectoryInfo()
         {
@@ -70,11 +71,11 @@ namespace AutomationUtils.Utils
                     tagList.AddRange(lineTrim.Replace("@", "").Split(" "));
                 }
 
-                if (SearchWord.IsMatch(lineTrim) && lineTrim.StartsWith(ScenarioKeyword))
+                if (_searchWord.IsMatch(lineTrim) && lineTrim.StartsWith(_scenarioKeyword))
                 {
                     result = lineTrim
-                        .Substring(lineTrim.IndexOf(SearchWord.Match(fileLines[i]).Value, StringComparison.Ordinal) +
-                                   SearchWord.Match(lineTrim).Value.Length);
+                        .Substring(lineTrim.IndexOf(_searchWord.Match(fileLines[i]).Value, StringComparison.Ordinal) +
+                                   _searchWord.Match(lineTrim).Value.Length);
 
                     if (lineTrim.Contains("Outline"))
                     {
@@ -134,7 +135,7 @@ namespace AutomationUtils.Utils
         {
             Dictionary<string, List<string>> dictionary = new();
 
-            foreach (var fileName in AllFilesNames)
+            foreach (var fileName in _allFileNames)
             {
                 using FileStream fileStream = new(fileName, FileMode.Open);
                 using StreamReader streamReader = new(fileStream);
