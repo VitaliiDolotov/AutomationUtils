@@ -9,24 +9,31 @@ namespace AutomationUtils.Utils
 {
     public class TestsUtils
     {
-        static TestsUtils()
-        {
-            CheckAllFilesAndAddData(AllFilesNames);
-        }
+        private const string _extension = "*.feature";
+        private const string _scenarioKeyword = "Scenario";
+
+        private static readonly string _sourceFolder = SolutionDirectoryInfo().FullName;
+        private static readonly Regex _searchWord = new($@"{_scenarioKeyword}\s*(\w*):\s*");
+        private static readonly List<string> _allFileNames = new();
 
         public static readonly List<KeyValuePair<string, List<string>>> TestsAndTags = new();
-        private static readonly string SourceFolder = SolutionDirectoryInfo().FullName;
-        private const string Extension = "*.feature";
-        private const string ScenarioKeyword = "Scenario";
-        private static readonly Regex SearchWord = new($@"{ScenarioKeyword}\s*(\w*):\s*");
-        private static readonly List<string> AllFileNames = new();
-        private static List<string> AllFilesNames { get; } = AddFileNamesToList(SourceFolder, Extension, AllFileNames);
-        public static Dictionary<string, List<string>> FeatureFilesAndTheirContent = AllFeatureFilesAndTheirContent();
+        public static readonly Dictionary<string, List<string>> FeatureFilesAndTheirContent = new();
+
+        static TestsUtils()
+        {
+            _allFileNames = AddFileNamesToList(_sourceFolder, _extension, _allFileNames);
+            FeatureFilesAndTheirContent = AllFeatureFilesAndTheirContent();
+
+            foreach (var file in FeatureFilesAndTheirContent)
+            {
+                AddTestAndTagsToList(new List<string>(), file.Value);
+            }
+        }
 
         private static DirectoryInfo SolutionDirectoryInfo()
         {
             var directory = new DirectoryInfo(Directory.GetCurrentDirectory());
-            while (directory != null && !directory.GetFiles("*.sln").Any())
+            while (directory is not null && !directory.GetFiles("*.sln").Any())
             {
                 directory = directory.Parent;
             }
@@ -53,31 +60,22 @@ namespace AutomationUtils.Utils
             return allFiles;
         }
 
-        private static void CheckAllFilesAndAddData(List<string> allFiles)
+        private static void AddTestAndTagsToList(List<string> tagList, List<string> fileLines)
         {
-            foreach (var fileName in allFiles)
-            {
-                AddTestAndTagsToList(new List<string>(), File.ReadLines(fileName));
-            }
-        }
-
-        private static void AddTestAndTagsToList(List<string> tagList, IEnumerable<string> fileLines)
-        {
-            var enumerable = fileLines.ToList();
             string result = null;
-            for (var i = 0; i < enumerable.Count; i++)
+            for (var i = 0; i < fileLines.Count; i++)
             {
-                var lineTrim = enumerable[i].Trim();
+                var lineTrim = fileLines[i].Trim();
                 if (lineTrim.StartsWith("@"))
                 {
                     tagList.AddRange(lineTrim.Replace("@", "").Split(" "));
                 }
 
-                if (SearchWord.IsMatch(lineTrim) && lineTrim.StartsWith(ScenarioKeyword))
+                if (_searchWord.IsMatch(lineTrim) && lineTrim.StartsWith(_scenarioKeyword))
                 {
                     result = lineTrim
-                        .Substring(lineTrim.IndexOf(SearchWord.Match(enumerable[i]).Value, StringComparison.Ordinal) +
-                                   SearchWord.Match(lineTrim).Value.Length);
+                        .Substring(lineTrim.IndexOf(_searchWord.Match(fileLines[i]).Value, StringComparison.Ordinal) +
+                                   _searchWord.Match(lineTrim).Value.Length);
 
                     if (lineTrim.Contains("Outline"))
                     {
@@ -95,25 +93,25 @@ namespace AutomationUtils.Utils
                     i++;
 
                     // Skip all lines with comments or line breaks in the example table before the first line between '|' chars
-                    i = SkipLineBreaksAndCommentsInExamplesTable(enumerable, i);
+                    i = SkipLineBreaksAndCommentsInExamplesTable(fileLines, i);
 
                     // Skip variable names line 
                     i++;
 
-                    while (enumerable[i].Contains("|"))
+                    while (fileLines[i].Contains("|"))
                     {
-                        var example = enumerable[i].Trim().GetTextBetween('|', '|', false).First().Trim();
+                        var example = fileLines[i].Trim().GetTextBetween('|', '|', false).First().Trim();
                         var testName = string.Concat(result, ", ", example);
                         TestsAndTags.Add(new KeyValuePair<string, List<string>>(testName, tagList));
 
-                        if (i == enumerable.Count - 1)
+                        if (i == fileLines.Count - 1)
                         {
                             break;
                         }
 
                         i++;
 
-                        i = SkipLineBreaksAndCommentsInExamplesTable(enumerable, i);
+                        i = SkipLineBreaksAndCommentsInExamplesTable(fileLines, i);
                     }
 
                     i--;
@@ -124,8 +122,8 @@ namespace AutomationUtils.Utils
 
         private static int SkipLineBreaksAndCommentsInExamplesTable(List<string> fileLines, int iterator)
         {
-            while (fileLines[iterator].Equals(string.Empty)
-                   || fileLines[iterator].Replace("\t", string.Empty).StartsWith("#"))
+            while (iterator < fileLines.Count - 1 && (fileLines[iterator].Equals(string.Empty)
+                   || fileLines[iterator].Replace("\t", string.Empty).StartsWith("#")))
             {
                 iterator++;
             }
@@ -137,7 +135,7 @@ namespace AutomationUtils.Utils
         {
             Dictionary<string, List<string>> dictionary = new();
 
-            foreach (var fileName in AllFilesNames)
+            foreach (var fileName in _allFileNames)
             {
                 using FileStream fileStream = new(fileName, FileMode.Open);
                 using StreamReader streamReader = new(fileStream);
