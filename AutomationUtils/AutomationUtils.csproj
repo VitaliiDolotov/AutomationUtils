@@ -13,14 +13,6 @@
 	  <PackageProjectUrl>https://github.com/VitaliiDolotov/AutomationUtils</PackageProjectUrl>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DebugType>portable</DebugType>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DebugType>portable</DebugType>
-  </PropertyGroup>
-
   <ItemGroup>
     <Compile Remove="Component\BaseWebComponent.cs" />
     <Compile Remove="Component\IWebComponent.cs" />
