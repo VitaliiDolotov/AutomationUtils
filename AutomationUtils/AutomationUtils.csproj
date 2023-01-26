@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
 	<PackageId>AutomationUtils</PackageId>
-    <Version>1.1.92.3</Version>
+    <Version>1.1.92.5</Version>
     <Authors>Vitalii Dolotov</Authors>
     <Company>Techstack</Company>
     <Description>Extensions and Helpers for UI automation framework</Description>

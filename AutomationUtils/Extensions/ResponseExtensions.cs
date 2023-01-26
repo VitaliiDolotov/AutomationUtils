@@ -8,7 +8,7 @@ namespace AutomationUtils.Extensions
 {
     public static class ResponseExtensions
     {
-        public static void Validate(this IRestResponse response, HttpStatusCode expectedCode, string exceptionMessage, params HttpStatusCode[] expectedCodes)
+        public static void Validate(this RestResponse response, HttpStatusCode expectedCode, string exceptionMessage, params HttpStatusCode[] expectedCodes)
         {
             var codes = new List<HttpStatusCode>();
             codes.AddRange(expectedCodes);
