@@ -5,9 +5,9 @@
 	<PackageId>AutomationUtils</PackageId>
     <Version>1.1.92.3</Version>
     <Authors>Vitalii Dolotov</Authors>
-    <Company>Vitalii Dolotov</Company>
+    <Company>Techstack</Company>
     <Description>Extensions and Helpers for UI automation framework</Description>
-    <Copyright>Copyright 2022 (c)</Copyright>
+    <Copyright>Copyright 2023 (c)</Copyright>
     <PackageTags>Automation WebUIAutomation TestAutomation</PackageTags>
 	  <PackageLicenseExpression>MIT</PackageLicenseExpression>
 	  <PackageProjectUrl>https://github.com/VitaliiDolotov/AutomationUtils</PackageProjectUrl>
