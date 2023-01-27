@@ -14,30 +14,20 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Component\BaseWebComponent.cs" />
-    <Compile Remove="Component\IWebComponent.cs" />
     <Compile Remove="Extensions\ByExtensions.cs" />
     <Compile Remove="Extensions\CookieExtensions.cs" />
     <Compile Remove="Extensions\ReflectionExtensions.cs" />
     <Compile Remove="Extensions\WebDriverExtensions.cs" />
     <Compile Remove="Extensions\WebElementExtensions.cs" />
-    <Compile Remove="Pages\IContextContainer.cs" />
-    <Compile Remove="Pages\SeleniumBasePage.cs" />
     <Compile Remove="Utils\ByFactory.cs" />
     <Compile Remove="Utils\FluentWait.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DotNetSeleniumExtras.PageObjects.Core" Version="4.0.1" />
     <PackageReference Include="HtmlAgilityPack" Version="1.11.22" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
     <PackageReference Include="NUnit" Version="3.12.0" />
     <PackageReference Include="RestSharp" Version="108.0.2" />
-    <PackageReference Include="Selenium.Support" Version="4.1.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Component\" />
-    <Folder Include="Pages\" />
   </ItemGroup>
 
 </Project>
