@@ -100,22 +100,19 @@ namespace AutomationUtils.Extensions
         public static string ByKey(this string assemblyPath, string key)
         {
             var path = Directory.GetParent(assemblyPath).GetFiles("appsettings.json").First().FullName;
-            using (StreamReader sr = new StreamReader(path))
+            using StreamReader sr = new StreamReader(path);
+            try
             {
-                try
-                {
+                string configFileContent = sr.ReadToEnd();
 
-                    string configFileContent = sr.ReadToEnd();
+                var responseContent = JsonConvert.DeserializeObject<JObject>(configFileContent);
+                string value = responseContent[key].ToString();
 
-                    var responseContent = JsonConvert.DeserializeObject<JObject>(configFileContent);
-                    string value = responseContent[key].ToString();
-
-                    return value;
-                }
-                catch (Exception e)
-                {
-                    throw new Exception($"Unable to read configuration property for '{key}' key: {e}");
-                }
+                return value;
+            }
+            catch (Exception e)
+            {
+                throw new Exception($"Unable to read configuration property for '{key}' key: {e}");
             }
         }
 
@@ -125,12 +122,7 @@ namespace AutomationUtils.Extensions
                 @"(?<=" + firstPart + @")(.*)(?=" + secondPart + ")" :
                 @"(?<=" + firstPart + ").+?(?=" + secondPart + ")";
             var matches = Regex.Matches(source, pattern);
-            var results = new List<string>();
-            foreach (Match match in matches)
-            {
-                results.Add(match.Value);
-            }
-            return results;
+            return (matches.Select(match => match.Value)).ToList();
         }
 
         public static List<string> GetTextBetween(this string source, char characters, bool includeChars)
@@ -149,12 +141,7 @@ namespace AutomationUtils.Extensions
                 @"\" + firstChar + @"(.*?)\" + secondChar :
                 @"(?<=\" + firstChar + @")(.*?)(?=\" + secondChar + ")";
             MatchCollection matches = Regex.Matches(source, pattern);
-            List<string> results = new List<string>();
-            foreach (Match match in matches)
-            {
-                results.Add(match.Value);
-            }
-            return results;
+            return (matches.Select(match => match.Value)).ToList();
         }
 
         public static int GetNumber(this string str)

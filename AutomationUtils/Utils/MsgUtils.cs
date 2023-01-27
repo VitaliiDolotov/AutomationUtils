@@ -529,7 +529,7 @@ namespace AutomationUtils.Utils
 
             // Case 3: If it doesn't, center the mismatch position
             if (clipStart > mismatch)
-                clipStart = Math.Max(0, mismatch - clipLength / 2);
+                clipStart = Math.Max(0, mismatch - (clipLength / 2));
 
             expected = ClipString(expected, maxDisplayLength, clipStart);
             actual = ClipString(actual, maxDisplayLength, clipStart);

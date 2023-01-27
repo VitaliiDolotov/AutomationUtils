@@ -9,7 +9,6 @@ namespace AutomationUtils.Extensions
     {
         public static string GetFileWithNamePart(this DirectoryInfo directory, string partOfFileName)
         {
-
             var file = directory.GetFiles()
                 .OrderByDescending(f => f.LastWriteTime)
                 .First(x => x.Name.Contains(partOfFileName)).FullName;
@@ -19,7 +18,6 @@ namespace AutomationUtils.Extensions
 
         public static string GetFileWithName(this DirectoryInfo directory, string partOfFileName)
         {
-
             var file = directory.GetFiles()
                 .OrderByDescending(f => f.LastWriteTime)
                 .First(x => x.Name.Equals(partOfFileName)).FullName;
