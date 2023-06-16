@@ -31,7 +31,7 @@ namespace AutomationUtils.Extensions
             }
         }
 
-        public static List<string> SplitByLinebraeak(this string str)
+        public static List<string> SplitByLinebreak(this string str)
         {
             return str.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None).ToList();
         }
